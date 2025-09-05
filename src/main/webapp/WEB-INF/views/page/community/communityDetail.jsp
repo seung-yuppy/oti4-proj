@@ -6,8 +6,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
 .nav-pills {
@@ -154,9 +154,9 @@
 			</nav>
 			<div class="d-flex gap-2 ms-auto">
 				<a class="btn btn-outline-secondary"
-					href="${pageContext.request.contextPath}/page/community/communityMain.jsp">전체보기</a>
+					href="/bughunters/communityMain">전체보기</a>
 				<a class="btn btn-brown"
-					href="${pageContext.request.contextPath}/page/community/communityCreate.jsp">새글
+					href="/bughunters/communityCreate">새글
 					작성</a>
 			</div>
 		</div>
@@ -207,15 +207,15 @@
 				<!-- Stats -->
 				<div class="d-flex gap-4 text-muted">
 					<div class="d-flex align-items-center gap-1">
-						<img src="/miniproj/image/ico_like.png" alt="좋아요" width="18"
+						<img src="/bughunters/resources/image/ico_like.png" alt="좋아요" width="18"
 							height="18"> <span>1,234</span>
 					</div>
 					<div class="d-flex align-items-center gap-1">
-						<img src="/miniproj/image/ico_comment.png" alt="댓글" width="18"
+						<img src="/bughunters/resources/image/ico_comment.png" alt="댓글" width="18"
 							height="18"> <span>45</span>
 					</div>
 					<div class="d-flex align-items-center gap-1">
-						<img src="/miniproj/image/ico_watch.png" alt="조회수" width="18"
+						<img src="/bughunters/resources/image/ico_watch.png" alt="조회수" width="18"
 							height="18"> <span>210</span>
 					</div>
 				</div>

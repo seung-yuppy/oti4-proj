@@ -5,8 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
 .nav-pills {
@@ -81,7 +81,7 @@
 			</nav>
 			<div class="d-flex gap-2 ms-auto">
 			<a class></a>
-				<a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/page/community/communityMain.jsp">전체보기</a>
+				<a class="btn btn-outline-secondary" href="/bughunters/communityMain">전체보기</a>
 <a class="btn btn-brown" href="${pageContext.request.contextPath}/page/community/communityCreate.jsp">새글 작성</a>
 			</div>
 		</div>
@@ -135,7 +135,7 @@
 					</div>
 					<!-- 하단 버튼 -->
 					<div class="col-12 d-flex justify-content-end gap-2">
-						<a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/page/community/communityMain.jsp">취소</a>
+						<a class="btn btn-outline-secondary" href="/bughunters/communityMain">취소</a>
 						<button type="submit" class="btn btn-primary">등록</button>
 					</div>
 				</form>

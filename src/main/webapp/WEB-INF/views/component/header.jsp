@@ -21,7 +21,7 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link gnb-item" href="/miniproj/page/community/communityMain.jsp">
+					<a class="nav-link gnb-item" href="/bughunters/communityMain">
 						커뮤니티
 					</a>
 				</li>
