@@ -10,4 +10,9 @@ public class HomeController {
 	public String home() {
 		return "home";
 	}
+	
+	@GetMapping("/quiz")
+	public String quiz() {
+		return "matching/matchingQuiz";
+	}
 }
