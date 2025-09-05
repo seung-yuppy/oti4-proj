@@ -16,8 +16,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 <style>
 body {
 	padding: 20px;
@@ -51,7 +51,7 @@ body {
 </style>
 </head>
 <body>
-	<%@ include file="../../component/header.jsp"%>
+	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<form action="..." method="post">
 		<div class="d-grid form-container">
 			<h2 class="mb-4 fw-bold">회원정보 수정</h2>
@@ -111,7 +111,7 @@ body {
 	</div>
 	<!-- 다음 주소 API 관련 요소 -->
 	<div id="layer">
-		<img src="//t1.daumcdn.net/postcode/resource/images/close.png"
+		<img src="/bughunters/resources/image/close.png"
 			id="btnCloseLayer" onclick="closeDaumPostcode()" alt="닫기 버튼">
 	</div>
 
@@ -198,6 +198,6 @@ body {
 		    deleteModal.show();
 		});
 	</script>
-	<%@ include file="../../component/footer.jsp"%>
+	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 </body>
 </html>

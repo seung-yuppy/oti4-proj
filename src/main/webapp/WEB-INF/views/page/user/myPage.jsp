@@ -195,14 +195,14 @@ body {
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 </head>
 <body>
-	<%@ include file="../../component/header.jsp"%>
+	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<div class="container my-5">
 		<!-- 프로필 정보 -->
 		<div class="flex-container">
@@ -363,15 +363,15 @@ body {
 					<p><%= p.content %></p>
 					<div class="d-flex align-items-center gap-3 mt-2">
 						<div class="d-flex align-items-center gap-1">
-							<img src="/miniproj/image/ico_like.png" alt="좋아요" width="18"
+							<img src="/bughunters/resources/image/ico_like.png" alt="좋아요" width="18"
 								height="18"> <span><%= p.likes %></span>
 						</div>
 						<div class="d-flex align-items-center gap-1">
-							<img src="/miniproj/image/ico_comment.png" alt="댓글" width="18"
+							<img src="/bughunters/resources/image/ico_comment.png" alt="댓글" width="18"
 								height="18"> <span><%= p.comments %></span>
 						</div>
 						<div class="d-flex align-items-center gap-1">
-							<img src="/miniproj/image/ico_watch.png" alt="조회수" width="18"
+							<img src="/bughunters/resources/image/ico_watch.png" alt="조회수" width="18"
 								height="18"> <span><%= p.views %></span>
 						</div>
 					</div>
@@ -394,7 +394,7 @@ body {
 
 		</div>
 	</div>
-	<%@ include file="../../component/footer.jsp"%>
+	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -8,8 +8,8 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 <style>
 body {
 	background-color: #f8f4f0;
@@ -70,7 +70,7 @@ h2 {
 </style>
 </head>
 <body>
-	<%@ include file="../../component/header.jsp"%>
+	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<div class="form-container">
 		<h2>회원가입</h2>
 		<form action="signupProcess.jsp" method="post" onsubmit="return validatePasswords()">
@@ -139,11 +139,11 @@ h2 {
 			</div>
 		</form>
 	</div>
-	<%@ include file="../../component/footer.jsp"%>
+	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 
 	<!-- 다음 주소 API 관련 요소 -->
 	<div id="layer">
-		<img src="//t1.daumcdn.net/postcode/resource/images/close.png"
+		<img src="/bughunters/resources/image/close.png"
 			id="btnCloseLayer" onclick="closeDaumPostcode()" alt="닫기 버튼">
 	</div>
 

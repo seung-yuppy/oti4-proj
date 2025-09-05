@@ -9,8 +9,8 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 <style>
 .form-container {
 	width: 450px;
@@ -23,7 +23,7 @@
 </style>
 </head>
 <body>
-	<%@ include file="../../component/header.jsp"%>
+	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<div class="form-container">
 		<h2 class="mb-4">비밀번호 찾기</h2>
 		<div class="d-grid ">
@@ -46,7 +46,7 @@
 		</div>
 	</div>
 	<h3></h3>
-	<%@ include file="../../component/footer.jsp"%>
+	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 	<script type="text/javascript">
 		var popoverTriggerList = [].slice.call(document
 				.querySelectorAll('[data-bs-toggle="popover"]'))
