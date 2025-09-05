@@ -5,8 +5,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>인간과 펫(유기동물 상세 정보)</title>
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 	<style>
 		body {
 			background-color: #f8f9fa;
@@ -74,7 +74,7 @@
 <body>
 	<!-- 헤더 영역 -->
 	<%@ include file="/WEB-INF/views/component/header.jsp"%>
-	<main class="container main-container">
+	<div class="container main-container">
 		<div class="card shadow-sm">
 			<div class="card-body">
 				<div class="row g-4">
@@ -92,21 +92,21 @@
 							class="d-flex justify-content-around text-center py-3 my-4 bg-light rounded profile-icon-group">
 							<div class="icon-item">
 								<div class="icon-container">
-									<img src="/miniproj/image/ico_age.png" class="card-icon" /> 
+									<img src="/bughunters/resources/image/ico_age.png" class="card-icon" /> 
 									<span class="icon-caption">나이 : </span>
 									<span>1세</span>
 								</div>
 							</div>
 							<div class="icon-item">
 								<div class="icon-container">
-									<img src="/miniproj/image/ico_gender.png" class="card-icon" /> 
+									<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" /> 
 									<span class="icon-caption">성별 : </span>
 									<span>수컷</span>
 								</div>								
 							</div>
 							<div class="icon-item">
 								<div class="icon-container">
-									<img src="/miniproj/image/ico_size.png" class="card-icon" /> 
+									<img src="/bughunters/resources/image/ico_size.png" class="card-icon" /> 
 									<span class="icon-caption">몸무게 : </span>
 									<span>4.9kg</span>
 								</div>								
@@ -116,8 +116,10 @@
 
 						<div class="mb-4">
 							<h3 class="section-title">세부 정보</h3>
-							<p class="text-secondary">이 강아지는 첫 만남에는 조금 낯을 가리지만, 마음을 열면 세상에서 가장 든든한 동반자가 됩니다. 당신의
-								세심함과 이 아이의 순수함이 만나면 평생의 인연이 될 거예요.</p>
+							<p class="text-secondary">
+								이 강아지는 첫 만남에는 조금 낯을 가리지만, 마음을 열면 세상에서 가장 든든한 동반자가 됩니다. 
+								당신의 세심함과 이 아이의 순수함이 만나면 평생의 인연이 될 거예요.
+							</p>
 						</div>
 
 						<div class="mb-4">
@@ -125,17 +127,17 @@
 							<div class="d-flex">
 								<div>
 									<div class="check-item">
-										<img src="/miniproj/image/ico_success.png" class="card-icon" /> 예방 접종 완료
+										<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 광견병 예방 접종 완료
 									</div>
 								</div>
 								<div>
 									<div class="fail-item">
-										<img src="/miniproj/image/ico_fail.png" class="card-icon" /> 기본 건강 검진 완료
+										<img src="/bughunters/resources/image/ico_fail.png" class="card-icon" /> 종합 건강 검진 완료
 									</div>
 								</div>
 								<div>
 									<div class="check-item">
-										<img src="/miniproj/image/ico_success.png" class="card-icon" /> 중성화 수술 완료
+										<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 중성화 수술 완료
 									</div>
 								</div>
 							</div>
@@ -145,29 +147,29 @@
 							<h3 class="section-title">위치 및 연락처</h3>
 							<p class="fw-bold">발견 정보</p>
 							<p>
-								<img src="/miniproj/image/ico_location.png" class="card-icon" /> 서울시 강남구 논현동
+								<img src="/bughunters/resources/image/ico_location.png" class="card-icon" /> 서울시 강남구 논현동
 							</p>
 							<p>
-								<img src="/miniproj/image/ico_calendar.png" class="card-icon" /> 2024년 5월 15일
+								<img src="/bughunters/resources/image/ico_calendar.png" class="card-icon" /> 2024년 5월 15일
 							</p>
 
 							<p class="fw-bold mt-4">입양 문의</p>
 							<p>
-								<img src="/miniproj/image/ico_homelocation.png" class="card-icon" /> 생명 존중 동물 보호소
+								<img src="/bughunters/resources/image/ico_homelocation.png" class="card-icon" /> 생명 존중 동물 보호소
 							</p>
 							<p>
-								<img src="/miniproj/image/ico_tel.png" class="card-icon" /> 02-1234-5678
+								<img src="/bughunters/resources/image/ico_tel.png" class="card-icon" /> 02-1234-5678
 							</p>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</main>
+	</div>
 	<!-- footer 영역 -->
-	<%@ include file="/WEB-INF/views/component/header.jsp"%>
+	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 
 	<!-- script 영역 -->
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

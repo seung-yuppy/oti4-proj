@@ -39,7 +39,7 @@
 					</li>	
 
 				</ul>
-				<a href="/miniproj/page/abandonedPet/abandonedPetDetail.jsp" class="btn btn-gray d-block">자세히 보기</a>
+				<a href="/bughunters/abandonedPetDetail" class="btn btn-gray d-block">자세히 보기</a>
 			</div>
 		</div>
 	</div>

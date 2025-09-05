@@ -3,7 +3,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-header">
 	<div class="container">
 		<img src="/bughunters/resources/image/pawIcon.png" class="gnb-logo" alt="logo" /> 
-		<a class="nav-link gnb-title" href="/miniproj/page/home.jsp">운명의 발바닥</a>
+		<a class="nav-link gnb-title" href="/bughunters/home">운명의 발바닥</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -11,12 +11,12 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto header-list">
 				<li class="nav-item">
-					<a class="nav-link gnb-item" href="/miniproj/page/abandonedPet/abandonedPetList.jsp">
+					<a class="nav-link gnb-item" href="/bughunters/abandonedPetList">
 						인간과 펫
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link gnb-item" href="/miniproj/page/pet/petList.jsp">
+					<a class="nav-link gnb-item" href="/bughunters/petList">
 						펫과 펫
 					</a>
 				</li>

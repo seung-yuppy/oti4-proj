@@ -5,12 +5,12 @@
 	<meta charset="UTF-8">
 	<title>인간과 펫(유기동물 리스트)</title>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<!-- 헤더 영역 -->
-	<%@ include file="../../component/header.jsp"%>
+	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<div class="container my-5">
 		<div class="row g-4">
 			<!-- 필터 선택 영역 -->
@@ -79,8 +79,8 @@
 		</div>
 	</div>
 	<!-- footer 영역 -->
-	<%@ include file="../../component/footer.jsp"%>
+	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 	<!-- script 영역 -->
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
