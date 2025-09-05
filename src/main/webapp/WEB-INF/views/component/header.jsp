@@ -2,7 +2,7 @@
 <%@ include file="login_modal.jsp" %>
 <nav class="navbar navbar-expand-lg navbar-light bg-header">
 	<div class="container">
-		<img src="/miniproj/image/pawIcon.png" class="gnb-logo" alt="logo" /> 
+		<img src="/bughunters/resources/image/pawIcon.png" class="gnb-logo" alt="logo" /> 
 		<a class="nav-link gnb-title" href="/miniproj/page/home.jsp">운명의 발바닥</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
 			<span class="navbar-toggler-icon"></span>

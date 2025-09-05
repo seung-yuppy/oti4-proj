@@ -4,8 +4,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>운명의 발바닥</title>
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<!-- 헤더 영역 -->
@@ -16,10 +16,10 @@
 			<h2 class="fw-bold">당신의 완벽한 펫 동반자를 찾아보세요</h2>
 			<p class="text-muted">숨은 입양 가능 강아지와 고양이를 검색해 보세요. 모두가 행복한 연결을 위해 함께 합니다.</p>
 			<div class="mt-4 btn-container">
-				<a href="/miniproj/page/matching/matchingQuiz.jsp" class="btn btn-secondary-brown">
+				<a href="/bughunters/matchingQuiz" class="btn btn-secondary-brown">
 					운명의 동물 퀴즈
 				</a> 
-				<a href="/miniproj/page/matching/matchingResult_after.jsp" class="btn btn-brown">
+				<a href="/bughunters/matchingResult" class="btn btn-brown">
 					운명의 동물 보기
 				</a>
 			</div>
@@ -45,7 +45,7 @@
 			<div class="col-md-4">
 				<div class="card shadow-sm card-border">
 					<img 
-						src="../image/img_community1.png"
+						src="/bughunters/resources/image/img_community1.png"
 						class="card-img-top community-image"
 						alt="반려동물 봉사활동"
 					/>
@@ -61,7 +61,7 @@
 			<div class="col-md-4">
 				<div class="card shadow-sm card-border">
 					<img 
-						src="../image/img_community2.png"
+						src="/bughunters/resources/image/img_community2.png"
 						class="card-img-top community-image" 
 						alt="반려동물 건강 상담"
 					/>
@@ -77,7 +77,7 @@
 			<div class="col-md-4">
 				<div class="card shadow-sm card-border">
 					<img 
-						src="../image/img_community3.png" 
+						src="/bughunters/resources/image/img_community3.png" 
 						class="card-img-top community-image" 
 						alt="산책 메이트"
 					/>
@@ -89,13 +89,13 @@
 						</a>
 					</div>
 				</div>
-			</div>
+			</div> 
 		</div>
 	</div>
 	<!-- footer 영역 -->
 	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 	
 	<!-- script 영역 -->
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

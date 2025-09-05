@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>인간과 펫(유기동물 리스트)</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
 	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
 </head>

@@ -11,8 +11,13 @@ public class HomeController {
 		return "home";
 	}
 	
-	@GetMapping("/quiz")
-	public String quiz() {
-		return "matching/matchingQuiz";
+	@GetMapping("/matchingQuiz")
+	public String matchingQuiz() {
+		return "matching/matchingQuiz"; 
+	}
+	
+	@GetMapping("/matchingResult")
+	public String matchingResult() {
+		return "matching/matchingResult_after";
 	}
 }

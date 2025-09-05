@@ -4,8 +4,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>abandonedPetCard</title>
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<div class="col-lg-3">
@@ -18,23 +18,23 @@
 			<div class="card-body">
 				<div class="d-flex-space">
 					<h5 class="card-title fw-bold">믹스견</h5>
-					<button type="button" class="card-like-btn"><img src="/miniproj/image/ico_mbti.png" class="card-icon" ></button>
+					<button type="button" class="card-like-btn"><img src="/bughunters/resources/image/ico_mbti.png" class="card-icon" ></button>
 				</div>
 				<ul class="card-list">
 					<li class="card-item">
-						<img src="/miniproj/image/ico_size.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
 						<span>중형</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_gender.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
 						<span>수컷</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_age.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
 						<span>1세</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_location.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_location.png" class="card-icon" />
 						<span>경상남도</span>
 					</li>	
 
