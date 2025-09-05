@@ -1,0 +1,232 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+<link href="/miniproj/resource/css/common.css" rel="stylesheet">
+</head>
+<style>
+.nav-pills {
+	display: flex;
+	flex-wrap: nowrap; /* 줄바꿈 방지 (필요시 wrap으로 변경 가능) */
+	width: 100%;
+}
+
+.nav-pills .tab {
+	flex: 1 1 0; /* 균등 분배 */
+	text-align: center;
+	font-size: 14px;
+	color: #374151;
+	padding: 10px 16px;
+	border-radius: 999px;
+	border: 1px solid transparent;
+	transition: .15s;
+	background: transparent; /* 기본 배경 없음 (원본과 동일 느낌) */
+}
+
+/* Hover: 원본과 동일 */
+.nav-pills .tab:hover, .nav-pills .tab.active:hover {
+	background: #B9761A; /* 호버 배경색 */
+	border-color: #e6e8eb; /* 호버 테두리색 */
+	color: #374151; /* 호버 글자색 */
+}
+
+/* Bootstrap의 기본 active(파란 배경) 제거 → 원본과 같은 '평상시' 스타일 유지 */
+.nav-pills .tab.active {
+	background: transparent !important;
+	color: #374151 !important;
+	border-color: transparent !important;
+}
+
+/* 접근성: 포커스 링은 유지하되 형태만 살짝 정리 */
+.nav-pills .tab:focus {
+	outline: none;
+	box-shadow: 0 0 0 0.2rem rgba(185, 118, 26, 0.15);
+}
+
+.avatar-40 {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+</style>
+<body>
+<!-- 헤더 영역 -->
+	<%@ include file="/WEB-INF/views/component/header.jsp" %>
+	<div class="container my-5" style="max-width: 980px;">
+		<!-- Title -->
+		<h1 class="fw-bold fs-1 mb-4">커뮤니티</h1>
+
+		<!-- Searchbar -->
+		<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+			<div class="position-relative flex-grow-1">
+				<input type="text" class="form-control ps-5"
+					placeholder="제목 또는 닉네임으로 검색">
+				<svg
+					class="position-absolute top-50 start-0 translate-middle-y ms-3 opacity-50"
+					width="18" height="18" viewBox="0 0 24 24" fill="none"
+					stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-3.5-3.5"></path>
+      </svg>
+			</div>
+			<button class="btn btn-outline-secondary">검색</button>
+		</div>
+
+		<!-- Tabs & Actions -->
+		<div
+			class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2">
+			<nav class="nav nav-pills gap-2">
+				<a href="#" class="nav-link rounded-pill tab">내 반려동물을 자랑하는 게시판</a> <a
+					href="#" class="nav-link rounded-pill tab">펫 관련 알바 구하기 게시판</a> <a
+					href="#" class="nav-link rounded-pill tab">반려동물 키우는 팁 게시판</a> <a
+					href="#" class="nav-link rounded-pill tab">실종 동물을 찾아주세요 게시판</a>
+			</nav>
+			<div class="d-flex gap-2 ms-auto">
+				<a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/page/community/communityMain.jsp">전체보기</a>
+				<button class="btn btn-brown">새 글 작성</button>
+			</div>
+		</div>
+
+		<!-- ===== 게시글 수정(communityUpdate) START ===== -->
+		<section class="card border-0 shadow-sm mb-5">
+			<div class="card-body">
+				<!-- 수정 폼 -->
+				<!-- 파일 업로드가 아니라 URL만 수정하면 되면 아래 그대로 사용.
+         파일 업로드까지 하려면 enctype="multipart/form-data" 로 바꿔주세요. -->
+				<form method="post" action="/community/${post.id}/edit"
+					class="row g-4">
+					<!-- 제목 -->
+					<div class="col-12">
+						<label class="form-label fw-semibold">제목</label> <input
+							type="text" name="title" class="form-control" required
+							placeholder="제목을 입력하세요" value="${post.title}">
+					</div>
+
+					<!-- 본문 -->
+					<div class="col-12">
+						<label class="form-label fw-semibold">본문 내용</label>
+						<textarea name="content" id="content" class="form-control"
+							rows="12" placeholder="본문을 입력하세요">${post.content}</textarea>
+						<div class="form-text">줄바꿈은 그대로 저장됩니다. (Shift+Enter로 줄바꿈)</div>
+					</div>
+
+					<!-- 이미지 업로드 + 미리보기 (Bootstrap) -->
+					<div class="mb-3">
+						<label for="imageFiles" class="form-label fw-semibold">이미지
+							파일 업로드</label> <input type="file" id="imageFiles" name="images"
+							class="form-control" accept="image/*" multiple>
+						<div class="form-text">여러 장 선택 가능합니다. (JPG, PNG 등)</div>
+					</div>
+					
+					<!-- 미리보기 영역: 업로드 아래에 위치 -->
+					<div class="d-flex align-items-center justify-content-between mb-2">
+						<div class="fw-semibold">미리보기</div>
+						<div class="d-flex gap-2">
+						</div>
+					</div>
+
+					<div id="previewList" class="row g-3">
+						<!-- 기본 더미 (아무것도 없을 때) -->
+						<div class="col-6 col-md-4 col-lg-3" data-dummy="true">
+							<div class="card h-100">
+								<img
+									src="https://images.unsplash.com/photo-1534361960057-19889db9621e?q=80&amp;w=1200&amp;auto=format&amp;fit=crop"
+									class="card-img-top" alt="더미 이미지">
+								<div class="card-body p-2">
+									<div class="small text-muted">더미 이미지</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- 하단 버튼 -->
+					<div class="col-12 d-flex justify-content-end gap-2">
+						<a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/page/community/communityMain.jsp">취소</a>
+						<div class="d-flex gap-2">
+							<button type="submit" class="btn btn-primary">저장</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- footer 영역 -->
+	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
+		</section>
+		<!-- ===== 게시글 수정 END ===== -->
+
+<script>
+(function () {
+  const fileInput = document.getElementById('imageFiles');
+  const previewList = document.getElementById('previewList');
+
+  const DUMMY_SRC = 'https://images.unsplash.com/photo-1534361960057-19889db9621e?q=80&w=1200&auto=format&fit=crop';
+
+  function renderPreviews() {
+    // 비우기
+    previewList.innerHTML = '';
+
+    const files = Array.from(fileInput.files || []);
+
+    // 파일 없으면 더미 하나
+    if (files.length === 0) {
+      previewList.appendChild(makeCard(DUMMY_SRC, '더미 이미지', true));
+      return;
+    }
+
+    // 파일 미리보기
+    files.forEach((file, idx) => {
+      const objectURL = URL.createObjectURL(file);
+      const card = makeCard(objectURL, `파일 ${idx + 1}`);
+      card.querySelector('img').addEventListener('load', () => {
+        URL.revokeObjectURL(objectURL);
+      });
+      previewList.appendChild(card);
+    });
+  }
+
+  function makeCard(src, caption, isDummy = false) {
+    const col = document.createElement('div');
+    col.className = 'col-6 col-md-4 col-lg-3';
+    if (isDummy) col.dataset.dummy = 'true';
+
+    const card = document.createElement('div');
+    card.className = 'card h-100';
+
+    const img = document.createElement('img');
+    img.className = 'card-img-top';
+    img.alt = caption || '이미지';
+    img.style.objectFit = 'cover';
+    img.style.height = '160px';
+    img.src = src;
+    img.onerror = function () { this.src = DUMMY_SRC; };
+
+    const body = document.createElement('div');
+    body.className = 'card-body p-2';
+
+    const small = document.createElement('div');
+    small.className = 'small text-truncate';
+    small.title = caption;
+    small.textContent = caption;
+
+    body.appendChild(small);
+    card.appendChild(img);
+    card.appendChild(body);
+    col.appendChild(card);
+
+    return col;
+  }
+
+  // 파일 변경 시 자동 미리보기
+  fileInput.addEventListener('change', renderPreviews);
+
+  // 초기 렌더
+  renderPreviews();
+})();
+</script>
+</body>
+</html>

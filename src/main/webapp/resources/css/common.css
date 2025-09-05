@@ -1,0 +1,277 @@
+@charset "UTF-8";
+
+/*  footer를 항상 맨 아래에 두기 위함 */
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	background-color: #fafafb !important;
+}
+
+/* bootstrap 초기화 */
+p {
+	margin-bottom: 0 !important;
+}
+
+/* 유틸리티 */
+/* 글자 색  */
+.text-brown {
+	color: #a75d00 !important; 
+}
+
+.hr-line {
+	color: #a75d00;
+}
+
+.text-small {
+	font-size: 13px;
+}
+/* 디스플레이 */
+.d-block {
+	display: block !important;
+}
+
+.d-flex {
+	display: flex;
+	gap: 20px;
+}
+
+.d-flex-space {
+	display: flex !important;
+	justify-content: space-between !important;
+	align-items: flex-start;
+}
+
+.card-like-btn {
+	background-color: transparent;
+	border: transparent;
+}
+
+.mt-10 {
+	margin-top: 120px;
+}
+
+.p-relative {
+	position: relative;
+}
+
+.p-absolute {
+	z-index: 1000;
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	border-radius: 50%;
+	box-shadow: -2px 2px 8px 4px gray;
+	background-color: #a75d00;
+	width: 60px;
+	height: 60px;
+	transition: background-color 0.3s;
+	
+	&:hover {
+		background-color: #cc7000; 
+	}
+}
+
+/* 헤더 컴포넌트 */
+.header-list {
+	display:flex !important;
+	gap: 10px !important;
+}
+
+.bg-header {
+	background-color: #fafafb !important;
+}
+
+/* 버튼 컴포넌트 */
+.btn-container {
+	display: flex !important; 
+	gap: 50px !important; 
+	justify-content: center !important;
+}
+
+.btn-brown {
+	background-color: #a75d00 !important;
+   	color: white !important; 
+	transition: background-color !important;
+	
+ 	&:hover {
+   		background-color: #cc7000 !important;
+	} 
+}
+
+.btn-gray {
+	background-color: transparent !important;
+   	color: black !important; 
+	transition: background-color !important;
+	border: 1px solid #ccc7c7b0 !important;
+	
+	&:hover {
+   		background-color: #F3F4F6FF !important; 
+	} 
+}
+
+.btn-secondary-brown {
+	border: 1px solid #a75d00 !important; 
+	color: #a75d00 !important; 
+	background-color: transparent !important;
+}
+
+/* 카드 컴포넌트 */
+.card-image {
+	height: 200px !important;
+/* 	border: 1px solid #a75d00 !important;  */
+	object-fit: cover;
+}
+
+.card-border {
+	box-shadow: 0px 0px 4px 0px gray !important;
+}
+
+.card-list {
+	display: grid !important;
+	grid-template-columns: 1fr 1fr !important; 
+	padding: 0 !important;
+	row-gap: 5px !important; 
+	column-gap: 2px !important;
+	margin-top: 5px;
+}
+
+.card-item {
+	display: flex !important; 
+	align-items: center !important;
+	gap: 3px !important; 
+	font-size: 14px !important;
+}
+
+.card-icon {
+	width: 15px !important; 
+	height: 15px !important; 
+	object-fit: contain !important;
+}
+
+.mypet-card-list {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	margin-top: 5px;
+}
+
+.margin-t {
+	margin-top: 20px !important;
+}
+/* 헤더 컴포넌트 */
+.gnb-title {
+	color: #a75d00 !important;
+	font-weight: bold !important;
+	transition: color 0.5s !important;
+	
+	&:hover {
+		color: #cc7000 !important; 
+	}
+}
+
+.gnb-item {
+	color: gray !important;
+	font-weight: bolder;
+	
+	&:hover {
+		color: #cc7000 !important;
+	}
+}
+
+.gnb-logo {
+	width: 40px !important; 
+	height: 40px !important;
+}
+
+/* 홈 페이지  */
+.hero-section {
+	background-color: #FFF8F0FF;
+	padding: 3rem 1rem;
+	text-align: center;
+	border-radius: 8px;
+}
+
+.community-image {
+	height: 300px !important;
+}
+
+.community-card {
+	display: flex !important; 
+	flex-direction: column !important;
+	gap: 7px !important;
+}
+
+/* 인간과 펫 페이지(abandonedPetList) */
+.bg-filter {
+	background-color: #fff9f5;
+}
+
+.icon-container {
+	display: flex !important;
+	gap: 5px !important;
+	align-items: center !important;
+}
+
+.icon-caption {
+	font-weight: bold;
+}
+
+/* 펫과 펫 페이지(petList)  */
+.swiper-container {
+    width: 35%;
+    height: 410px; 
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-btn {
+	width: 30px;
+	height: 30px;
+}
+
+/* (선택) 네비게이션 버튼 색상을 갈색 테마에 맞춤 */
+.swiper-button-next,
+.swiper-button-prev {
+    color: #a75d00 !important;
+}
+
+.map {
+	width: 65%;
+	height: 410px;
+}
+
+/* 커뮤니티 게시판 */
+.community-image {
+   height: 300px !important;
+}
+
+.pagination.pagination-brown .page-link {
+  color: #374151;
+  background-color: #fff;
+  border-color: #e5e7eb;
+}
+.pagination.pagination-brown .page-link:hover {
+  color: #B9761A;
+  background-color: #fff;
+  border-color: #B9761A;
+}
+.pagination.pagination-brown .page-item.active .page-link,
+.pagination.pagination-brown .page-item.active .page-link:hover,
+.pagination.pagination-brown .page-item.active .page-link:focus {
+  color: #fff;
+  background-color: #B9761A;   /* 파란색 대신 갈색 */
+  border-color: #B9761A;
+}
+.pagination.pagination-brown .page-item.disabled .page-link {
+  color: #9ca3af;
+  background-color: #fff;
+  border-color: #e5e7eb;
+}
+/* 포커스 링(선택사항) */
+.pagination.pagination-brown .page-link:focus {
+  box-shadow: 0 0 0 .25rem rgba(185,118,26,.2);
+}
