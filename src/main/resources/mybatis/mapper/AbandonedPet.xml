@@ -5,13 +5,13 @@
 		parameterType="int">
 		SELECT *
 		FROM (
-		SELECT ROWNUM AS rnum, a.*
-		FROM (
-		SELECT *
-		FROM Abandoned_Pet
-		ORDER BY abandoned_pet_id
-		) a
-		)
+			SELECT ROWNUM AS rnum, a.*
+			FROM (
+				SELECT *
+				FROM Abandoned_Pet
+				ORDER BY abandoned_pet_id
+				) a
+			)
 		WHERE rnum BETWEEN #{start} AND #{end}
 	</select>
 	<select id="countAll" resultType="int">
@@ -80,6 +80,38 @@
 					</when>
 					<when test="location == 'jeonbuk'">
 						'전북'
+					</when>
+				</choose>
+			</if>
+			<if test="gender != 'all'">
+				AND gender = #{gender}
+			</if>
+			<if test="size != 'all'">
+				<choose>
+					<when test="size == 'small'">
+						AND weight BETWEEN 0 AND 9
+					</when>
+					<when test="size == 'medium'">
+						AND weight BETWEEN 10 AND 24
+					</when>
+					<when test="size == 'large'">
+						AND weight >= 25
+					</when>
+				</choose>
+			</if>
+			<if test="age != 'all'">
+				<choose>
+					<when test="age == '0-1'">
+						AND age BETWEEN 0 AND 1
+					</when>
+					<when test="age == '2-4'">
+						AND age BETWEEN 2 AND 4
+					</when>
+					<when test="age == '5-7'">
+						AND age BETWEEN 5 AND 7
+					</when>
+					<when test="age == '8+'">
+						AND age >= 8
 					</when>
 				</choose>
 			</if>

@@ -17,7 +17,7 @@ public class AbandonedPetController {
 	@Autowired
 	AbandonedPetDAO dao;
 
-	@GetMapping("/abandonedPetList")
+	@GetMapping("/abandonedPet")
 	public String a1(Model model, @RequestParam(defaultValue = "1") int page) {
 		int pageSize = 20;
 		int totalItems = dao.countAll(); // 전체 데이터 개수
@@ -58,7 +58,7 @@ public class AbandonedPetController {
 		return "abandonedPet/abandonedPetList";
 	}
 
-	@GetMapping("/abandonedPetDetail/{id}")
+	@GetMapping("/abandonedPet/{id}")
 	public String a2(Model model, @PathVariable("id") int id) {
 		AbandonedPetDTO dto = dao.listOne(id);
 		
@@ -89,7 +89,7 @@ public class AbandonedPetController {
 		return "abandonedPet/abandonedPetDetail";
 	}
 	
-	@GetMapping("/abandonedPetList/search")
+	@GetMapping("/abandonedPet/search")
 	public String a3(
 			Model model, 
 			@RequestParam(defaultValue = "all") String location,
@@ -97,9 +97,7 @@ public class AbandonedPetController {
 			@RequestParam(defaultValue = "all") String size,
 			@RequestParam(defaultValue = "all") String age) {
 		List<AbandonedPetDTO> list = dao.searchList(location, gender, size, age);
-		
-		System.out.println("검색 실행 : " + list.toString());
-		
+
 		// 견종 
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).getKind().contains("빠삐용"))

@@ -37,7 +37,7 @@
 						<span>${param.address}</span>
 					</li>
 				</ul>
-				<a href="/bughunters/abandonedPetDetail/${param.petId}" class="btn btn-gray d-block">자세히 보기</a>
+				<a href="/bughunters/abandonedPet/${param.petId}" class="btn btn-gray d-block">자세히 보기</a>
 			</div>
 		</div>
 	</div>

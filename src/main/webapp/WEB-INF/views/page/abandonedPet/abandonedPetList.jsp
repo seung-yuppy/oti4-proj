@@ -18,7 +18,7 @@
 			<aside class="col-lg-3">
 				<div class="filter-card p-3 card-border bg-filter">
 					<h5 class="fw-bold mb-3 text-brown">필터</h5>
-					<form method="GET" action="/bughunters/abandonedPetList/search">
+					<form method="GET" action="/bughunters/abandonedPet/search">
 						<div class="mb-3">
 							<label for="location" class="form-label text-brown">보호소 위치</label> 
 							<select class="form-control" name="location">
