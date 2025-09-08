@@ -27,4 +27,5 @@ public class AbandonedPetDTO {
 	private int isMix;
 	private int isNeuter;
 	private String vaccin;
+	private String findPlace;
 }

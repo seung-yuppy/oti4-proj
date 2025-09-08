@@ -63,6 +63,11 @@
 			font-weight: 500;
 		}
 		
+		.question-item {
+			color: gray;
+			font-weight: 500;
+		}
+		
 		.contact-info p {
 			margin-bottom: 0.75rem;
 			color: #495057;
@@ -70,6 +75,15 @@
 		.d-flex {
 			display: flex !important;
 			gap: 50px !important;
+		}
+		
+		.pet-profile-img {
+			width: 500px;
+			height: 500px;
+		}
+		
+		.items-center {
+			align-items: center;
 		}
 	</style>
 </head>
@@ -80,11 +94,11 @@
 		<div class="container main-container">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<div class="row g-4">
+					<div class="row g-4 items-center">
 						<div class="col-md-5">
 							<img
 								src="${pet.profileImage}"
-								class="img-fluid rounded" 
+								class="rounded pet-profile-img" 
 								alt="사진없음" 
 							/>
 						</div>
@@ -126,19 +140,52 @@
 								<h3 class="section-title">건강 및 행동 특성</h3>
 								<div class="d-flex">
 									<div>
-										<div class="check-item">
-											<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 광견병 예방 접종 완료
-										</div>
+										<c:if test="${isRabies == true}">
+											<div class="check-item">
+												<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 
+												광견병 예방 접종 완료
+											</div>											
+										</c:if>
+										<c:if test="${isRabies == false}">
+											<div class="fail-item">
+												<img src="/bughunters/resources/image/ico_fail.png" class="card-icon" /> 
+												광견병 예방 접종 미완료
+											</div>											
+										</c:if>
 									</div>
 									<div>
-										<div class="fail-item">
-											<img src="/bughunters/resources/image/ico_fail.png" class="card-icon" /> 종합 건강 검진 완료
-										</div>
+										<c:if test="${isHealthy == true }">
+											<div class="check-item">
+												<img src="/bughunters/resources/image/ico_success.png" class="card-icon" />  
+												종합 건강 검진 완료
+											</div>												
+										</c:if>
+										<c:if test="${isHealthy == false }">
+											<div class="fail-item">
+												<img src="/bughunters/resources/image/ico_fail.png" class="card-icon" /> 
+												종합 건강 검진 미완료
+											</div>										
+										</c:if>
 									</div>
 									<div>
-										<div class="check-item">
-											<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 중성화 수술 완료
-										</div>
+										<c:if test="${pet.isNeuter == 0}">
+											<div class="fail-item">
+												<img src="/bughunters/resources/image/ico_fail.png" class="card-icon" /> 
+												중성화 수술 미완료
+											</div>
+										</c:if>
+										<c:if test="${pet.isNeuter == 1}">
+											<div class="check-item">
+												<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 
+												중성화 수술 완료
+											</div>
+										</c:if>
+										<c:if test="${pet.isNeuter == 2}">
+											<div class="question-item">
+												<img src="/bughunters/resources/image/ico_questionmark.png" class="card-icon" /> 
+												중성화 수술 미정
+											</div>
+										</c:if>
 									</div>
 								</div>
 							</div>
@@ -147,7 +194,7 @@
 								<h3 class="section-title">위치 및 연락처</h3>
 								<p class="fw-bold">발견 정보</p>
 								<p>
-									<img src="/bughunters/resources/image/ico_location.png" class="card-icon" /> ${pet.address}
+									<img src="/bughunters/resources/image/ico_location.png" class="card-icon" /> ${pet.findPlace}
 								</p>
 								<p>
 									<img src="/bughunters/resources/image/ico_calendar.png" class="card-icon" /> 

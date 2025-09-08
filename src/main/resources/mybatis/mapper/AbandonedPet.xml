@@ -1,25 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.example.bughunters.dao.AbandonedPetDAO">
-	<select id="listAll" resultType="AbandonedPetDTO" parameterType="int">
-        SELECT *
-        FROM (
-            SELECT ROWNUM AS rnum, a.*
-            FROM (
-                SELECT * 
-                FROM Abandoned_Pet
-                ORDER BY abandoned_pet_id
-            ) a
-        )
-        WHERE rnum BETWEEN #{start} AND #{end}
+	<select id="listAll" resultType="AbandonedPetDTO"
+		parameterType="int">
+		SELECT *
+		FROM (
+		SELECT ROWNUM AS rnum, a.*
+		FROM (
+		SELECT *
+		FROM Abandoned_Pet
+		ORDER BY abandoned_pet_id
+		) a
+		)
+		WHERE rnum BETWEEN #{start} AND #{end}
 	</select>
 	<select id="countAll" resultType="int">
-        SELECT COUNT(*) 
-        FROM Abandoned_Pet
-    </select>
+		SELECT COUNT(*)
+		FROM Abandoned_Pet
+	</select>
 	<select id="listOne" resultType="AbandonedPetDTO" parameterType="int">
 		SELECT *
 		FROM Abandoned_Pet
 		WHERE abandoned_pet_id = #{id}
+	</select>
+	<select id="searchList" resultType="AbandonedPetDTO">
+		SELECT *
+		FROM Abandoned_Pet
+		<where>
+			<if test="location != 'all'">
+				AND address LIKE
+				<choose>
+					<when test="location == 'seoul'">
+						'서울'
+					</when>
+					<when test="location == 'gyeonggi'">
+						'경기'
+					</when>
+					<when test="location == 'incheon'">
+						'인천'
+					</when>
+					<when test="location == 'ulsan'">
+						'울산'
+					</when>
+					<when test="location == 'busan'">
+						'부산'
+					</when>
+					<when test="location == 'sejong'">
+						'세종'
+					</when>
+					<when test="location == 'daejeon'">
+						'대전'
+					</when>
+					<when test="location == 'daegu'">
+						'대구'
+					</when>
+					<when test="location == 'gwangju'">
+						'광주'
+					</when>
+					<when test="location == 'jeju'">
+						'제주'
+					</when>
+					<when test="location == 'gangwon'">
+						'강원'
+					</when>
+					<when test="location == 'gyeongnam'">
+						'경상남도'
+					</when>
+					<when test="location == 'gyeongbuk'">
+						'경상북도'
+					</when>
+					<when test="location == 'chungnam'">
+						'충청남도'
+					</when>
+					<when test="location == 'chungbuk'">
+						'충청북도'
+					</when>
+					<when test="location == 'jeonnam'">
+						'전라남도'
+					</when>
+					<when test="location == 'jeonbuk'">
+						'전북'
+					</when>
+				</choose>
+			</if>
+		</where>
 	</select>
 </mapper>

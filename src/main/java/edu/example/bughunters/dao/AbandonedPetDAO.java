@@ -17,4 +17,13 @@ public interface AbandonedPetDAO {
 	
 	// 유기동물 아이디로 상세 페이지
 	public AbandonedPetDTO listOne(int id);
+	
+	// 유기동물 검색 리스트 
+	public List<AbandonedPetDTO> searchList(
+			@Param("location") String location,
+			@Param("gender") String gender,
+			@Param("size") String size,
+			@Param("age") String age
+			);
+	
 }

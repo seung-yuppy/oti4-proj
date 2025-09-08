@@ -14,7 +14,7 @@
 			<img src="${param.profileImage}" class="card-img-top card-image" alt="사진 없음">
 			<div class="card-body">
 				<div class="d-flex-space">
-					<h5 class="card-title fw-bold">${param.kind}</h5>
+					<h5 class="card-title fw-bold text-medium">${param.kind}</h5>
 					<button type="button" class="card-like-btn">
 						<img src="/bughunters/resources/image/ico_mbti.png" class="card-icon">
 					</button>
