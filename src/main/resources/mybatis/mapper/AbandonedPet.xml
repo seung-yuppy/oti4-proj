@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.example.bughunters.dao.AbandonedPetDAO">
+	<select id="listAll" resultType="AbandonedPetDTO" parameterType="int">
+        SELECT *
+        FROM (
+            SELECT ROWNUM AS rnum, a.*
+            FROM (
+                SELECT * 
+                FROM Abandoned_Pet
+                ORDER BY abandoned_pet_id
+            ) a
+        )
+        WHERE rnum BETWEEN #{start} AND #{end}
+	</select>
+	<select id="countAll" resultType="int">
+        SELECT COUNT(*) 
+        FROM Abandoned_Pet
+    </select>
+	<select id="listOne" resultType="AbandonedPetDTO" parameterType="int">
+		SELECT *
+		FROM Abandoned_Pet
+		WHERE abandoned_pet_id = #{id}
+	</select>
+</mapper>

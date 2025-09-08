@@ -11,7 +11,7 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto header-list">
 				<li class="nav-item">
-					<a class="nav-link gnb-item" href="/bughunters/abandonedPetList">
+					<a class="nav-link gnb-item" href="/bughunters/abandonedPetList?page=1">
 						인간과 펫
 					</a>
 				</li>

@@ -41,13 +41,13 @@ public class HomeController {
 		return "community/communityUpdate";
 	}
 	
-	@GetMapping("/abandonedPetList")
-	public String abandonedPetList() {
-		return "abandonedPet/abandonedPetList";
-	}
+//	@GetMapping("/abandonedPetList")
+//	public String abandonedPetList() {
+//		return "abandonedPet/abandonedPetList";
+//	}
 	
-	@GetMapping("/abandonedPetDetail")
-	public String abandonedPetDetail() {
-		return "abandonedPet/abandonedPetDetail";
-	}
+//	@GetMapping("/abandonedPetDetail")
+//	public String abandonedPetDetail() {
+//		return "abandonedPet/abandonedPetDetail";
+//	}
 }

@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,8 +15,8 @@
 	<div class="container my-5">
 		<div class="row g-4">
 			<!-- 필터 선택 영역 -->
-			<aside class="col-lg-3 bg-filter">
-				<div class="filter-card p-3 card-border">
+			<aside class="col-lg-3">
+				<div class="filter-card p-3 card-border bg-filter">
 					<h5 class="fw-bold mb-3 text-brown">필터</h5>
 					<form method="GET">
 						<div class="mb-3">
@@ -67,15 +68,37 @@
 			<div class="col-lg-9">
 				<h3 class="mb-4 fw-bold">입양 가능 펫 목록</h3>
 				<div class="row g-3">
-				<% 
-					for (int i = 0; i < 6; i++) {
-				%>
-						<jsp:include page="/WEB-INF/views/component/abandonedPetCard.jsp"></jsp:include>
-				<%
-					}
-				%>
+			        <c:forEach var="pet" items="${list}">
+			            <jsp:include page="/WEB-INF/views/component/abandonedPetCard.jsp">
+			                <jsp:param name="petId" value="${pet.abandonedPetId}" />
+			                <jsp:param name="kind" value="${pet.kind}" />
+			                <jsp:param name="profileImage" value="${pet.profileImage}" />
+			                <jsp:param name="weight" value="${pet.weight}" />
+			                <jsp:param name="gender" value="${pet.gender}" />
+			                <jsp:param name="age" value="${pet.age}" />
+			                <jsp:param name="address" value="${pet.address}" />
+			            </jsp:include>
+			        </c:forEach>
 				</div>
 			</div>
+			<!-- 페이징 버튼 -->
+			<nav aria-label="Page navigation">
+			    <ul class="pagination justify-content-center pagination-brown">
+			        <li class="page-item <c:if test='${currentPage == 1}'>disabled</c:if>">
+			            <a class="page-link text-brown" href="?page=${currentPage - 1}">이전</a>
+			        </li>
+			
+			        <c:forEach begin="1" end="${totalPages}" var="pageNum">
+			            <li class="page-item <c:if test='${pageNum == currentPage}'>active</c:if> text-brown">
+			                <a class="page-link" href="?page=${pageNum}">${pageNum}</a>
+			            </li>
+			        </c:forEach>
+			
+			        <li class="page-item <c:if test='${currentPage == totalPages}'>disabled</c:if>">
+			            <a class="page-link text-brown" href="?page=${currentPage + 1}">다음</a>
+			        </li>
+			    </ul>
+			</nav>
 		</div>
 	</div>
 	<!-- footer 영역 -->

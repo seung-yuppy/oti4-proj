@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,98 +76,98 @@
 <body>
 	<!-- 헤더 영역 -->
 	<%@ include file="/WEB-INF/views/component/header.jsp"%>
-	<div class="container main-container">
-		<div class="card shadow-sm">
-			<div class="card-body">
-				<div class="row g-4">
-					<div class="col-md-5">
-						<img
-							src="https://www.animal.go.kr/front/fileMng/imageView.do?f=/files/shelter/2025/08/202508121308544.jpg"
-							class="img-fluid rounded" 
-							alt="크림과 츄세이" 
-						/>
-					</div>
-
-					<div class="col-md-7">
-						<h2 class="fw-bold mb-3">믹스견</h2>
-						<div
-							class="d-flex justify-content-around text-center py-3 my-4 bg-light rounded profile-icon-group">
-							<div class="icon-item">
-								<div class="icon-container">
-									<img src="/bughunters/resources/image/ico_age.png" class="card-icon" /> 
-									<span class="icon-caption">나이 : </span>
-									<span>1세</span>
-								</div>
-							</div>
-							<div class="icon-item">
-								<div class="icon-container">
-									<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" /> 
-									<span class="icon-caption">성별 : </span>
-									<span>수컷</span>
-								</div>								
-							</div>
-							<div class="icon-item">
-								<div class="icon-container">
-									<img src="/bughunters/resources/image/ico_size.png" class="card-icon" /> 
-									<span class="icon-caption">몸무게 : </span>
-									<span>4.9kg</span>
-								</div>								
-
-							</div>
+	<c:if test="${!empty pet }">
+		<div class="container main-container">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<div class="row g-4">
+						<div class="col-md-5">
+							<img
+								src="${pet.profileImage}"
+								class="img-fluid rounded" 
+								alt="사진없음" 
+							/>
 						</div>
-
-						<div class="mb-4">
-							<h3 class="section-title">세부 정보</h3>
-							<p class="text-secondary">
-								이 강아지는 첫 만남에는 조금 낯을 가리지만, 마음을 열면 세상에서 가장 든든한 동반자가 됩니다. 
-								당신의 세심함과 이 아이의 순수함이 만나면 평생의 인연이 될 거예요.
-							</p>
-						</div>
-
-						<div class="mb-4">
-							<h3 class="section-title">건강 및 행동 특성</h3>
-							<div class="d-flex">
-								<div>
-									<div class="check-item">
-										<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 광견병 예방 접종 완료
+	
+						<div class="col-md-7">
+							<h2 class="fw-bold mb-3">${pet.kind}</h2>
+							<div
+								class="d-flex justify-content-around text-center py-3 my-4 bg-light rounded profile-icon-group">
+								<div class="icon-item">
+									<div class="icon-container">
+										<img src="/bughunters/resources/image/ico_age.png" class="card-icon" /> 
+										<span class="icon-caption">나이 : </span>
+										<span>${pet.age}년생</span>
 									</div>
 								</div>
-								<div>
-									<div class="fail-item">
-										<img src="/bughunters/resources/image/ico_fail.png" class="card-icon" /> 종합 건강 검진 완료
-									</div>
+								<div class="icon-item">
+									<div class="icon-container">
+										<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" /> 
+										<span class="icon-caption">성별 : </span>
+										<span>${pet.gender}</span>
+									</div>								
 								</div>
-								<div>
-									<div class="check-item">
-										<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 중성화 수술 완료
+								<div class="icon-item">
+									<div class="icon-container">
+										<img src="/bughunters/resources/image/ico_size.png" class="card-icon" /> 
+										<span class="icon-caption">몸무게 : </span>
+										<span>${pet.weight}kg</span>
+									</div>								
+	
+								</div>
+							</div>
+	
+							<div class="mb-4">
+								<h3 class="section-title">세부 정보</h3>
+								<p class="text-secondary">${pet.description}</p>
+							</div>
+	
+							<div class="mb-4">
+								<h3 class="section-title">건강 및 행동 특성</h3>
+								<div class="d-flex">
+									<div>
+										<div class="check-item">
+											<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 광견병 예방 접종 완료
+										</div>
+									</div>
+									<div>
+										<div class="fail-item">
+											<img src="/bughunters/resources/image/ico_fail.png" class="card-icon" /> 종합 건강 검진 완료
+										</div>
+									</div>
+									<div>
+										<div class="check-item">
+											<img src="/bughunters/resources/image/ico_success.png" class="card-icon" /> 중성화 수술 완료
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-
-						<div class="mb-4">
-							<h3 class="section-title">위치 및 연락처</h3>
-							<p class="fw-bold">발견 정보</p>
-							<p>
-								<img src="/bughunters/resources/image/ico_location.png" class="card-icon" /> 서울시 강남구 논현동
-							</p>
-							<p>
-								<img src="/bughunters/resources/image/ico_calendar.png" class="card-icon" /> 2024년 5월 15일
-							</p>
-
-							<p class="fw-bold mt-4">입양 문의</p>
-							<p>
-								<img src="/bughunters/resources/image/ico_homelocation.png" class="card-icon" /> 생명 존중 동물 보호소
-							</p>
-							<p>
-								<img src="/bughunters/resources/image/ico_tel.png" class="card-icon" /> 02-1234-5678
-							</p>
+	
+							<div class="mb-4">
+								<h3 class="section-title">위치 및 연락처</h3>
+								<p class="fw-bold">발견 정보</p>
+								<p>
+									<img src="/bughunters/resources/image/ico_location.png" class="card-icon" /> ${pet.address}
+								</p>
+								<p>
+									<img src="/bughunters/resources/image/ico_calendar.png" class="card-icon" /> 
+									<fmt:formatDate value="${pet.rescueDate}" pattern="yyyy년 MM월 dd일"/>
+								</p>
+	
+								<p class="fw-bold mt-4">입양 문의</p>
+								<p>
+									<img src="/bughunters/resources/image/ico_homelocation.png" class="card-icon" /> ${pet.careName}
+								</p>
+								<p>
+									<img src="/bughunters/resources/image/ico_tel.png" class="card-icon" /> ${pet.careTel}
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</c:if>
 	<!-- footer 영역 -->
 	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 
