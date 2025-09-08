@@ -38,7 +38,7 @@
 					</button>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link btn btn-brown" href="/miniproj/page/user/signUp.jsp">
+					<a class="nav-link btn btn-brown" href="/bughunters/signUp">
 						회원가입
 					</a>
 				</li>
