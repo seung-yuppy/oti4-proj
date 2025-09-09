@@ -94,42 +94,59 @@
 			        </c:forEach>
 				</div>
 			</div>
-			<!-- 페이징 버튼 -->
-			<nav aria-label="Page navigation">
-			    <ul class="pagination justify-content-center pagination-brown">
-			        <li class="page-item <c:if test='${currentPage == 1}'>disabled</c:if>">
-			            <a class="page-link text-brown" href="?page=${currentPage - 1}">이전</a>
-			        </li>
-			
-					<c:set var="pageGroupSize" value="5" />
-					<c:set var="halfPageGroupSize" value="${(pageGroupSize - 1) / 2}" />
-					
-					<c:set var="startPage" value="${currentPage - halfPageGroupSize}" />
-					
-					<c:if test="${startPage < 1}">
-					    <c:set var="startPage" value="1" />
-					</c:if>
-					
-					<c:set var="endPage" value="${startPage + pageGroupSize - 1}" />
-					
-					<c:if test="${endPage > totalPages}">
-					    <c:set var="endPage" value="${totalPages}" />
-					    <c:set var="startPage" value="${totalPages - pageGroupSize + 1}" />
-					    <c:if test="${startPage < 1}">
-					        <c:set var="startPage" value="1" />
-					    </c:if>
-					</c:if>
-			        <c:forEach begin="${startPage}" end="${endPage}" var="pageNum">
-			            <li class="page-item <c:if test='${pageNum == currentPage}'>active</c:if> text-brown">
-			                <a class="page-link" href="?page=${pageNum}">${pageNum}</a>
-			            </li>
-			        </c:forEach>
+			<!-- 전체 리스트 페이징 버튼 -->
+			<c:if test="${!empty list}">
+				<c:set var="searchParams" value="" />
+				<c:if test="${!empty param.location && param.location != 'all'}">
+					<c:set var="searchParams" value="${searchParams}&location=${param.location}" />
+				</c:if>
+				<c:if test="${!empty param.gender && param.gender != 'all'}">
+					<c:set var="searchParams" value="${searchParams}&gender=${param.gender}" />
+				</c:if>
+				<c:if test="${!empty param.size && param.size != 'all'}">
+					<c:set var="searchParams" value="${searchParams}&size=${param.size}" />
+				</c:if>
+				<c:if test="${!empty param.age && param.age != 'all'}">
+					<c:set var="searchParams" value="${searchParams}&age=${param.age}" />
+				</c:if>
 
-			        <li class="page-item <c:if test='${currentPage == totalPages}'>disabled</c:if>">
-			            <a class="page-link text-brown" href="?page=${currentPage + 1}">다음</a>
-			        </li>
-			    </ul>
-			</nav>
+				<c:set var="currentPageVar" value="${empty searchCurrentPage ? currentPage : searchCurrentPage}" />
+				<c:set var="totalPagesVar" value="${empty searchTotalPages ? totalPages : searchTotalPages}" />
+
+				<nav aria-label="Page navigation">
+				    <ul class="pagination justify-content-center pagination-brown">
+				        <li class="page-item <c:if test='${currentPageVar == 1}'>disabled</c:if>">
+				            <a class="page-link text-brown" href="?page=${currentPageVar - 1}${searchParams}">이전</a>
+				        </li>
+				
+						<c:set var="pageGroupSize" value="5" />
+						<c:set var="halfPageGroupSize" value="${(pageGroupSize - 1) / 2}" />
+						<c:set var="startPage" value="${currentPageVar - halfPageGroupSize}" />
+						<c:if test="${startPage < 1}">
+						    <c:set var="startPage" value="1" />
+						</c:if>
+						<c:set var="endPage" value="${startPage + pageGroupSize - 1}" />
+						
+						<c:if test="${endPage > totalPagesVar}">
+						    <c:set var="endPage" value="${totalPagesVar}" />
+						    <c:set var="startPage" value="${totalPagesVar - pageGroupSize + 1}" />
+						    <c:if test="${startPage < 1}">
+						        <c:set var="startPage" value="1" />
+						    </c:if>
+						</c:if>
+
+						<c:forEach begin="${startPage}" end="${endPage}" var="pageNum">
+				            <li class="page-item <c:if test='${pageNum == currentPageVar}'>active</c:if> text-brown">
+				                <a class="page-link" href="?page=${pageNum}${searchParams}">${pageNum}</a>
+				            </li>
+				        </c:forEach>
+
+				       	<li class="page-item <c:if test='${currentPageVar == totalPagesVar}'>disabled</c:if>">
+				            <a class="page-link text-brown" href="?page=${currentPageVar + 1}${searchParams}">다음</a>
+				       	</li>
+				    </ul>
+				</nav>
+			</c:if>
 		</div>
 	</div>
 	<!-- footer 영역 -->
