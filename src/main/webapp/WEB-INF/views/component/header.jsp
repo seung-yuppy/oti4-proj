@@ -25,8 +25,6 @@
 				<c:choose>
 					<%-- 로그인 상태: 세션에 LOGIN_USER가 있으면 --%>
 					<c:when test="${not empty sessionScope.LOGIN_USER}">
-						<li class="nav-item"><a class="nav-link btn btn-brown"
-							href="<c:url value='/mypage'/>">마이페이지</a></li>
 						<li class="nav-item">
 							<form method="post" action="<c:url value='/auth/logout'/>"
 								class="d-inline">
@@ -34,6 +32,8 @@
 									id="border-btn">로그아웃</button>
 							</form>
 						</li>
+						<li class="nav-item"><a class="nav-link btn btn-brown"
+							href="<c:url value='/mypage'/>">마이페이지</a></li>
 					</c:when>
 
 					<%-- 비로그인 상태 --%>
