@@ -7,6 +7,7 @@
 <title>Insert title here</title>
 <link href="/bughunters/resources/css/common.css" rel="stylesheet">
 <link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
+<!-- test -->
 </head>
 <style>
 .nav-pills {

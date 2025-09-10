@@ -11,10 +11,10 @@ public class HomeController {
 		return "home";
 	}
 	
-	@GetMapping("/matchingQuiz")
+/*	@GetMapping("/matchingQuiz")
 	public String matchingQuiz() {
 		return "matching/matchingQuiz"; 
-	}
+	}*/
 	
 	@GetMapping("/matchingResult")
 	public String matchingResult() {

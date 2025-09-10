@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.example.bughunters.dao.MatchingQuizDAO">
+
+	<!-- 카테고리 1개에 대해 랜덤 1문항 -->
+	<select id="selectRandomQuiz" parameterType="java.lang.String"
+		resultType="edu.example.bughunters.domain.MatchingQuizDTO">
+		SELECT
+		q.matching_quiz_id AS matchingQuizId,
+		q.quiz_question AS quizQuestion,
+		q.quiz_category AS quizCategory
+		FROM (
+		SELECT *
+		FROM Matching_Quiz
+		WHERE quiz_category = #{quizCategory}
+		ORDER BY DBMS_RANDOM.VALUE
+		) q
+		WHERE ROWNUM = 1
+	</select>
+
+	<!-- 선택된 quizIds에 대한 답변 전체 조회 -->
+	<select id="selectAnswersByQuizIds" parameterType="list"
+		resultType="edu.example.bughunters.domain.MatchingAnswerDTO">
+		SELECT
+		a.matching_answer_id AS matchingAnswerId,
+		a.quiz_answer AS quizAnswer,
+		a.matching_quiz_id AS matchingQuizId,
+		TO_CHAR(a.answer_weight) AS answerWeight
+		FROM Matching_Answer a
+		WHERE a.matching_quiz_id IN
+		<foreach collection="quizIds" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+		ORDER BY a.matching_quiz_id, a.matching_answer_id
+	</select>
+
+	<select id="getMatchingResultByUserId"
+		resultType="edu.example.bughunters.domain.MatchingResultDTO">
+		SELECT * FROM Matching_Abandoned_Pet_And_User
+		WHERE user_id = #{userId}
+	</select>
+
+	<insert id="insertMatchingResult"
+		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
+		INSERT INTO Matching_Abandoned_Pet_And_User (
+		activity_score, sociability_score, dependency_score,
+		trainability_score, aggression_score, user_id
+		)
+		VALUES (
+		#{activityScore}, #{sociabilityScore}, #{dependencyScore},
+		#{trainabilityScore}, #{aggressionScore}, #{userId}
+		)
+	</insert>
+
+	<update id="updateMatchingResult"
+		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
+		UPDATE Matching_Abandoned_Pet_And_User
+		SET
+		activity_score = #{activityScore},
+		sociability_score = #{sociabilityScore},
+		dependency_score = #{dependencyScore},
+		trainability_score = #{trainabilityScore},
+		aggression_score = #{aggressionScore}
+		WHERE user_id = #{userId}
+	</update>
+
+	<update id="updateIsQuiz" parameterType="int">
+		UPDATE "User"
+		SET is_quiz = 1
+		WHERE user_id = #{userId}
+	</update>
+
+
+
+</mapper>
+
+
+
