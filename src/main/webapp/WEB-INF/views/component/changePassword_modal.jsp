@@ -5,9 +5,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
-<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
+<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 <style>
 .modal-header {
 	display: flex !important;

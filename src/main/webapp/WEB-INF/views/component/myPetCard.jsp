@@ -3,9 +3,9 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>myPetCard</title>
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<title>myPetCard</title>	
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 		<div class="card">
@@ -21,27 +21,27 @@
 				</p>
 				<ul class="mypet-card-list">
 					<li class="card-item">
-						<img src="/miniproj/image/ico_individual.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
 						<span>믹스견</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_gender.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
 						<span>암컷</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_age.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
 						<span>2세</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_size.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
 						<span>1kg</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_color.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_color.png" class="card-icon" />
 						<span>크림색</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_temperature.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
 						<span>38°C</span>
 					</li>	
 
@@ -50,6 +50,6 @@
 			</div>
 		</div>
 	<!-- script 영역 -->
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

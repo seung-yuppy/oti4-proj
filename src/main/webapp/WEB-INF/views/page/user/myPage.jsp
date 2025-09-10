@@ -151,11 +151,11 @@ body {
 }
 
 .swiper-button-next {
-  background-image: url(/miniproj/image/ico_next.png);
+  background-image: url(/bughunters/resources/image/ico_next.png);
 }
 
 .swiper-button-prev {
-  background-image: url(/miniproj/image/ico_prev.png);
+  background-image: url(/bughunters/resources/image/ico_prev.png);
 }
 
 /* Swiper 기본 버튼 숨기기 (기본 화살표 제거) */
@@ -191,9 +191,6 @@ body {
 <!-- Bootstrap 5 -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
 <link href="/bughunters/resources/css/common.css" rel="stylesheet">
 <link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
@@ -396,6 +393,6 @@ body {
 		</div>
 	</div>
 	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

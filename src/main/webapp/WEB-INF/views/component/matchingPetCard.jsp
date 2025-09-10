@@ -4,8 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <title>abandonedPetCard</title>
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 <style>
 .col-lg-3 {
 	width: 100% !important;
@@ -75,6 +75,6 @@
 			});
 		});
 	</script>
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

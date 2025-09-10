@@ -6,11 +6,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>내 주변 펫 찾기</title>
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet"
 		href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-	<link href="/miniproj/resource/css/chatStyle.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/chatStyle.css" rel="stylesheet">
 	<style>
 	body {
 		background-color: #f8f9fa;
@@ -28,7 +28,7 @@
 	}
 	
 	.swiper-button-next {
-		background: url(/miniproj/image/ico_next.png) no-repeat;
+		background: url(/bughunters/resources/image/ico_next.png) no-repeat;
 		background-size: 50% auto;
 		background-position: center;
 		
@@ -38,7 +38,7 @@
 	}
 	
 	.swiper-button-prev {
-		background: url(/miniproj/image/ico_prev.png) no-repeat;
+		background: url(/bughunters/resources/image/ico_prev.png) no-repeat;
 		background-size: 50% auto;
 		background-position: center;
 		
@@ -89,7 +89,7 @@
 			</div>
 		</section>
 		<button type="button" class="card-like-btn p-absolute" id="chatToggleBtn">
-			<img src="/miniproj/image/ico_chatting.png" class="chat-btn">
+			<img src="/bughunters/resources/image/ico_chatting.png" class="chat-btn">
 		</button>
 
 		<!-- 채팅 리스트 -->
@@ -101,7 +101,7 @@
 			</div>
 
 			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/image/petDummy1.jpg" class="chat-avatar" >
+				<img src="${pageContext.request.contextPath}/resources/image/petDummy1.jpg" class="chat-avatar" >
 				<div class="chat-info">
 					<div class="chat-name">
 						보리 <span class="chat-time">10분 전</span>
@@ -111,7 +111,7 @@
 			</div>
 
 			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/image/petDummy2.jpg" class="chat-avatar" >
+				<img src="${pageContext.request.contextPath}/resources/image/petDummy2.jpg" class="chat-avatar" >
 				<div class="chat-info">
 					<div class="chat-name">
 						나비 <span class="chat-time">어제</span>
@@ -121,7 +121,7 @@
 			</div>
 
 			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/image/petDummy3.jpg" class="chat-avatar" >
+				<img src="${pageContext.request.contextPath}/resources/image/petDummy3.jpg" class="chat-avatar" >
 				<div class="chat-info">
 					<div class="chat-name">
 						토토 <span class="chat-time">2일 전</span>
@@ -131,7 +131,7 @@
 			</div>
 
 			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/image/petDummy4.jpg" class="chat-avatar" >
+				<img src="${pageContext.request.contextPath}/resources/image/petDummy4.jpg" class="chat-avatar" >
 				<div class="chat-info">
 					<div class="chat-name">
 						초코 <span class="chat-time">방금 전</span>
@@ -141,7 +141,7 @@
 			</div>
 
 			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/image/petDummy5.jpg" class="chat-avatar" >
+				<img src="${pageContext.request.contextPath}/resources/image/petDummy5.jpg" class="chat-avatar" >
 				<div class="chat-info">
 					<div class="chat-name">
 						구름이 <span class="chat-time">하루 전</span>
@@ -189,7 +189,7 @@
 	<!-- script 영역 -->
 	<script
 		src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c54be34b2a7cdb69fed5bbd7c59a90bb"></script>
 	<script>

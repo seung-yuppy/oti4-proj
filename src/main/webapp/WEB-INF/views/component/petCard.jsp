@@ -4,8 +4,8 @@
 <head>
 	<meta charset="UTF-8">
 	<title>petCard</title>
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<div class="col-lg-3">
@@ -22,19 +22,19 @@
 				</p>
 				<ul class="card-list">
 					<li class="card-item">
-						<img src="/miniproj/image/ico_individual.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
 						<span>믹스견</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_gender.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
 						<span>수컷</span>
 					</li>
 					<li class="card-item">
-						<img src="/miniproj/image/ico_age.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
 						<span>1세</span>
 					</li>	
 					<li class="card-item">
-						<img src="/miniproj/image/ico_location.png" class="card-icon" />
+						<img src="/bughunters/resources/image/ico_location.png" class="card-icon" />
 						<span>경상남도</span>
 					</li>	
 
@@ -46,6 +46,6 @@
 		</div>
 	</div>
 	<!-- script 영역 -->
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

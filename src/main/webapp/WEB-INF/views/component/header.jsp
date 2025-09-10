@@ -15,11 +15,11 @@
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav ms-auto header-list">
 				<li class="nav-item"><a class="nav-link gnb-item"
-					href="/bughunters/abandonedPet?page=1"> 인간과 펫 </a></li>
+					href="<c:url value='/abandonedPet?page=1'/>"> 인간과 펫 </a></li>
 				<li class="nav-item"><a class="nav-link gnb-item"
-					href="/bughunters/pet"> 펫과 펫 </a></li>
+					href="<c:url value='/pet'/>"> 펫과 펫 </a></li>
 				<li class="nav-item"><a class="nav-link gnb-item"
-					href="/bughunters/communityMain"> 커뮤니티 </a></li>
+					href="<c:url value='/communityMain'/>"> 커뮤니티 </a></li>
 			</ul>
 			<ul class="navbar-nav ms-auto header-list">
 				<c:choose>
@@ -44,8 +44,8 @@
 								data-bs-target="#loginModal">로그인</button>
 						</li>
 
-				<li class="nav-item"><a class="nav-link btn btn-brown"
-					href="<c:url value='/auth/signup'/>">회원가입</a></li>
+						<li class="nav-item"><a class="nav-link btn btn-brown"
+							href="<c:url value='/auth/signup'/>">회원가입</a></li>
 					</c:otherwise>
 				</c:choose>
 			</ul>
