@@ -59,6 +59,7 @@ public class UserService {
         if (!rawPassword.equals(user.getPassword())) return false; // 평문 저장
 
         session.setAttribute("LOGIN_USER", user.getUserName()); // 필요한 값 넣기
+        session.setAttribute("userId", user.getUserId());
         return true;
     }
 }

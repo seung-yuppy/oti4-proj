@@ -10,4 +10,7 @@ public interface PetDAO {
 	
 	// 반려동물 등록
 	public boolean signUpPet(@Param("pet") PetDTO dto, @Param("image") byte[] imageBytes);
+	
+	// 내 반려동물 가져오기
+	public PetDTO getMyPet(@Param("userId") int userId);
 }

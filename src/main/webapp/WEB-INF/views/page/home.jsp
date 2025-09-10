@@ -21,8 +21,11 @@
 				함께 합니다.</p>
 			<div class="mt-4 btn-container">
 				<a href="/bughunters/matchingQuiz" class="btn btn-secondary-brown">
-					운명의 동물 퀴즈 </a> <a href="/bughunters/matchingResult"
-					class="btn btn-brown"> 운명의 동물 보기 </a>
+					운명의 동물 퀴즈 
+				</a> 
+				<a href="/bughunters/matchingResult" class="btn btn-brown"> 
+					운명의 동물 보기 
+				</a>
 			</div>
 		</div>
 	</div>

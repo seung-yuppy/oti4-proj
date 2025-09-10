@@ -15,7 +15,6 @@ public class PetDTO {
 	private String kind;
 	private int age;
 	private String gender;
-//	private byte[] profileImage;
 	private double weight;
 	private String color;
 	private int meetingTemperature;
