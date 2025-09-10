@@ -1,8 +1,11 @@
 package edu.example.bughunters.controller;
 
+import java.security.SecureRandom;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,31 +21,36 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmailVerificationController {
 
-    private final EmailVerificationService mail; // 네가 만든 서비스 사용(메일 발송/코드 생성)
+	private final EmailVerificationService mail;
     private final Map<String, String> store = new ConcurrentHashMap<>();
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
-    @GetMapping("/ping")
-    public String ping() { return "ok"; }
-
     @PostMapping(value = "/send-code", produces = "application/json;charset=UTF-8")
-    public String send(@RequestParam String email) {
+    public String send(@RequestParam String email, HttpSession session) {
         String e = email == null ? "" : email.trim();
         if (!EMAIL.matcher(e).matches()) {
             return "{\"ok\":false,\"msg\":\"이메일 형식이 올바르지 않습니다.\"}";
         }
-        String code = mail.generateCode();
-        store.put(e, code);
-        mail.sendCode(e, code); // devMode=true면 실제 발송 대신 콘솔에 코드 출력
-        return "{\"ok\":true,\"msg\":\"인증코드를 발송했습니다.\"}";
+        try {
+            String code = mail.generateCode();
+            store.put(e, code);
+            mail.sendCode(e, code);                       // ★ 실제 발송
+            session.removeAttribute("VERIFIED_EMAIL");     // 새 코드 발송 시 초기화
+            return "{\"ok\":true,\"msg\":\"인증코드를 발송했습니다.\"}";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            String msg = ex.getClass().getSimpleName() + ": " + String.valueOf(ex.getMessage()).replace("\"","'");
+            return "{\"ok\":false,\"msg\":\"메일 발송 실패 - " + msg + "\"}";
+        }
     }
 
     @PostMapping(value = "/verify", produces = "application/json;charset=UTF-8")
-    public String verify(@RequestParam String email, @RequestParam String code) {
+    public String verify(@RequestParam String email, @RequestParam String code, HttpSession session) {
         String saved = store.get(email == null ? "" : email.trim());
         if (saved != null && saved.equals(code == null ? "" : code.trim())) {
-            store.remove(email);
-            return "{\"ok\":true}";
+            session.setAttribute("VERIFIED_EMAIL", email.trim());
+            store.remove(email.trim());
+            return "{\"ok\":true,\"msg\":\"인증 완료\"}";
         }
         return "{\"ok\":false,\"msg\":\"코드가 올바르지 않거나 만료되었습니다.\"}";
     }

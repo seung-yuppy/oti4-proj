@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -74,22 +75,32 @@ h2 {
 	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<div class="form-container">
 		<h2>회원가입</h2>
-		<form action="signupProcess.jsp" method="post"
-			onsubmit="return validatePasswords()">
+
+		<!-- ★ 서버 에러 표시 (회원가입 실패 시) -->
+		<c:if test="${not empty error}">
+			<div class="alert alert-danger mb-3">${error}</div>
+		</c:if>
+
+		<form action="${pageContext.request.contextPath}/auth/signup"
+			method="post" onsubmit="return validatePasswords()">
 
 			<div class="d-grid" id="emailVerifyBox">
 				<label class="form-label">사용자 이메일</label>
 				<!-- 이메일 -->
 				<input type="email" id="email" name="username"
 					class="form-control mb-2" placeholder="사용자 이메일을 입력하세요" required>
+					
 				<button type="button" class="btn btn-brown mb-2"
 					id="certificate_mail" data-bs-toggle="popover" title="인증메일 전송완료"
 					data-bs-content="메일함을 확인해주세요! 도착하지 않았다면 주소를 다시 한번 확인해 주세요.">인증메일
 					보내기</button>
+					
 				<!-- 인증코드 -->
 				<input type="text" id="code" name="code" class="form-control mb-2"
 					placeholder="이메일로 도착한 코드를 입력하세요" required>
+					
 				<button type="button" class="btn btn-brown mb-3" id="certificate">인증</button>
+				
 				<!-- 이메일 인증 완료 여부 (서버 제출용) -->
 				<input type="hidden" id="emailVerified" name="emailVerified"
 					value="N">
@@ -106,7 +117,7 @@ h2 {
 			</div>
 			<div class="mb-3">
 				<label class="form-label">비밀번호 확인</label> <input type="password"
-					id="confirmPassword" name="password" class="form-control"
+					id="confirmPassword" name="confirmPassword" class="form-control"
 					placeholder="비밀번호를 다시 한번 입력하세요" required>
 			</div>
 
@@ -125,10 +136,12 @@ h2 {
 						onclick="sample2_execDaumPostcode()">우편번호 찾기</button>
 				</div>
 				<input type="text" id="sample2_address" name="address"
-					class="form-control mb-2" placeholder="주소" readonly> <input
-					type="text" id="sample2_detailAddress" name="detailAddress"
-					class="form-control mb-2" placeholder="상세주소"> <input
-					type="text" id="sample2_extraAddress" name="extraAddress"
+					class="form-control mb-2" placeholder="주소" readonly> 
+					
+				<input type="text" id="sample2_detailAddress" name="detailAddress"
+					class="form-control mb-2" placeholder="상세주소"> 
+					
+				<input type="text" id="sample2_extraAddress" name="extraAddress"
 					class="form-control" placeholder="참고항목" readonly>
 			</div>
 

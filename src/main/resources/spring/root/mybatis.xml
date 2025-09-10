@@ -9,8 +9,10 @@
 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
-		<property name="configLocation" value="classpath:mybatis/mapper-config.xml" /> <!-- config 파일의 위치 -->
-		<property name="mapperLocations" value="classpath:mybatis/mapper/*.xml" /><!-- 매퍼들의 위치 -->
+		<property name="configLocation"
+			value="classpath:mybatis/mapper-config.xml" /> <!-- config 파일의 위치 -->
+		<property name="mapperLocations"
+			value="classpath*:mybatis/mapper/*.xml" /><!-- 매퍼들의 위치 -->
 	</bean>
 
 	<!-- @Mapper를 사용하기 위한 설정 : 관리객체를 생성시키는 역할, 마이바티스가 제공하는 마크업 랭기지를 써야함, 네임스페이스 
@@ -18,4 +20,14 @@
 	<mybatis-spring:scan
 		base-package="edu.example.bughunters.dao"
 		annotation="org.apache.ibatis.annotations.Mapper" />
+
+	<!-- 회원가입 관련 -->
+	<bean id="passwordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	<bean id="sqlSessionTemplate"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+
 </beans>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.example.bughunters.dao.UserDAO">
+
+<!-- 이메일로 단건 조회 -->
+  <select id="findByUserName" parameterType="string"
+          resultType="edu.example.bughunters.domain.UserDTO">
+    SELECT
+      USER_ID      AS userId,
+      USERNAME     AS userName,
+      PASSWORD     AS password,
+      NICKNAME     AS nickName,
+      ADDRESS      AS address,
+      CREATED_AT   AS "date",   <!-- DTO의 date 필드에 매핑 -->
+      ROLE         AS role,
+      IS_QUIZ      AS isQuiz,
+      IS_PET       AS isPet
+    FROM "User"
+    WHERE USERNAME = #{value}   <!-- 단일 String 파라미터는 #{value} -->
+  </select>
+  
+   <!-- 이메일 중복 체크 -->
+  <select id="existsByUserName" parameterType="string" resultType="int">
+    SELECT COUNT(1)
+    FROM "User"
+    WHERE USERNAME = #{value}
+  </select>
+  
+  <!-- 회원 가입 -->
+  <insert id="insertUser" parameterType="edu.example.bughunters.domain.UserDTO" useGeneratedKeys="false">
+    INSERT INTO "User" (
+      USERNAME, PASSWORD, NICKNAME, ADDRESS, ROLE, IS_QUIZ, IS_PET
+    ) VALUES (
+      #{userName},
+      #{password},
+      #{nickName},
+      #{address},
+      #{role},
+      #{isQuiz},
+      #{isPet}
+    )
+  </insert>
+</mapper>
