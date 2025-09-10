@@ -51,8 +51,8 @@ public class HomeController {
 //		return "abandonedPet/abandonedPetDetail";
 //	}
 	
-	@GetMapping("/signUp")
-	public String signUp() {
-		return "user/signUp";
-	}
+//	@GetMapping("/signUp")
+//	public String signUp() {
+//		return "user/signUp";
+//	}
 }

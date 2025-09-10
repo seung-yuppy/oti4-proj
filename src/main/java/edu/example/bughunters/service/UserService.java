@@ -55,9 +55,8 @@ public class UserService {
     public boolean login(String email, String rawPassword, HttpSession session) {
         UserDTO user = userDAO.findByUserName(email);
         if (user == null) return false;
-        // BCrypt 사용 중이라면:
-        if (!encoder.matches(rawPassword, user.getPassword())) return false;
-        // 평문 저장이라면: if (!rawPassword.equals(user.getPassword())) return false;
+        //if (!encoder.matches(rawPassword, user.getPassword())) return false; // BCrypt 암호 저장
+        if (!rawPassword.equals(user.getPassword())) return false; // 평문 저장
 
         session.setAttribute("LOGIN_USER", user.getUserName()); // 필요한 값 넣기
         return true;

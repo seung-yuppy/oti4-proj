@@ -85,4 +85,11 @@ public class UserController {
 		}
 		return "redirect:/home";
 	}
+	
+	@PostMapping("/logout")
+	public String logout(HttpSession session, RedirectAttributes rttr) {
+	    session.invalidate();
+	    rttr.addFlashAttribute("msg", "로그아웃되었습니다.");
+	    return "redirect:/home";
+	}
 }
