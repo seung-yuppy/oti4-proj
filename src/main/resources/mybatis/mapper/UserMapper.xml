@@ -11,24 +11,42 @@
 		PASSWORD AS password,
 		NICKNAME AS nickName,
 		ADDRESS AS address,
-		CREATED_AT AS "date",   <!-- DTO의 date 필드에 매핑 -->
+		CREATED_AT AS "date",   <!-- DTO의 
+			date 필드에 매핑 -->
 		ROLE AS role,
 		IS_QUIZ AS isQuiz,
 		IS_PET AS isPet
 		FROM "User"
-		WHERE USERNAME = #{value}   <!-- 단일 String 파라미터는 #{value} -->
+		WHERE
+		USERNAME = #{value}   <!-- 단일 String 파라미터는 #{value} -->
 	</select>
 
 	<!-- 이메일 중복 체크 -->
 	<select id="existsByUserName" parameterType="string"
 		resultType="int">
-		<!-- SELECT COUNT(1)
-		FROM "User"
-		WHERE USERNAME = #{value} -->
+		<!-- SELECT COUNT(1) FROM "User" WHERE USERNAME = #{value} -->
 
 		SELECT CASE WHEN COUNT(1) > 0 THEN 1 ELSE 0 END
 		FROM "User"
-		WHERE LOWER(TRIM(USERNAME)) = LOWER(TRIM(#{value}))
+		WHERE
+		LOWER(TRIM(USERNAME)) = LOWER(TRIM(#{value}))
+	</select>
+
+	<!-- userId로 단건 조회 프로필 불러오기-->
+	<select id="findByUserId" parameterType="int"
+		resultType="edu.example.bughunters.domain.UserDTO">
+		SELECT
+		USER_ID AS userId,
+		USERNAME AS userName,
+		PASSWORD AS password,
+		NICKNAME AS nickName,
+		ADDRESS AS address,
+		CREATED_AT AS "date",
+		ROLE AS role,
+		IS_QUIZ AS isQuiz,
+		IS_PET AS isPet
+		FROM "User"
+		WHERE USER_ID = #{value}
 	</select>
 
 	<!-- 회원 가입 -->
@@ -36,7 +54,8 @@
 		parameterType="edu.example.bughunters.domain.UserDTO"
 		useGeneratedKeys="false">
 		INSERT INTO "User" (
-		USERNAME, PASSWORD, NICKNAME, ADDRESS, ROLE, IS_QUIZ, IS_PET
+		USERNAME, PASSWORD, NICKNAME,
+		ADDRESS, ROLE, IS_QUIZ, IS_PET
 		) VALUES (
 		#{userName},
 		#{password},

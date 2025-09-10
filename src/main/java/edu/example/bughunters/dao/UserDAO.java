@@ -24,4 +24,8 @@ public class UserDAO {
     public int insertUser(UserDTO dto) {
         return session.insert(NS + "insertUser", dto);
     }
+    
+    public UserDTO findByUserId(int userId) {
+        return session.selectOne(NS + "findByUserId", userId);
+    }
 }

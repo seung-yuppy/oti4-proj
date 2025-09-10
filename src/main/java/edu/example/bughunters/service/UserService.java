@@ -62,4 +62,23 @@ public class UserService {
         session.setAttribute("userId", user.getUserId());
         return true;
     }
+    
+    // 펫과펫 페이지 프로필 불러오기
+    @Transactional(readOnly = true)
+    public UserDTO getProfileByUserId(Integer userId) {
+        if (userId == null) return null;
+        return userDAO.findByUserId(userId);
+    }
+    
+    @Transactional(readOnly = true)
+    public boolean verify(String email, String rawPassword) {
+        UserDTO user = userDAO.findByUserName(email);
+        if (user == null) return false;
+
+        // 지금은 평문 저장이라 문자열 비교
+        return rawPassword.equals(user.getPassword());
+
+        // 나중에 해시 저장으로 바꾸면 ↓ 한 줄로 변경
+        // return encoder.matches(rawPassword, user.getPassword());
+    }
 }

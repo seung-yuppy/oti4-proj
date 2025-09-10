@@ -1,5 +1,8 @@
 package edu.example.bughunters.controller;
 
+import java.util.Collections;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -8,18 +11,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import edu.example.bughunters.domain.UserDTO;
 import edu.example.bughunters.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/auth")
 public class UserController {
 	private final UserService userService;
 
-	@GetMapping("/signup")
+	@GetMapping("/auth/signup")
 	public String signUpForm() {
 		return "user/signUp"; // /WEB-INF/views/user/SignUp.jsp
 	}
@@ -31,7 +35,7 @@ public class UserController {
 		return c.getClass().getSimpleName() + ": " + String.valueOf(c.getMessage());
 	}
 
-	@PostMapping("/signup")
+	@PostMapping("/auth/signup")
 	public String signUp(HttpSession session, @RequestParam("username") String email,
 			@RequestParam("password") String password,
 			@RequestParam(value = "nickname", required = false) String nickName,
@@ -73,7 +77,7 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/login")
+	@PostMapping("/auth/login")
 	public String login(HttpSession session, @RequestParam("username") String email,
 			@RequestParam("password") String password, RedirectAttributes rttr) {
 		boolean ok = userService.login(email, password, session);
@@ -86,10 +90,36 @@ public class UserController {
 		return "redirect:/home";
 	}
 	
-	@PostMapping("/logout")
+	@PostMapping("/auth/logout")
 	public String logout(HttpSession session, RedirectAttributes rttr) {
 	    session.invalidate();
 	    rttr.addFlashAttribute("msg", "로그아웃되었습니다.");
 	    return "redirect:/home";
+	}
+	
+	// 프로필 수정하기
+	@RequestMapping(value = "/user/me", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public UserDTO me(HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        if (userId == null) {
+            System.out.println("로그인이 필요합니다.");
+            return new UserDTO(); // 비로그인 시 빈 객체
+        }
+        return userService.getProfileByUserId(userId);
+    }
+	
+	// 프로필 수정 비밀번호 검증
+	@PostMapping(value = "/api/login-check", produces = "application/json; charset=UTF-8")
+	@ResponseBody
+	public Map<String, Object> loginCheck(@RequestParam("username") String email,
+	                                      @RequestParam("password") String password) {
+	    boolean ok = userService.verify(email, password);
+	    return Collections.singletonMap("ok", ok);
+	}
+	
+	@GetMapping("/user/editProfile")
+	public String editProfileForm() {
+	    return "user/editProfile";
 	}
 }
