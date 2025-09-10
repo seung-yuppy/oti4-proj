@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>새로운 반려동물 등록</title>
-	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
-    
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #fdfaf6;
@@ -66,9 +65,8 @@
 	<%@ include file="/WEB-INF/views/component/header.jsp" %> 
     <div class="form-container">
         <h2 class="text-center mb-5 fw-bold text-brown">새로운 반려동물 등록</h2>
-        <form action="#" method="post">
-            <div class="card shadow-sm mb-4">
-            
+		<form method="post" enctype="multipart/form-data" action="/bughunters/pet/register">
+            <div class="card shadow-sm mb-4"> 
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-3 text-brown">
                         <h5 class="card-title mb-0 fw-bold">반려동물 정보</h5>
@@ -77,26 +75,12 @@
                     
                     <div class="mb-3">
                         <label for="petName" class="form-label">반려동물 이름</label>
-                        <input type="text" class="form-control" id="petName" name="petName" placeholder="반려동물의 이름을 입력하세요" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">종류</label>
-                        <div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="species" id="speciesDog" value="dog">
-                                <label class="form-check-label" for="speciesDog">강아지</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="species" id="speciesCat" value="cat">
-                                <label class="form-check-label" for="speciesCat">고양이</label>
-                            </div>
-                        </div>
+                        <input type="text" class="form-control" id="petName" name="name" placeholder="반려동물의 이름을 입력하세요" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="petBreedSelect" class="form-label">품종</label>
-                        <select class="form-select" id="petBreedSelect" name="petBreedSelect">
+                        <select class="form-select" id="petBreedSelect" name="kind">
                             <option selected>품종을 선택하세요</option>
                             <option value="리트리버">리트리버</option>
                             <option value="푸들">푸들</option>
@@ -105,15 +89,20 @@
                             <option value="other">직접 입력</option>
                         </select>
                     </div>
-
-                    <div class="mb-3 d-none" id="customBreedWrapper">
+                    
+<!--                     <div class="mb-3 d-none" id="customBreedWrapper">
                         <label for="customPetBreed" class="form-label">사용자 지정 품종</label>
                         <input type="text" class="form-control" id="customPetBreed" name="customPetBreed" placeholder="없는 품종인 경우 직접 입력하세요">
+                    </div> -->
+                    
+					<div class="mb-3">
+                        <label for="petWeight" class="form-label">나이(년도)</label>
+                        <input type="number" class="form-control" id="petAge" name="age" placeholder="예: 2025년생" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="petColor" class="form-label">털 색상</label>
-                        <select class="form-select" id="petColor" name="petColor">
+                        <select class="form-select" id="petColor" name="color">
                             <option selected>털 색상을 선택하세요</option>
                             <option value="흰색">흰색</option>
                             <option value="갈색">갈색</option>
@@ -126,11 +115,11 @@
                         <label class="form-label">성별</label>
                         <div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" id="genderMale" value="male">
+                                <input class="form-check-input" type="radio" name="gender" id="genderMale" value="M">
                                 <label class="form-check-label" for="genderMale">수컷</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="female">
+                                <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="F">
                                 <label class="form-check-label" for="genderFemale">암컷</label>
                             </div>
                         </div>
@@ -138,12 +127,12 @@
 
                     <div class="mb-3">
                         <label for="petWeight" class="form-label">체중 (kg)</label>
-                        <input type="number" class="form-control" id="petWeight" name="petWeight" placeholder="예: 5.2" step="0.1" required>
+                        <input type="number" class="form-control" id="petWeight" name="weight" placeholder="예: 5.2" step="0.1" required>
                     </div>
                     
                     <div class="mb-3">
                         <label for="petWeight" class="form-label">자기 소개</label>
-                        <input type="text" class="form-control" id="petIntro" name="petIntro" placeholder="동물을 한 줄로 소개해주세요." required>
+                        <input type="text" class="form-control" id="petIntro" name="intro" placeholder="동물을 한 줄로 소개해주세요." required>
                     </div>
                 </div>
             </div>
@@ -155,7 +144,7 @@
                     </div>
                     <p class="card-subtitle mb-4 text-muted">반려동물의 귀여운 사진을 업로드해주세요.</p>
 					
-					<input type="file" id="fileInput" name="petPhoto" accept="image/*" class="d-none">
+					<input type="file" id="fileInput" name="profileImage" accept="image/*" class="d-none">
 
 					<div id="dropbox" class="file-upload-wrapper">
 						<div id="initial-message">
@@ -182,7 +171,7 @@
 	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 	
 	<!-- script 영역 -->
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
     <script>
     		// 견종 사용자 지정 시 input text 보여주기
 	    document.querySelector('#petBreedSelect').addEventListener('change', function() {
@@ -202,7 +191,7 @@
 	
 		// '사진 선택' 버튼 클릭 시 숨겨진 file input 클릭
 		fileSelectBtn.addEventListener('click', () => {
-			fileInput.click();
+			fileInput.click(); 
 		});
 	
 		// file input에 파일이 선택되었을 때(파일 탐색기)
@@ -263,7 +252,7 @@
 			}
 			
 			// 파일 읽기 시작
-			reader.readAsDataURL(file);
+			reader.readAsDataURL(file); 
 		}
     </script>
 </body>

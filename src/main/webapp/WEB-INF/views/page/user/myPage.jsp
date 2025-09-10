@@ -265,8 +265,9 @@ body {
 				</div>
 
 				<div class="text-center mt-3">
-					<a class="btn btn-brown" href="/miniproj/page/pet/petSignUp.jsp">내
-						반려동물 등록하기</a>
+					<a class="btn btn-brown" href="/bughunters/pet/signup">
+						내 반려동물 등록하기
+					</a>
 				</div>
 			</div>
 

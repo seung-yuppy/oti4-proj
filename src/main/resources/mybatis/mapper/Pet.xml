@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.example.bughunters.dao.PetDAO">
+	<insert id="signUpPet">
+        INSERT INTO Pet (name, kind, age, gender, profile_image, color, weight, intro, user_id)
+        VALUES (
+            #{pet.name},
+            #{pet.kind},
+            #{pet.age},
+            #{pet.gender},
+            #{image, jdbcType=BLOB},
+            #{pet.color},
+            #{pet.weight},
+            #{pet.intro},
+            #{pet.userId}
+        )
+	</insert>
+</mapper>

@@ -9,5 +9,6 @@
 	<typeAliases>
 		<typeAlias alias="AbandonedPetDTO" type="edu.example.bughunters.domain.AbandonedPetDTO"/>
 		<typeAlias alias="UserDTO" type="edu.example.bughunters.domain.UserDTO"/>
+		<typeAlias alias="PetDTO" type="edu.example.bughunters.domain.PetDTO" />
 	</typeAliases>
 </configuration>

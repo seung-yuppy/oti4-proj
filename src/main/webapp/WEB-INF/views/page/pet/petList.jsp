@@ -3,62 +3,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>내 주변 펫 찾기</title>
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-<link href="/miniproj/resource/css/chatStyle.css" rel="stylesheet">
-<style>
-body {
-	background-color: #f8f9fa;
-}
-
-.search-card {
-	max-width: 1320px;
-	margin: 0 auto;
-	height: 410px;
-}
-
-.rounded {
-	width: 100%;
-	height: 410px;
-}
-
-.swiper-button-next {
-	background: url(/miniproj/image/ico_next.png) no-repeat;
-	background-size: 50% auto;
-	background-position: center;
-	&::
-	after
-	{
-	display
-	:
-	none;
-}
-
-}
-.swiper-button-prev {
-	background: url(/miniproj/image/ico_prev.png) no-repeat;
-	background-size: 50% auto;
-	background-position: center;
-	&::
-	after
-	{
-	display
-	:
-	none;
-}
-}
-</style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>내 주변 펫 찾기</title>
+	<link href="/miniproj/resource/css/common.css" rel="stylesheet">
+	<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+	<link href="/miniproj/resource/css/chatStyle.css" rel="stylesheet">
+	<style>
+	body {
+		background-color: #f8f9fa;
+	}
+	
+	.search-card {
+		max-width: 1320px;
+		margin: 0 auto;
+		height: 410px;
+	}
+	
+	.rounded {
+		width: 100%;
+		height: 410px;
+	}
+	
+	.swiper-button-next {
+		background: url(/miniproj/image/ico_next.png) no-repeat;
+		background-size: 50% auto;
+		background-position: center;
+		
+		&::after{
+			display:none;
+		}
+	}
+	
+	.swiper-button-prev {
+		background: url(/miniproj/image/ico_prev.png) no-repeat;
+		background-size: 50% auto;
+		background-position: center;
+		
+		&::after {
+			display:none;
+		}
+	}
+	</style>
 </head>
 <body>
 	<!-- 헤더 영역 -->
 	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<!-- 지도 영역 -->
-	<main class="container my-5 p-relative">
+	<div class="container my-5 p-relative">
 		<section class="search-card">
 			<div class="card p-4 shadow-sm card-border">
 				<h3 class="text-center mb-4 fw-bold">내 주변 펫 찾기 🗺️</h3>
@@ -189,9 +183,7 @@ body {
 				<button>➤</button>
 			</div>
 		</div>
-
-
-	</main>
+	</div>
 	<!-- 헤더 영역 -->
 	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 	<!-- script 영역 -->

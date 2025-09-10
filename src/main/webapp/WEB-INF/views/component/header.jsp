@@ -16,7 +16,7 @@
 					</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link gnb-item" href="/bughunters/petList">
+					<a class="nav-link gnb-item" href="/bughunters/pet">
 						펫과 펫
 					</a>
 				</li>
@@ -28,7 +28,7 @@
 			</ul>
 			<ul class="navbar-nav ms-auto header-list">
 				<li class="nav-item">
-					<a class="nav-link btn btn-brown" href="/miniproj/page/user/myPage.jsp">
+					<a class="nav-link btn btn-brown" href="/bughunters/mypage">
 						마이페이지
 					</a>
 				</li>
