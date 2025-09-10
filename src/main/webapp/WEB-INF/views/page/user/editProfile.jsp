@@ -52,10 +52,9 @@ body {
 </head>
 <body>
 	<%@ include file="/WEB-INF/views/component/header.jsp"%>
-	<form action="..." method="post">
+	<form action="<c:url value='/user/profile/update'/>" method="post">
 		<div class="d-grid form-container">
 			<h2 class="mb-4 fw-bold">회원정보 수정</h2>
-
 
 			<div class="mb-3">
 				<label class="form-label">비밀번호</label> <input type="password"
@@ -116,7 +115,7 @@ body {
 	</div>
 
 	<!-- Scripts -->
-	<script src="/miniproj/resource/js/bootstrap.bundle.min.js"></script>
+	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 	<script
 		src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 	<script>
