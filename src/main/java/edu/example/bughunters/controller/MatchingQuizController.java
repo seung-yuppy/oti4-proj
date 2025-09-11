@@ -108,6 +108,25 @@ public class MatchingQuizController {
 
         return "matching/matchingResult";
     }
+    
+    @GetMapping("/result_after")
+    public String showResultPage_after(Model model, HttpSession session, RedirectAttributes rttr) {
+        Long userId = toLong(session.getAttribute("userId"));
+        if (userId == null) {
+            rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
+            rttr.addFlashAttribute("openLogin", true);
+            return "redirect:/home";
+        }
+
+        boolean finished = quizService.hasFinishedQuiz(userId);
+        model.addAttribute("finishedQuiz", finished);
+
+        if (finished) {
+            List<AbandonedPetDTO> topPets = quizService.loadTop4Cards(userId);
+            model.addAttribute("topPets", topPets);
+        }
+        return "matching/matchingResult_after";
+    }
 
     // ----- helpers -----
     public static class AnswerItem {

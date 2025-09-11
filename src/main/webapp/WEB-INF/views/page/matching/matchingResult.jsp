@@ -6,13 +6,11 @@
 <meta charset="UTF-8">
 <title>운명의 발바닥 결과</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
-
-
+<!-- 폰트 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@200..900&display=swap" rel="stylesheet">
 <style>
-
-	
 
 	@keyframes heartbeat {
     	0%, 100% {
@@ -61,7 +59,7 @@
 	/* 카드 애니메이션 */
 	.card.card-animate {
 	animation: spinIn 0.6s ease;
-	width: 100%; /* Bootstrap col이 처리함 */
+	width: 100%; 
 	max-width: 100%;
 	height: auto !important;
 	min-height: unset !important;
@@ -100,49 +98,62 @@
   	 margin: 30px 0; 
  	 font-size: 3rem;
     }
+   
+   .round_fontw {
+	 font-family: "Chiron GoRound TC", sans-serif;
+	 font-optical-sizing: auto;
+ 	 font-weight: <weight>;
+ 	 font-style: normal;
+	}
+   
 </style>
 </head>
 <body>
 <!-- 로딩 오버레이 -->
 	<div id="loading-overlay">
 		<div class="spinner-border" role="status"></div>
-		<p class="fs-5 mt-3">당신의 운명의 동물을 찾는 중입니다...</p>
+		<p class="fs-5 mt-3 round_font">당신의 운명의 동물을 찾는 중입니다...</p>
 	</div>
 
 	<!-- 페이지 본문 -->
 	<%@ include file="../../component/header.jsp"%>
-	<h1 class="text-center fw-bold">당신의 운명의 발바닥</h1>
+	<h1 class="text-center fw-bold round_font">당신의 운명의 발바닥</h1>
+	<p class="text-center fw-bold text-muted">퀴즈를 여러번 진행할수록 결과는 더욱 더 정교해집니다 !</p>
+	<br>
+	<a href="/bughunters/matchingQuiz"
+		class="d-block h5 text-center fw-bold text-muted text-decoration-none gnb-item round_font">
+		퀴즈 다시 풀러가기 </a>
 	<div class="container my-5" id="result-section" style="display: none;">
-  <c:choose>
-    <c:when test="${finishedQuiz}">
-      <div class="row g-4">
-        <c:forEach var="p" items="${topPets}">
-          <div class="col-6 col-md-3 d-flex justify-content-center">
-            <div class="card card-animate">
-              <jsp:include page="/WEB-INF/views/component/matchingPetCard.jsp">
-                <jsp:param name="profileImage" value="${p.profileImage}"/>
-                <jsp:param name="kind"         value="${p.kind}"/>
-                <jsp:param name="weight"       value="${p.weight}"/>
-                <jsp:param name="gender"       value="${p.gender}"/>
-                <jsp:param name="age"          value="${p.age}"/>
-                <jsp:param name="address"      value="${p.address}"/>
-                <jsp:param name="description"  value="${p.description}"/>
-                <jsp:param name="petId"        value="${p.abandonedPetId}"/>
-              </jsp:include>
-            </div>
-          </div>
-        </c:forEach>
-      </div>
-    </c:when>
+		<c:choose>
+			<c:when test="${finishedQuiz}">
+				<div class="row g-4">
+					<c:forEach var="p" items="${topPets}">
+						<div class="col-6 col-md-3 d-flex justify-content-center">
+							<div class="card card-animate">
+								<jsp:include page="/WEB-INF/views/component/matchingPetCard.jsp">
+									<jsp:param name="profileImage" value="${p.profileImage}" />
+									<jsp:param name="kind" value="${p.kind}" />
+									<jsp:param name="weight" value="${p.weight}" />
+									<jsp:param name="gender" value="${p.gender}" />
+									<jsp:param name="age" value="${p.age}" />
+									<jsp:param name="address" value="${p.address}" />
+									<jsp:param name="description" value="${p.description}" />
+									<jsp:param name="petId" value="${p.abandonedPetId}" />
+								</jsp:include>
+							</div>
+						</div>
+					</c:forEach>
+				</div>
+			</c:when>
 
-    <c:otherwise>
-      <div class="alert alert-warning text-center my-5">
-        운명의 동물을 찾기 전에 <strong>매칭 테스트</strong>를 완료해주세요!<br/>
-        <a class="btn btn-primary mt-3" href="/matchingQuiz">테스트 시작하기</a>
-      </div>
-    </c:otherwise>
-  </c:choose>
-</div>
+			<c:otherwise>
+				<div class="alert alert-warning text-center my-5">
+					운명의 동물을 찾기 전에 <strong>매칭 테스트</strong>를 완료해주세요!<br /> <a
+						class="btn btn-primary mt-3" href="/matchingQuiz">테스트 시작하기</a>
+				</div>
+			</c:otherwise>
+		</c:choose>
+	</div>
 
 
 	<%@ include file="../../component/footer.jsp"%>

@@ -23,7 +23,7 @@
 				<a href="/bughunters/matchingQuiz" class="btn btn-secondary-brown">
 					운명의 동물 퀴즈 
 				</a> 
-				<a href="/bughunters/matchingResult" class="btn btn-brown"> 
+				<a href="/bughunters/matchingQuiz/result_after" class="btn btn-brown"> 
 					운명의 동물 보기 
 				</a>
 			</div>

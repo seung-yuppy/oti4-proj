@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 
-@Mapper   // ← 중요 (또는 아래 2)에서 MapperScan을 쓰면 @Mapper 생략 가능)
+@Mapper   
 public interface MatchingQuizDAO {
     MatchingQuizDTO selectRandomQuiz(@Param("quizCategory") String quizCategory);
     List<MatchingAnswerDTO> selectAnswersByQuizIds(@Param("quizIds") List<Long> quizIds);

@@ -16,10 +16,10 @@ public class HomeController {
 		return "matching/matchingQuiz"; 
 	}*/
 	
-	@GetMapping("/matchingResult")
+	/*@GetMapping("/matchingResult")
 	public String matchingResult() {
 		return "matching/matchingResult_after";
-	}
+	}*/
 	
 	@GetMapping("/communityMain")
 	public String communityMain() {

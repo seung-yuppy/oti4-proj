@@ -22,7 +22,8 @@
 		sociability_score AS sociabilityScore,
 		dependency_score AS dependencyScore,
 		trainability_score AS trainabilityScore,
-		aggression_score AS aggressionScore
+		aggression_score AS aggressionScore,
+		quiz_count as countNum
 		FROM Matching_Abandoned_Pet_And_User
 		WHERE user_id = #{userId}
 	</select>
@@ -32,14 +33,15 @@
 		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
 		INSERT INTO Matching_Abandoned_Pet_And_User (
 		activity_score, sociability_score, dependency_score,
-		trainability_score, aggression_score, user_id
+		trainability_score, aggression_score, user_id, quiz_count
 		) VALUES (
 		ROUND(#{activityScore}, 2),
 		ROUND(#{sociabilityScore}, 2),
 		ROUND(#{dependencyScore}, 2),
 		ROUND(#{trainabilityScore}, 2),
 		ROUND(#{aggressionScore}, 2),
-		#{userId}
+		#{userId},
+		NVL(#{countNum},1)
 		)
 	</insert>
 
@@ -51,7 +53,8 @@
 		sociability_score = ROUND(#{sociabilityScore}, 2),
 		dependency_score = ROUND(#{dependencyScore}, 2),
 		trainability_score = ROUND(#{trainabilityScore}, 2),
-		aggression_score = ROUND(#{aggressionScore}, 2)
+		aggression_score = ROUND(#{aggressionScore}, 2),
+		quiz_count = #{countNum}
 		WHERE user_id = #{userId}
 	</update>
 

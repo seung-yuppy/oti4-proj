@@ -59,39 +59,44 @@ public class MatchingQuizService {
         Integer isQuiz = resultDao.selectIsQuizByUserId(curr.getUserId());
         if (isQuiz == null) throw new IllegalStateException("유저 없음");
 
-        if (isQuiz == 0) {
+        MatchingResultDTO prev = resultDao.selectResultByUserId(curr.getUserId());
+        
+        if (prev == null) {
+            curr.setCountNum(1);
             resultDao.insertResult(curr);
-            resultDao.setIsQuizTrue(curr.getUserId());
-        } else {
-            MatchingResultDTO prev = resultDao.selectResultByUserId(curr.getUserId());
-            if (prev == null) {
-                resultDao.insertResult(curr);
-            } else {
-                MatchingResultDTO avg = averageResults(prev, curr); 
-                resultDao.updateResultByUserId(avg);
+            if (isQuiz == 0) {
+                resultDao.setIsQuizTrue(curr.getUserId());
             }
+            return;
         }
-    }
 
-    /** 이전 결과와 현재 결과를 0.5/0.5 평균으로 합산 */
+        MatchingResultDTO avg = averageResults(prev, curr);
+        resultDao.updateResultByUserId(avg);
+    }
+   
+
+    /** 이전 결과와 현재 결과를 평균으로 합산 */
     public MatchingResultDTO averageResults(MatchingResultDTO prev, MatchingResultDTO curr) {
         MatchingResultDTO r = new MatchingResultDTO();
         r.setUserId(curr.getUserId());
-
+        int n = prev.getCountNum();
+        
         double pA = nz(prev.getActivityScore()),     cA = nz(curr.getActivityScore());
         double pS = nz(prev.getSociabilityScore()),  cS = nz(curr.getSociabilityScore());
         double pD = nz(prev.getDependencyScore()),   cD = nz(curr.getDependencyScore());
         double pT = nz(prev.getTrainabilityScore()), cT = nz(curr.getTrainabilityScore());
         double pG = nz(prev.getAggressionScore()),   cG = nz(curr.getAggressionScore());
 
-        r.setActivityScore(     (pA*0.5) + (cA*0.5));
-        r.setSociabilityScore(  (pS*0.5) + (cS*0.5));
-        r.setDependencyScore(   (pD*0.5) + (cD*0.5));
-        r.setTrainabilityScore( (pT*0.5) + (cT*0.5));
-        r.setAggressionScore(   (pG*0.5) + (cG*0.5));
+        r.setActivityScore(     ((pA*n)+cA)/(n+1));
+        r.setSociabilityScore(  ((pS*n)+cS)/(n+1));
+        r.setDependencyScore(   ((pD*n)+cD)/(n+1));
+        r.setTrainabilityScore( ((pT*n)+cT)/(n+1));
+        r.setAggressionScore(   ((pG*n)+cG)/(n+1));
+        
+        r.setCountNum(n + 1);
         return r;
     }
-
+    
     @Transactional
     public List<Long> matchAndSaveTop4(Long userId) {
         MatchingResultDTO u = resultDao.selectResultByUserId(userId);
@@ -148,7 +153,7 @@ public class MatchingQuizService {
     public List<AbandonedPetDTO> loadTop4Cards(Long userId) {
         List<AbandonedPetDTO> list = resultDao.selectTop4PetsForCard(userId); // rank_no 순서로 4개
         if (list == null) return Collections.emptyList();
-        list.forEach(this::processAbandonedPetData); // ← 화면표시용 후처리
+        list.forEach(this::processAbandonedPetData);
         return list;
     }
     
