@@ -118,8 +118,37 @@ public class UserController {
 	    return Collections.singletonMap("ok", ok);
 	}
 	
+	
+	// 화면 열기
 	@GetMapping("/user/editProfile")
-	public String editProfileForm() {
-	    return "user/editProfile";
+	public String editProfileForm(HttpSession session) {
+	    // 로그인 체크 원하면 여기서 session 검사 후 redirect
+	    return "user/editProfile"; // /WEB-INF/views/page/user/editProfile.jsp
+	}
+
+	// 저장 처리
+	@PostMapping("/user/profile/update")
+	public String updateProfile(
+	        @RequestParam String password,
+	        @RequestParam String nickname,
+	        @RequestParam(required=false) String postcode,
+	        @RequestParam(required=false) String address,
+	        @RequestParam(required=false) String detailAddress,
+	        @RequestParam(required=false) String extraAddress,
+	        @RequestParam String hasPet,
+	        HttpSession session,
+	        RedirectAttributes rttr) {
+
+	    Integer userId = (Integer) session.getAttribute("userId");
+	    if (userId == null) {
+	        rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+	        return "redirect:/home";
+	    }
+
+	    // TODO: 비밀번호 검증(앞서 만든 /api/login-check로 이미 확인했다면 생략 가능)
+	    // TODO: 서비스 호출로 사용자 정보 업데이트
+
+	    rttr.addFlashAttribute("msg", "회원정보가 수정되었습니다.");
+	    return "redirect:/mypage";
 	}
 }
