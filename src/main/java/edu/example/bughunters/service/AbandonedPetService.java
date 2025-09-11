@@ -104,4 +104,28 @@ public class AbandonedPetService {
         List<AbandonedPetDTO> list = dao.listSearch(location, gender, size, age, start, end);
         return processAbandonedPetList(list);
     }
+    
+    // 버튼 누르면 좋아요 -> 좋아요 취소 / 좋아요 취소 -> 좋아요
+    public Map<String, Object> toggleLike(int userId, int abandonedPetId) {
+        Map<String, Object> response = new HashMap<>();
+        boolean isCurrentlyLiked = dao.isLikePet(userId, abandonedPetId) > 0;
+
+        if (isCurrentlyLiked) {
+            boolean result = dao.likeCancel(userId, abandonedPetId);
+            response.put("isLiked", !result);
+        } else {
+            boolean result = dao.likePet(userId, abandonedPetId);
+            response.put("isLiked", result);
+        }
+        return response;
+    }
+    
+    // 유기동물 좋아요 체크
+    public boolean isLikePet(int userId, int abandonedPetId) {
+    	int result = dao.isLikePet(userId, abandonedPetId);
+    	if (result == 0)
+    		return false;
+    	else
+    		return true;
+    }
 }

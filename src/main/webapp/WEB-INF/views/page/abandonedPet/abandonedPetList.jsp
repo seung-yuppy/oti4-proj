@@ -18,7 +18,7 @@
 			<aside class="col-lg-3">
 				<div class="filter-card p-3 card-border bg-filter">
 					<h5 class="fw-bold mb-3 text-brown">필터</h5>
-					<form method="GET" action="/bughunters/abandonedPet/search">
+					<form method="GET" action="/bughunters/abandonedpet/search">
 						<div class="mb-3">
 							<label for="location" class="form-label text-brown">보호소 위치</label> 
 							<select class="form-control" name="location">
@@ -153,5 +153,42 @@
 	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
 	<!-- script 영역 -->
 	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
+	<script>
+	
+	    async function renderHeartButton(button) {
+	        const id = button.dataset.petId;
+	        try {
+	            const res = await fetch(`/bughunters/abandonedpet/islike/\${id}`, {
+	                method: "GET"
+	            });
+	            const data = await res.json();
+	
+	            if (data.isLike) {
+	                button.innerHTML = `<img src="/bughunters/resources/image/ico_fullheart.png" class="heart card-icon">`;
+	            } else {
+	                button.innerHTML = `<img src="/bughunters/resources/image/ico_mbti.png" class="card-icon">`;
+	            }
+	        } catch (error) {
+	            console.error('Failed to fetch like status:', error);
+	        }
+	    }
+	    
+	    document.addEventListener("DOMContentLoaded", () => {
+			document.querySelectorAll(".card-like-btn").forEach(async(button) => { 
+				await renderHeartButton(button);
+				button.addEventListener("click", async (event) => {
+					const petId = event.currentTarget.dataset.petId;
+					const res = await fetch(`/bughunters/abandonedpet/like/\${petId}`, {
+						method: "POST"
+					});
+	                if (res.ok) {
+	                    await renderHeartButton(button);
+	                } else {
+	                    console.error('Failed to toggle like status.');
+	                }
+				});
+			});
+	    });
+	</script>
 </body>
 </html>

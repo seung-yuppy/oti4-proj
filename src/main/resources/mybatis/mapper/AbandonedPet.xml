@@ -219,4 +219,20 @@
         )
         WHERE rnum BETWEEN #{start} AND #{end}
 	</select>
+	<insert id="likePet">
+		INSERT INTO Like_Abandoned_Pet
+		(user_id, abandoned_pet_id)
+		VALUES (#{userId}, #{abandonedPetId})
+	</insert>
+	<delete id="likeCancel">
+		DELETE FROM Like_Abandoned_Pet
+		WHERE user_id = #{userId}
+		AND abandoned_pet_id = #{abandonedPetId}
+	</delete>
+	<select id="isLikePet">
+		SELECT count(*)
+		FROM Like_Abandoned_Pet
+		WHERE user_id = #{userId}
+		AND abandoned_pet_id = #{abandonedPetId}
+	</select>
 </mapper>

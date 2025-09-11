@@ -31,7 +31,7 @@ public class PetController {
 	}
 
 	@GetMapping("/pet/signup")
-	public String p3(HttpSession session) {
+	public String p3() {
 		return "pet/petSignUp";
 	}
 

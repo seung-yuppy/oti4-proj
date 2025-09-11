@@ -15,8 +15,7 @@
 			<div class="card-body">
 				<div class="d-flex-space">
 					<h5 class="card-title fw-bold text-medium">${param.kind}</h5>
-					<button type="button" class="card-like-btn">
-						<img src="/bughunters/resources/image/ico_mbti.png" class="card-icon">
+					<button type="button" class="card-like-btn" data-pet-id="${param.petId}">
 					</button>
 				</div>
 				<ul class="card-list">
@@ -37,7 +36,7 @@
 						<span>${param.address}</span>
 					</li>
 				</ul>
-				<a href="/bughunters/abandonedPet/${param.petId}" class="btn btn-gray d-block">자세히 보기</a>
+				<a href="/bughunters/abandonedpet/${param.petId}" class="btn btn-gray d-block">자세히 보기</a>
 			</div>
 		</div>
 	</div>

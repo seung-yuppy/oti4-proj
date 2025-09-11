@@ -36,4 +36,12 @@ public interface AbandonedPetDAO {
 			@Param("end") int end
 			);
 	
+	// 유기동물 좋아요
+	public boolean likePet(@Param("userId") int userId, @Param("abandonedPetId") int abandonedPetId);
+	
+	// 유기동물 좋아요 취소
+	public boolean likeCancel(@Param("userId") int userId, @Param("abandonedPetId") int abandonedPetId);
+	
+	// 유기동물-회원 좋아요 확인
+	public int isLikePet(@Param("userId") int userId, @Param("abandonedPetId") int abandonedPetId);
 }
