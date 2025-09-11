@@ -2,6 +2,7 @@ package edu.example.bughunters.service;
 
 import edu.example.bughunters.dao.MatchingQuizDAO;
 import edu.example.bughunters.dao.MatchingResultDAO;
+import edu.example.bughunters.domain.AbandonedPetDTO;
 import edu.example.bughunters.domain.MatchingAnswerDTO;
 import edu.example.bughunters.domain.MatchingQuizDTO;
 import edu.example.bughunters.domain.MatchingResultDTO;
@@ -132,6 +133,40 @@ public class MatchingQuizService {
             resultDao.insertTopMatch(userId, i + 1, topIds.get(i));
         }
         return topIds;
+        
+        
+    }
+    //퀴즈 완료 여부 
+    @Transactional(readOnly = true)
+    public boolean hasFinishedQuiz(Long userId) {
+        Integer v = resultDao.selectIsQuizByUserId(userId);
+        return v != null && v == 1;
+    }
+
+    //카드 데이터 로드
+    @Transactional(readOnly = true)
+    public List<AbandonedPetDTO> loadTop4Cards(Long userId) {
+        List<AbandonedPetDTO> list = resultDao.selectTop4PetsForCard(userId); // rank_no 순서로 4개
+        if (list == null) return Collections.emptyList();
+        list.forEach(this::processAbandonedPetData); // ← 화면표시용 후처리
+        return list;
+    }
+    
+    public void processAbandonedPetData(AbandonedPetDTO dto) {
+        // 견종
+        if (dto.getKind() != null && dto.getKind().contains("빠삐용")) {
+            dto.setKind("빠삐용");
+        }
+        // 성별
+        if (dto.getGender() != null) {
+            if ("M".equals(dto.getGender())) dto.setGender("수컷");
+            else if ("F".equals(dto.getGender())) dto.setGender("암컷");
+            else dto.setGender("미상");
+        }
+        // 위치
+        if (dto.getAddress() != null && dto.getAddress().contains("전북")) {
+            dto.setAddress("전라북도");
+        }
     }
 
     /** null이면 0.0 */

@@ -1,6 +1,8 @@
 package edu.example.bughunters.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import edu.example.bughunters.domain.AbandonedPetDTO;
 import edu.example.bughunters.domain.MatchingQuizDTO;
 import edu.example.bughunters.domain.MatchingResultDTO;
 import edu.example.bughunters.service.MatchingQuizService;
@@ -35,6 +37,25 @@ public class MatchingQuizController {
         String questionsJson = objectMapper.writeValueAsString(quizzes);
         model.addAttribute("questionsJson", questionsJson);
         return "matching/matchingQuiz";
+    }
+    
+    @GetMapping("/result")
+    public String showResultPage(Model model, HttpSession session, RedirectAttributes rttr) {
+        Long userId = toLong(session.getAttribute("userId"));
+        if (userId == null) {
+            rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
+            rttr.addFlashAttribute("openLogin", true);
+            return "redirect:/home";
+        }
+
+        boolean finished = quizService.hasFinishedQuiz(userId);
+        model.addAttribute("finishedQuiz", finished);
+
+        if (finished) {
+            List<AbandonedPetDTO> topPets = quizService.loadTop4Cards(userId);
+            model.addAttribute("topPets", topPets);
+        }
+        return "matching/matchingResult";
     }
 
     @PostMapping("/result")
@@ -75,14 +96,16 @@ public class MatchingQuizController {
             }
         }
 
-
         // 저장 + TOP-4 매칭 저장 
         quizService.saveQuizResult(dto);
-        List<Long> topPetIds = quizService.matchAndSaveTop4(userId);
+        quizService.matchAndSaveTop4(userId);
 
         // 뷰 
+        List<AbandonedPetDTO> topPets = quizService.loadTop4Cards(userId);
         model.addAttribute("result", dto);
-        model.addAttribute("topPetIds", topPetIds);                
+        model.addAttribute("topPets", topPets);
+        model.addAttribute("finishedQuiz", true);
+
         return "matching/matchingResult";
     }
 
@@ -101,4 +124,6 @@ public class MatchingQuizController {
         if (v instanceof String) try { return Long.parseLong((String) v); } catch (Exception ignored) {}
         return null;
     }
+    
+    
 }

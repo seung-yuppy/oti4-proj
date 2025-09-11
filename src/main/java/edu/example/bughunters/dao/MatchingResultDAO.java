@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import edu.example.bughunters.domain.AbandonedPetDTO;
 import edu.example.bughunters.domain.MatchingResultDTO;
 import edu.example.bughunters.domain.PetWeightDTO;
 
@@ -36,5 +37,11 @@ public interface MatchingResultDAO {
 
  // 조회용(뷰에서 쓰기)
  List<Long> selectTopPetIdsByUserId(Long userId);
+ 
+//로그인/퀴즈 여부 체크(이미 구현했다면 생략)
+ Integer selectIsQuizByUsername(@Param("username") String username);
+
+ // 옵션 A: 조인 1방으로 카드들 받기
+ List<AbandonedPetDTO> selectTop4PetsForCard(@Param("userId") Long userId);
 }
 

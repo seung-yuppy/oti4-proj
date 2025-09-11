@@ -5,90 +5,125 @@
 
 <mapper namespace="edu.example.bughunters.dao.MatchingResultDAO">
 
-  <!-- 유저 is_quiz -->
-  <select id="selectIsQuizByUserId" parameterType="long" resultType="int">
-    SELECT is_quiz
-    FROM "User"
-    WHERE user_id = #{userId}
-  </select>
+	<!-- 유저 is_quiz -->
+	<select id="selectIsQuizByUserId" parameterType="long"
+		resultType="int">
+		SELECT is_quiz
+		FROM "User"
+		WHERE user_id = #{userId}
+	</select>
 
-  <!-- 결과 조회 -->
-  <select id="selectResultByUserId" parameterType="long"
-          resultType="edu.example.bughunters.domain.MatchingResultDTO">
-    SELECT
-      user_id            AS userId,
-      activity_score     AS activityScore,
-      sociability_score  AS sociabilityScore,
-      dependency_score   AS dependencyScore,
-      trainability_score AS trainabilityScore,
-      aggression_score   AS aggressionScore
-    FROM Matching_Abandoned_Pet_And_User
-    WHERE user_id = #{userId}
-  </select>
+	<!-- 결과 조회 -->
+	<select id="selectResultByUserId" parameterType="long"
+		resultType="edu.example.bughunters.domain.MatchingResultDTO">
+		SELECT
+		user_id AS userId,
+		activity_score AS activityScore,
+		sociability_score AS sociabilityScore,
+		dependency_score AS dependencyScore,
+		trainability_score AS trainabilityScore,
+		aggression_score AS aggressionScore
+		FROM Matching_Abandoned_Pet_And_User
+		WHERE user_id = #{userId}
+	</select>
 
-  <!-- 첫 저장 (INSERT) -->
-  <insert id="insertResult" parameterType="edu.example.bughunters.domain.MatchingResultDTO">
-    INSERT INTO Matching_Abandoned_Pet_And_User (
-      activity_score, sociability_score, dependency_score,
-      trainability_score, aggression_score, user_id
-    ) VALUES (
-      ROUND(#{activityScore}, 2),
-      ROUND(#{sociabilityScore}, 2),
-      ROUND(#{dependencyScore}, 2),
-      ROUND(#{trainabilityScore}, 2),
-      ROUND(#{aggressionScore}, 2),
-      #{userId}
-    )
-  </insert>
+	<!-- 첫 저장 (INSERT) -->
+	<insert id="insertResult"
+		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
+		INSERT INTO Matching_Abandoned_Pet_And_User (
+		activity_score, sociability_score, dependency_score,
+		trainability_score, aggression_score, user_id
+		) VALUES (
+		ROUND(#{activityScore}, 2),
+		ROUND(#{sociabilityScore}, 2),
+		ROUND(#{dependencyScore}, 2),
+		ROUND(#{trainabilityScore}, 2),
+		ROUND(#{aggressionScore}, 2),
+		#{userId}
+		)
+	</insert>
 
-  <!-- 평균 계산된 값으로 UPDATE -->
-  <update id="updateResultByUserId" parameterType="edu.example.bughunters.domain.MatchingResultDTO">
-    UPDATE Matching_Abandoned_Pet_And_User
-       SET activity_score     = ROUND(#{activityScore}, 2),
-           sociability_score  = ROUND(#{sociabilityScore}, 2),
-           dependency_score   = ROUND(#{dependencyScore}, 2),
-           trainability_score = ROUND(#{trainabilityScore}, 2),
-           aggression_score   = ROUND(#{aggressionScore}, 2)
-     WHERE user_id = #{userId}
-  </update>
+	<!-- 평균 계산된 값으로 UPDATE -->
+	<update id="updateResultByUserId"
+		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
+		UPDATE Matching_Abandoned_Pet_And_User
+		SET activity_score = ROUND(#{activityScore}, 2),
+		sociability_score = ROUND(#{sociabilityScore}, 2),
+		dependency_score = ROUND(#{dependencyScore}, 2),
+		trainability_score = ROUND(#{trainabilityScore}, 2),
+		aggression_score = ROUND(#{aggressionScore}, 2)
+		WHERE user_id = #{userId}
+	</update>
 
-  <!-- is_quiz = 1 -->
-  <update id="setIsQuizTrue" parameterType="long">
-    UPDATE "User"
-       SET is_quiz = 1
-     WHERE user_id = #{userId}
-  </update>
+	<!-- is_quiz = 1 -->
+	<update id="setIsQuizTrue" parameterType="long">
+		UPDATE "User"
+		SET is_quiz = 1
+		WHERE user_id = #{userId}
+	</update>
 
-  <!-- 후보(보호견) 가중치 전부 가져오기 -->
-  <select id="selectAllPetWeights" resultType="edu.example.bughunters.domain.PetWeightDTO">
-    SELECT
-      apw.abandoned_pet_id     AS abandonedPetId,
-      apw.activity_weight      AS activityWeight,
-      apw.sociability_weight   AS sociabilityWeight,
-      apw.dependency_weight    AS dependencyWeight,
-      apw.trainability_weight  AS trainabilityWeight,
-      apw.aggression_weight    AS aggressionWeight,
-      apw.description          AS description
-    FROM Abandoned_Pet_Weight apw
-    WHERE apw.abandoned_pet_id IS NOT NULL
-  </select>
+	<!-- 후보(보호견) 가중치 전부 가져오기 -->
+	<select id="selectAllPetWeights"
+		resultType="edu.example.bughunters.domain.PetWeightDTO">
+		SELECT
+		apw.abandoned_pet_id AS abandonedPetId,
+		apw.activity_weight AS activityWeight,
+		apw.sociability_weight AS sociabilityWeight,
+		apw.dependency_weight AS dependencyWeight,
+		apw.trainability_weight AS trainabilityWeight,
+		apw.aggression_weight AS aggressionWeight,
+		apw.description AS description
+		FROM Abandoned_Pet_Weight apw
+		WHERE apw.abandoned_pet_id IS NOT NULL
+	</select>
 
-  <!-- 유저별 TOP-4 초기화/삽입/조회 -->
-  <delete id="deleteTopMatchesByUserId" parameterType="long">
-    DELETE FROM Matching_User_Top_Pets
-    WHERE user_id = #{userId}
-  </delete>
+	<!-- 유저별 TOP-4 초기화/삽입/조회 -->
+	<delete id="deleteTopMatchesByUserId" parameterType="long">
+		DELETE FROM Matching_User_Top_Pets
+		WHERE user_id = #{userId}
+	</delete>
 
-  <insert id="insertTopMatch">
-    INSERT INTO Matching_User_Top_Pets(user_id, rank_no, abandoned_pet_id)
-    VALUES (#{userId}, #{rankNo}, #{petId})
-  </insert>
+	<insert id="insertTopMatch">
+		INSERT INTO Matching_User_Top_Pets(user_id, rank_no, abandoned_pet_id)
+		VALUES (#{userId}, #{rankNo}, #{petId})
+	</insert>
 
-  <select id="selectTopPetIdsByUserId" parameterType="long" resultType="long">
-    SELECT abandoned_pet_id
-    FROM Matching_User_Top_Pets
-    WHERE user_id = #{userId}
-    ORDER BY rank_no ASC
-  </select>
+	<select id="selectTopPetIdsByUserId" parameterType="long"
+		resultType="long">
+		SELECT abandoned_pet_id
+		FROM Matching_User_Top_Pets
+		WHERE user_id = #{userId}
+		ORDER BY rank_no ASC
+	</select>
+
+	<!-- 결과 카드에 필요한 컬럼만 뽑기 -->
+	<select id="selectTop4PetsForCard"
+        parameterType="long" resultType="edu.example.bughunters.domain.AbandonedPetDTO">
+  SELECT
+    ap.abandoned_pet_id AS abandonedPetId,
+    ap.kind             AS kind,
+    ap.age              AS age,
+    ap.weight           AS weight,
+    ap.address          AS address,
+    ap.description      AS description,
+    ap.profile_image    AS profileImage,
+    ap.gender           AS gender
+  FROM Matching_User_Top_Pets mup
+  JOIN Abandoned_Pet ap
+    ON ap.abandoned_pet_id = mup.abandoned_pet_id
+  WHERE mup.user_id = #{userId}
+  ORDER BY mup.rank_no
+  FETCH FIRST 4 ROWS ONLY
+</select>
+
+
+	<!-- 로그인한 사용자 이름으로 is_quiz 조회 -->
+	<select id="selectIsQuizByUsername" parameterType="string"
+		resultType="int">
+		SELECT is_quiz
+		FROM Member
+		WHERE username = #{username}
+	</select>
+
 
 </mapper>
