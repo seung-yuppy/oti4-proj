@@ -28,4 +28,8 @@ public class UserDAO {
     public UserDTO findByUserId(int userId) {
         return session.selectOne(NS + "findByUserId", userId);
     }
+    
+    public int updateUserProfile(UserDTO dto) {
+        return session.update(NS + "updateUserProfile", dto);
+    }
 }

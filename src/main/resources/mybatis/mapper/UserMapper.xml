@@ -32,13 +32,14 @@
 		LOWER(TRIM(USERNAME)) = LOWER(TRIM(#{value}))
 	</select>
 
-	<!-- userId로 단건 조회 프로필 불러오기-->
+	<!-- userId로 단건 조회 프로필 불러오기 -->
 	<select id="findByUserId" parameterType="int"
 		resultType="edu.example.bughunters.domain.UserDTO">
 		SELECT
 		USER_ID AS userId,
 		USERNAME AS userName,
-		PASSWORD AS password,
+		PASSWORD AS
+		password,
 		NICKNAME AS nickName,
 		ADDRESS AS address,
 		CREATED_AT AS "date",
@@ -46,7 +47,8 @@
 		IS_QUIZ AS isQuiz,
 		IS_PET AS isPet
 		FROM "User"
-		WHERE USER_ID = #{value}
+		WHERE USER_ID
+		= #{value}
 	</select>
 
 	<!-- 회원 가입 -->
@@ -66,4 +68,25 @@
 		#{isPet}
 		)
 	</insert>
+
+	<!-- 회원 정보 수정 (동적) -->
+	<update id="updateUserProfile"
+		parameterType="edu.example.bughunters.domain.UserDTO">
+		UPDATE "User"
+		<set>
+			<if test="password != null and password != ''">
+				PASSWORD = #{password},
+			</if>
+			<if test="nickName != null and nickName != ''">
+				NICKNAME = #{nickName},
+			</if>
+			<if test="address != null and address != ''">
+				ADDRESS = #{address},
+			</if>
+			<if test="isPet != null">
+				IS_PET = #{isPet},
+			</if>
+		</set>
+		WHERE USER_ID = #{userId}
+	</update>
 </mapper>

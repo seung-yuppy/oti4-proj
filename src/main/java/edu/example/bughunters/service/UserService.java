@@ -81,4 +81,35 @@ public class UserService {
         // 나중에 해시 저장으로 바꾸면 ↓ 한 줄로 변경
         // return encoder.matches(rawPassword, user.getPassword());
     }
+    
+    @Transactional
+    public boolean updateProfile(Integer userId,
+                                 String newPassword,
+                                 String nickName,
+                                 String baseAddr, String detailAddr, String extraAddr,
+                                 String hasPet) {
+
+        if (userId == null) return false;
+
+        StringBuilder addr = new StringBuilder();
+        if (StringUtils.hasText(baseAddr))    addr.append(baseAddr);
+        if (StringUtils.hasText(detailAddr))  addr.append(" ").append(detailAddr);
+        if (StringUtils.hasText(extraAddr))   addr.append(" ").append(extraAddr);
+
+        Integer isPet = ("yes".equalsIgnoreCase(hasPet) || "1".equals(hasPet)) ? 1 : 0;
+
+        UserDTO dto = new UserDTO();
+        dto.setUserId(userId);
+        if (StringUtils.hasText(newPassword)) {
+            // 현재 평문저장:
+            dto.setPassword(newPassword);
+            // 해시로 바꾸면: dto.setPassword(encoder.encode(newPassword));
+        }
+        dto.setNickName(nickName);
+        dto.setAddress(addr.toString().trim());
+        dto.setIsPet(isPet);
+
+        int n = userDAO.updateUserProfile(dto);
+        return n == 1;
+    }
 }

@@ -145,10 +145,13 @@ public class UserController {
 	        return "redirect:/home";
 	    }
 
-	    // TODO: 비밀번호 검증(앞서 만든 /api/login-check로 이미 확인했다면 생략 가능)
-	    // TODO: 서비스 호출로 사용자 정보 업데이트
+	    boolean ok = userService.updateProfile(
+	            userId, password, nickname,
+	            address, detailAddress, extraAddress,
+	            hasPet
+	    );
 
-	    rttr.addFlashAttribute("msg", "회원정보가 수정되었습니다.");
+	    rttr.addFlashAttribute("msg", ok ? "회원정보가 수정되었습니다." : "수정에 실패했습니다.");
 	    return "redirect:/mypage";
 	}
 }
