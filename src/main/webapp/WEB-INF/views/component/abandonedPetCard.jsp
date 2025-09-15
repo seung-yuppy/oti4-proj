@@ -3,10 +3,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>abandonedPetCard</title>
-<link href="/bughunters/resources/css/common.css" rel="stylesheet">
-<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
+	<meta charset="UTF-8">
+	<title>abandonedPetCard</title>
+	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 	<div class="col-lg-3">

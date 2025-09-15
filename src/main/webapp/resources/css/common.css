@@ -237,6 +237,18 @@ p {
 	height: 30px;
 }
 
+/* 마이 페이지 */
+.wrapper-like-pet {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 10px;
+}
+
+.like-pet-item {
+	list-style-type: none;
+	max-width: 350px;
+}
+
 /* (선택) 네비게이션 버튼 색상을 갈색 테마에 맞춤 */
 .swiper-button-next,
 .swiper-button-prev {

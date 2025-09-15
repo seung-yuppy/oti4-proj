@@ -3,15 +3,16 @@ package edu.example.bughunters.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.example.bughunters.dao.PetDAO;
-import edu.example.bughunters.domain.AbandonedPetDTO;
 import edu.example.bughunters.domain.PetDTO;
 import edu.example.bughunters.domain.PetVO;
+import edu.example.bughunters.domain.WalkingVO;
 
 @Service
 public class PetService {
@@ -19,6 +20,16 @@ public class PetService {
 	PetDAO dao;
 	
 	public void processPetData(PetVO vo) {
+		// 성별
+		if (vo.getGender() != null) {
+			if (vo.getGender().equals("M"))
+				vo.setGender("수컷");
+			else
+				vo.setGender("암컷");
+		}
+	}
+	
+	public void processWalkingData(WalkingVO vo) {
 		// 성별
 		if (vo.getGender() != null) {
 			if (vo.getGender().equals("M"))
@@ -88,5 +99,32 @@ public class PetService {
 		}
 		return vo;
 	}
+	
+	public boolean registerWalking(int petId, String location) {
+		try {
+			dao.registerWalking(petId, location);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
+	
+	public List<WalkingVO> walkingList() {
+		List<WalkingVO> list = dao.getWalkingList();
+		
+		for (WalkingVO vo : list) {
+			if (vo != null && vo.getProfileImage() != null) {
+				// 1. byte[]를 Base64 문자열로 인코딩
+				String base64Image = Base64.getEncoder().encodeToString(vo.getProfileImage());
 
+				// 2. PetVO에 인코딩된 문자열을 저장할 필드 추가
+				vo.setProfileImage(null); // 바이트 배열은 필요 없으니 null로 설정
+				vo.setBase64ProfileImage(base64Image);
+				
+				processWalkingData(vo);
+			}
+		}
+		
+		return list;
+	}
 }

@@ -22,4 +22,26 @@
 		FROM Pet
 		WHERE user_id = #{userId}
 	</select>
+	
+	<insert id="registerWalking">
+		INSERT INTO Walking
+		(location, pet_id)
+		VALUES (
+			#{location},
+			#{petId}
+		)
+	</insert>
+	
+	<select id="getWalkingList">
+		SELECT *
+		FROM Walking
+		INNER JOIN Pet
+		USING (pet_id)
+	</select>
+	
+	<select id="">
+		SELECT COUNT(*)
+		FROM Walking
+		WHERE pet_id = #{petId}
+	</select>
 </mapper>

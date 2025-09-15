@@ -8,9 +8,7 @@
 	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-		<div class="card" id="mypet-card">
-
-		</div>
+		<div class="card" id="mypet-card"></div>
 	<!-- script 영역 -->
 	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 </body>

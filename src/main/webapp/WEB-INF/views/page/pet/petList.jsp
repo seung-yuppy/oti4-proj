@@ -87,15 +87,9 @@ body {
 		</section>
 		<!-- 펫 리스트 영역 -->
 		<section class="mt-10 pt-4">
-			<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-				<%
-					for (int i = 0; i < 5; i++) {
-				%>
-				<jsp:include page="/WEB-INF/views/component/petCard.jsp"></jsp:include>
-				<%
-					}
-				%>
-			</div>
+			<ul class="wrapper-like-pet" id="pet-list-wrapper">
+				
+			</ul>
 		</section>
 
 		<button type="button" class="card-like-btn p-absolute"
@@ -137,120 +131,7 @@ body {
 	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c54be34b2a7cdb69fed5bbd7c59a90bb"></script>
-	<script>
-		/* 스와이퍼 */
-		const swiper = new Swiper('.swiper-container', {
-		    // 옵션
-		    loop: true, // 무한 루프
-	
-		    // 네비게이션 버튼
-		    navigation: {
-		        nextEl: '.swiper-button-next',
-		        prevEl: '.swiper-button-prev',
-		    },
-		});
-		
-		// mypet 정보 가져오기
-		const cardbox = document.querySelector("#mypet-card");
-		
-		 document.addEventListener("DOMContentLoaded", async (event) => {
-			const res = await fetch(`/bughunters/pet/mypet`, {
-				method: "GET",
-			});
-			const data = await res.json();
-			cardbox.innerHTML = `
-				<img 
-					src="data:image/jpeg;base64,\${data.base64ProfileImage}"
-					class="card-img-top card-image"
-					alt="반려동물 사진없음" 
-				>
-				<div class="card-body">
-					<h5 class="card-title fw-bold margin-t">\${data.name}</h5>
-					<p class="card-text text-muted text-small">
-						\${data.intro}
-					</p>
-					<ul class="mypet-card-list">
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
-							<span>\${data.kind}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
-							<span>\${data.gender}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
-							<span>\${data.age}년생</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
-							<span>\${data.weight}kg</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_color.png" class="card-icon" />
-							<span>\${data.color}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
-							<span>\${data.meetingTemperature}°C</span>
-						</li>
-					</ul>
-					<a href="#" class="btn btn-gray d-block">산책 게시판 등록하기</a>
-				</div>		
-			`; 
-		 });
-		 
-		/* 카카오 맵 */
-		var mapContainer = document.getElementById('map'); // 지도를 표시할 div
-		var defaultPosition = new kakao.maps.LatLng(37.566826, 126.9786567); // 기본 위치 (서울시청)
-	
-		var mapOption = {
-		    center: defaultPosition, // 지도의 기본 중심좌표
-		    level: 3,
-		};
-	
-		// 지도를 생성합니다
-		var map = new kakao.maps.Map(mapContainer, mapOption);
-	
-		// HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
-		if (navigator.geolocation) {
-		    // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-		    navigator.geolocation.getCurrentPosition(
-		        function (position) {
-		            var lat = position.coords.latitude; // 위도
-		            var lon = position.coords.longitude; // 경도
-	
-		            var locPosition = new kakao.maps.LatLng(lat, lon); // 현재 위치 LatLng 객체 생성
-	
-		            // 지도 중심을 현재 위치로 이동
-		            map.setCenter(locPosition);
-	
-		            // 현재 위치에 마커 생성
-		            var marker = new kakao.maps.Marker({
-		                map: map,
-		                position: locPosition,
-		            });
-		        },
-		        function (error) {
-		            // 위치 정보 얻기 실패 처리 (사용자가 거부 등)
-		            console.error("Geolocation error: ", error);
-		            // 실패 시 기본 위치에 마커 표시
-		            var marker = new kakao.maps.Marker({
-		                map: map,
-		                position: defaultPosition,
-		            });
-		        }
-		    );
-		} else {
-		    // HTML5의 GeoLocation 사용 불가 시 fallback 처리
-		    console.log("geolocation을 사용할 수 없어요..");
-		    // 기본 위치에 마커 표시
-		    var marker = new kakao.maps.Marker({
-		        map: map,
-		        position: defaultPosition,
-		    });
-		}
-	
+	<script>	
 		/* 채팅 스크립트 */
 		 const CTX = '<%=request.getContextPath()%>';
 		 const BASE = `${location.origin}${CTX}`;
@@ -429,6 +310,228 @@ body {
 
   // 초기: 목록 로드(버튼을 누르면 보이지만, 데이터는 미리 준비)
   document.addEventListener('DOMContentLoaded', loadRooms);
+	</script>
+	
+	<script>
+	/* 스와이퍼 */
+/* 	const swiper = new Swiper('.swiper-container', {
+	    // 옵션
+	    loop: true, // 무한 루프
+
+	    // 네비게이션 버튼
+	    navigation: {
+	        nextEl: '.swiper-button-next',
+	        prevEl: '.swiper-button-prev',
+	    },
+	}); */
+	
+	// mypet 정보 가져오기
+	const cardbox = document.querySelector("#mypet-card");
+	
+	 document.addEventListener("DOMContentLoaded", async (event) => {
+		const res = await fetch(`/bughunters/pet/mypet`, {
+			method: "GET",
+		});
+		const data = await res.json();
+		if (data.petId === 0) {
+			cardbox.innerHTML = `
+				<h2>반려동물을 등록해주세요.</h2>
+			`;
+		} else {
+			cardbox.innerHTML = `
+				<img 
+					src="data:image/jpeg;base64,\${data.base64ProfileImage}"
+					class="card-img-top card-image"
+					alt="반려동물 사진없음" 
+				>
+				<div class="card-body">
+					<h5 class="card-title fw-bold margin-t">\${data.name}</h5>
+					<p class="card-text text-muted text-small">
+						\${data.intro}
+					</p>
+					<ul class="mypet-card-list">
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
+							<span>\${data.kind}</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
+							<span>\${data.gender}</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
+							<span>\${data.age}년생</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
+							<span>\${data.weight}kg</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_color.png" class="card-icon" />
+							<span>\${data.color}</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
+							<span>\${data.meetingTemperature}°C</span>
+						</li>
+					</ul>
+					<button type="button" class="btn btn-gray d-block" id="walking-register-btn" data-pet-id="\${data.petId}">산책 게시판 등록하기</button>
+				</div>		
+			`;
+			
+			// mypetCard가 로드된 후에 버튼에 이벤트 리스너 추가
+			navigator.geolocation.getCurrentPosition(
+	        function (position) {
+	            var lat = position.coords.latitude; // 위도
+	            var lon = position.coords.longitude; // 경도
+				const walkingBtn = document.querySelector("#walking-register-btn");
+				if (walkingBtn) {
+					walkingBtn.addEventListener("click", async (event) => { 
+					const petId = event.currentTarget.dataset.petId;
+					const postData = {
+						location: `\${lat},\${lon}`,
+						petId: petId
+					};
+							
+					const res = await fetch(`/bughunters/pet/walking/register`, {
+						method: "POST",
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(postData), // JSON.stringify로 수정
+					});
+					const data = await res.json();
+					console.log(data);
+					if (data.msg === "산책 게시판에 등록하였습니다.") 
+						alert(data.msg);
+					else 
+						alert(data.msg);
+					});
+				}	
+	        },
+	        function (error) {
+	            // 위치 정보 얻기 실패 처리 (사용자가 거부 등)
+	            console.error("Geolocation error: ", error);
+	            // 실패 시 기본 위치에 마커 표시
+	            var marker = new kakao.maps.Marker({
+	                map: map,
+	                position: defaultPosition,
+	            });
+	        }
+	    	);
+		}
+	 });
+	 
+	/* 카카오 맵 */
+	var mapContainer = document.getElementById('map'); // 지도를 표시할 div
+	var defaultPosition = new kakao.maps.LatLng(37.566826, 126.9786567); // 기본 위치 (서울시청)
+
+	var mapOption = {
+	    center: defaultPosition, // 지도의 기본 중심좌표
+	    level: 3,
+	};
+
+	// 지도를 생성합니다
+	var map = new kakao.maps.Map(mapContainer, mapOption);
+
+	// HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
+	if (navigator.geolocation) {
+	    // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+	    navigator.geolocation.getCurrentPosition(
+	        function (position) {
+	            var lat = position.coords.latitude; // 위도
+	            var lon = position.coords.longitude; // 경도
+
+	            var locPosition = new kakao.maps.LatLng(lat, lon); // 현재 위치 LatLng 객체 생성
+
+	            // 지도 중심을 현재 위치로 이동
+	            map.setCenter(locPosition);
+	        },
+ 	        function (error) {
+	            // 위치 정보 얻기 실패 처리 (사용자가 거부 등)
+	            console.error("Geolocation error: ", error);
+	            // 실패 시 기본 위치에 마커 표시
+	            var marker = new kakao.maps.Marker({
+	                map: map,
+	                position: defaultPosition,
+	            });
+	        } 
+	    );
+	} else {
+	    // HTML5의 GeoLocation 사용 불가 시 fallback 처리
+	    console.log("geolocation을 사용할 수 없어요..");
+	    // 기본 위치에 마커 표시
+	    var marker = new kakao.maps.Marker({
+	        map: map,
+	        position: defaultPosition,
+	    });
+	}
+	
+	/* 산책 게시판 리스트 */
+	const listBox = document.querySelector("#pet-list-wrapper");
+	document.addEventListener("DOMContentLoaded", async(event) =>{
+		const res = await fetch(`/bughunters/pet/walking/list`, {
+			method: "GET",
+		});
+		const data = await res.json();
+		const pets = data.data;
+		if (Array.isArray(pets) && pets.length > 0) {
+			listBox.innerHTML = pets.map((pet) => `	
+			<li class="like-pet-item">
+				<img 
+					src="data:image/jpeg;base64,\${pet.base64ProfileImage}"
+					class="card-img-top card-image"
+					alt="반려 동물 사진" 
+				>
+				<div class="card-body">
+					<h5 class="card-title fw-bold chat-name">\${pet.name}</h5>
+					<p class="card-text text-muted text-small">
+						\${pet.intro}
+					</p>
+					<ul class="card-list">
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
+							<span>\${pet.kind}</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
+							<span>\${pet.gender}</span>
+						</li>
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
+							<span>\${pet.age}년생</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
+							<span>\${pet.meetingTemperature}</span>
+						</li>
+					</ul>
+					<div>
+						<button type="button" class="btn btn-gray w-100 chat-name">1대1 채팅</button>
+					</div>
+				</div>
+			</li>
+			`).join('');
+			pets.forEach((pet) => {
+                // Split the location string into lat and lon
+                const coords = pet.location.split(',');
+                if (coords.length === 2) {
+                    const lat = parseFloat(coords[0]);
+                    const lon = parseFloat(coords[1]);
+
+                    // Check if coordinates are valid numbers
+                    if (!isNaN(lat) && !isNaN(lon)) {
+                        const petPosition = new kakao.maps.LatLng(lat, lon);
+                        new kakao.maps.Marker({
+                            map: map,
+                            position: petPosition,
+                            title: pet.name,
+                        });
+                    }
+                }
+            });
+		}
+	});
 	</script>
 </body>
 </html>

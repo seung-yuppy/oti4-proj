@@ -2,42 +2,6 @@
 <%@ page import="java.util.List, java.util.ArrayList"%>
 <%@ include file="../../component/passwordConfirm_modal.jsp"%>
 <%
-	// 예시용 하드코딩 데이터
-	String email = "min44@naver.com";
-	String address = "서울특별시 강남구 테헤란로 123";
-	String nickname = "민민";
-	boolean hasPet = true;
-
-	//예시용 카드데이터(나중에 다른정보 추가해야함)
-	class Animal {
-		String name;
-		String type;
-		String image;
-
-		Animal(String name, String type, String image) {
-			this.name = name;
-			this.type = type;
-			this.image = image;
-		}
-	}
-
-	List<Animal> animals = new ArrayList<>();
-	animals.add(new Animal("럭키", "골든 리트리버",
-			"http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/08/202508130908844.jpeg"));
-	animals.add(new Animal("나비", "코리안 숏헤어",
-			"http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/08/202508130908358.jpeg"));
-	animals.add(new Animal("뽀삐", "푸들",
-			"http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/08/202508130908635.jpeg"));
-	animals.add(new Animal("두부", "시바견",
-			"http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/08/202508130908273.jpeg"));
-	animals.add(new Animal("초코", "말티즈",
-			"http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/08/202508130808662.jpg"));
-	animals.add(new Animal("콩이", "진돗개",
-			"http://openapi.animal.go.kr/openapi/service/rest/fileDownloadSrvc/files/shelter/2025/08/202508131108540.jpg"));
-
-	request.setAttribute("email", email);
-	request.setAttribute("nickname", nickname);
-
 	//예시용 게시글&댓글 데이터(나중에 다른정보 추가해야함)
 	class Post {
 		String author;
@@ -271,89 +235,51 @@ body {
 
 			<!-- Swiper 초기화 코드 실행 (DOMContentLoaded 후) -->
 			<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const swiper = new Swiper(".swiper-container", {
-      slidesPerView: 1,
-      spaceBetween: 20,
-      centeredSlides: true,
-      loop: true,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    });
-  });
-  
-  // 프로필 불러오기
-  (async function () {
-	  try {
-	    const url = '<c:url value="/user/me"/>';
-	    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-	    if (!res.ok) throw new Error('HTTP ' + res.status);
-	    const u = await res.json();
-
-	    // 비로그인/빈객체 처리
-	    if (!u || (!u.userName && !u.userId)) {
-	      console.warn('로그인 필요 또는 사용자 없음');
-	      return;
-	    }
-
-	    document.getElementById('emailVal').textContent    = u.userName ?? '-';
-	    document.getElementById('addressVal').textContent  = u.address  ?? '-';
-	    document.getElementById('nicknameVal').textContent = u.nickName ?? '-';
-	    document.getElementById('hasPetVal').textContent   = (u.isPet === 1 ? '예' : '아니요');
-	  } catch (e) {
-	    console.error('프로필 로드 실패:', e);
-	  }
-	})();
-</script>
+			  document.addEventListener("DOMContentLoaded", function () {
+			    const swiper = new Swiper(".swiper-container", {
+			      slidesPerView: 1,
+			      spaceBetween: 20,
+			      centeredSlides: true,
+			      loop: true,
+			      navigation: {
+			        nextEl: ".swiper-button-next",
+			        prevEl: ".swiper-button-prev",
+			      },
+			    });
+			  });
+			  
+			  // 프로필 불러오기
+			  (async function () {
+				  try {
+				    const url = '<c:url value="/user/me"/>';
+				    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+				    if (!res.ok) throw new Error('HTTP ' + res.status);
+				    const u = await res.json();
+			
+				    // 비로그인/빈객체 처리
+				    if (!u || (!u.userName && !u.userId)) {
+				      console.warn('로그인 필요 또는 사용자 없음');
+				      return;
+				    }
+			
+				    document.getElementById('emailVal').textContent    = u.userName ?? '-';
+				    document.getElementById('addressVal').textContent  = u.address  ?? '-';
+				    document.getElementById('nicknameVal').textContent = u.nickName ?? '-';
+				    document.getElementById('hasPetVal').textContent   = (u.isPet === 1 ? '예' : '아니요');
+				  } catch (e) {
+				    console.error('프로필 로드 실패:', e);
+				  }
+				})();
+			</script>
 		</div>
-
 	</div>
-
-	</div>
-
 	<!-- 관심 유기 동물 -->
 	<div class="container my-5 section">
-		<h3>내가 관심 있는 유기동물</h3>
-		<div class="row row-cols-1 row-cols-md-4 g-4 mt-3" id="animal-list">
-			<%
-				for (int i = 0; i < animals.size(); i++) {
-					Animal a = animals.get(i);
-					boolean isHidden = i >= 4;
-			%>
-			<div class="col animal-card <%=isHidden ? "more-card" : ""%>"
-				style="<%=isHidden ? "display: none;" : ""%>">
-				<div class="card h-100">
-					<img src="<%=a.image%>" class="card-img-top" alt="<%=a.name%>">
-					<div class="card-body">
-						<h5 class="card-title"><%=a.name%></h5>
-						<p class="card-text"><%=a.type%></p>
-						<a href="#" class="btn btn-outline-secondary btn-sm">자세히 보기</a>
-					</div>
-				</div>
-			</div>
-			<%
-				}
-			%>
-		</div>
+		<h3>내가 관심있는 유기 동물</h3>
+		<ul class="wrapper-like-pet">
+		
+		</ul>
 	</div>
-	<div class="container my-5 text-center mt-3">
-		<button class="btn btn-outline-secondary" id="toggle-btn">더보기</button>
-	</div>
-
-	<script>
-    document.getElementById("toggle-btn").addEventListener("click", function () {
-        const hiddenCards = document.querySelectorAll(".more-card");
-        const isHidden = hiddenCards[0].style.display === "none";
-
-        hiddenCards.forEach(card => {
-            card.style.display = isHidden ? "block" : "none";
-        });
-
-        this.textContent = isHidden ? "접기" : "더보기";
-    });
-</script>
 
 
 	<!-- 커뮤니티 활동 (탭 전환) -->
@@ -428,8 +354,7 @@ body {
 	<script>
 		// mypet 정보 가져오기
 		const cardbox = document.querySelector("#mypet-card");
-		
-		 document.addEventListener("DOMContentLoaded", async (event) => {
+		document.addEventListener("DOMContentLoaded", async (event) => {
 			const res = await fetch(`/bughunters/pet/mypet`, {
 				method: "GET",
 			});
@@ -475,6 +400,56 @@ body {
 				</div>		
 			`; 
 		 });
+		
+		// 관심있는 유기동물 리스트 
+		const likePetBox = document.querySelector(".wrapper-like-pet");
+		
+		document.addEventListener("DOMContentLoaded", async(event) => {
+		    try {
+		        const res = await fetch(`/bughunters/abandonedpet/like/list`, {
+		            method: "GET",
+		        });
+		        const data = await res.json();
+		        const pets = data.data;
+		
+		        if (Array.isArray(pets) && pets.length > 0) { 
+		            likePetBox.innerHTML = pets.map((pet) => `
+		                <li class="like-pet-item">
+			            	<img src="\${pet.profileImage}" class="card-img-top card-image" alt="사진 없음">
+			            	<div class="card-body">
+			            		<div class="d-flex-space">
+			            			<h5 class="card-title fw-bold text-medium">\${pet.kind}</h5>
+			            		</div>
+			            		<ul class="card-list">
+			            			<li class="card-item">
+			            				<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
+			            				<span>\${pet.weight}kg</span>
+			            			</li>
+			            			<li class="card-item">
+			            				<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
+			            				<span>\${pet.gender}</span>
+			            			</li>
+			            			<li class="card-item">
+			            				<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
+			            				<span>\${pet.age}년생</span>
+			            			</li>
+			            			<li class="card-item">
+							            <img src="/bughunters/resources/image/ico_location.png" class="card-icon" />
+							            <span>\${pet.address}</span>
+			            			</li>
+			            		</ul>
+			            		<a href="/bughunters/abandonedpet/\${pet.abandonedPetId}" class="btn btn-gray d-block">자세히 보기</a>
+			            	</div>
+		                </li>
+		            `).join('');
+		        } else {
+		            likePetBox.innerHTML = '<li><p>No liked pets found.</p></li>';
+		        }
+		    } catch (error) {
+		        console.error('Failed to fetch liked pets:', error);
+		        likePetBox.innerHTML = '<li><p>Error loading pets. Please try again later.</p></li>';
+		    }
+		});
 	</script>
 </body>
 </html>
