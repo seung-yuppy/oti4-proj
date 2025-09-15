@@ -247,15 +247,9 @@ body {
 					<div class="swiper swiper-container"
 						style="width: 100%; height: 100%;">
 						<div class="swiper-wrapper">
-							<%
-								for (int i = 0; i < 3; i++) {
-							%>
 							<div class="swiper-slide">
 								<jsp:include page="/WEB-INF/views/component/myPetCard.jsp" />
 							</div>
-							<%
-								}
-							%>
 						</div>
 
 						<!-- 화살표 -->
@@ -431,5 +425,56 @@ body {
 	</div>
 	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
+	<script>
+		// mypet 정보 가져오기
+		const cardbox = document.querySelector("#mypet-card");
+		
+		 document.addEventListener("DOMContentLoaded", async (event) => {
+			const res = await fetch(`/bughunters/pet/mypet`, {
+				method: "GET",
+			});
+			const data = await res.json();
+			cardbox.innerHTML = `
+				<img 
+					src="data:image/jpeg;base64,\${data.base64ProfileImage}"
+					class="card-img-top card-image"
+					alt="반려동물 사진없음" 
+				>
+				<div class="card-body">
+					<h5 class="card-title fw-bold margin-t">\${data.name}</h5>
+					<p class="card-text text-muted text-small">
+						\${data.intro}
+					</p>
+					<ul class="mypet-card-list">
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
+							<span>\${data.kind}</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
+							<span>\${data.gender}</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
+							<span>\${data.age}년생</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
+							<span>\${data.weight}kg</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_color.png" class="card-icon" />
+							<span>\${data.color}</span>
+						</li>	
+						<li class="card-item">
+							<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
+							<span>\${data.meetingTemperature}°C</span>
+						</li>	
+					</ul>
+					<a href="#" class="btn btn-gray d-block">산책 게시판 등록하기</a>
+				</div>		
+			`; 
+		 });
+	</script>
 </body>
 </html>

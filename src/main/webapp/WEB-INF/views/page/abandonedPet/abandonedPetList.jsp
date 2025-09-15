@@ -8,6 +8,11 @@
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
 	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		.page-link {
+			text-align: center !important;
+		}
+	</style>
 </head>
 <body>
 	<!-- 헤더 영역 -->
@@ -154,7 +159,6 @@
 	<!-- script 영역 -->
 	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 	<script>
-	
 	    async function renderHeartButton(button) {
 	        const id = button.dataset.petId;
 	        try {

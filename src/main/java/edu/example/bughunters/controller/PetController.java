@@ -7,12 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.example.bughunters.domain.PetDTO;
+import edu.example.bughunters.domain.PetVO;
 import edu.example.bughunters.service.PetService;
 
 @Controller
@@ -58,17 +58,15 @@ public class PetController {
 			return "redirect:/pet/signup";
 	}
 	
-	@RequestMapping(value = "/pet/myPet", produces = "application/json; charset=utf-8")
+	@GetMapping(value = "/pet/mypet", produces = "application/json; charset=utf-8")
 	@ResponseBody 
-	public PetDTO p5(HttpSession session) {
-		PetDTO dto = new PetDTO();
+	public PetVO p5(HttpSession session) {
+		PetVO vo = new PetVO();
 		Integer userId = (Integer) session.getAttribute("userId");
 		if(userId == null) {
-			System.out.println("로그인을 해주세요.");
-			return dto;
+			return vo;
 		} else {
-			dto.setUserId(userId);
-			System.out.println(service.getPet(userId));
+			vo.setUserId(userId);
 			return service.getPet(userId);
 		}
 	}

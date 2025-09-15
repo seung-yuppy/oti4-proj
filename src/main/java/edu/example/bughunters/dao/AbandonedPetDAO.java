@@ -44,4 +44,7 @@ public interface AbandonedPetDAO {
 	
 	// 유기동물-회원 좋아요 확인
 	public int isLikePet(@Param("userId") int userId, @Param("abandonedPetId") int abandonedPetId);
+	
+	// 유기동물-회원 좋아요 리스트
+	public List<AbandonedPetDTO> likeList(@Param("userId") int userId);
 }

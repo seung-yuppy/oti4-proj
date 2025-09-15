@@ -235,4 +235,11 @@
 		WHERE user_id = #{userId}
 		AND abandoned_pet_id = #{abandonedPetId}
 	</select>
+	<select id="likeList">
+		SELECT *
+		FROM Like_Abandoned_Pet
+		INNER JOIN Abandoned_Pet 
+		USING (abandoned_pet_id)
+		WHERE user_id = #{userId}
+	</select>
 </mapper>

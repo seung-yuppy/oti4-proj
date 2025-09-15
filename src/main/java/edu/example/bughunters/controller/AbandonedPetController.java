@@ -72,7 +72,7 @@ public class AbandonedPetController {
 	// 유기동물 좋아요 토글 (누르면 좋아요, 다시 누르면 좋아요 취소)
 	@PostMapping("/abandonedpet/like/{id}")
 	@ResponseBody
-	public ResponseEntity<Map<String, Object>> a5(
+	public ResponseEntity<Map<String, Object>> a5( 
 	        HttpSession session,
 	        @PathVariable("id") int abandonedPetId) {
 	    int userId = (int) session.getAttribute("userId");
@@ -92,4 +92,18 @@ public class AbandonedPetController {
 		response.put("isLike", isLiked);
 		return ResponseEntity.ok(response);
 	}	
+	
+	// 유기동물 좋아요 리스트
+	@GetMapping("/abandonedpet/like/list")
+	@ResponseBody
+	public  ResponseEntity<Map<String, Object>> a7(HttpSession session) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		Map<String, Object> response = new HashMap<>();
+		if (userId == null) {
+			response.put("msg", "로그인 해주세요!");
+		} else {
+			response = service.likePetList(userId);
+		}
+		return ResponseEntity.ok(response);
+	}
 }

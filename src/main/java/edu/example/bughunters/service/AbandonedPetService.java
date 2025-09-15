@@ -128,4 +128,18 @@ public class AbandonedPetService {
     	else
     		return true;
     }
+    
+    // 유기동물 리스트
+    public Map<String, Object> likePetList(int userId) {
+    	Map<String, Object> response = new HashMap<>();
+    	List<AbandonedPetDTO> likeList = dao.likeList(userId);
+    	if (likeList.isEmpty()) 
+    		response.put("msg", "좋아하는 유기동물이 없습니다.");
+    	else {
+			for (AbandonedPetDTO dto : likeList)
+				processAbandonedPetData(dto);
+			response.put("data", likeList);
+    	}
+    	return response;
+    }
 }
