@@ -39,7 +39,7 @@
 		USING (pet_id)
 	</select>
 	
-	<select id="">
+	<select id="isRegisterWalking">
 		SELECT COUNT(*)
 		FROM Walking
 		WHERE pet_id = #{petId}

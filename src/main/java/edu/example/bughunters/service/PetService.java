@@ -127,4 +127,12 @@ public class PetService {
 		
 		return list;
 	}
+	
+	public boolean isWalking(int petId) {
+		int counting = dao.isRegisterWalking(petId);
+		if (counting >= 1)
+			return false;
+		else
+			return true;
+	}
 }

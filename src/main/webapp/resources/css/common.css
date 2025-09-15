@@ -30,6 +30,10 @@ p {
 .text-medium {
 	font-size: 18px;
 }
+
+.text-large {
+	font-size: 40px;
+}
 /* 디스플레이 */
 .d-block {
 	display: block !important;

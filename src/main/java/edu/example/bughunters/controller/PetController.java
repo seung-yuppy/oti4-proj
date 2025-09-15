@@ -81,12 +81,18 @@ public class PetController {
 	@PostMapping(value = "/pet/walking/register", produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> p6(@RequestBody WalkingDTO dto) {
-		boolean result = service.registerWalking(dto.getPetId(), dto.getLocation());
 		Map<String, Object> response = new HashMap<>();
-		if (result) 
-			response.put("msg", "산책 게시판에 등록하였습니다.");
-		else 
-			response.put("msg", "산책 게시판 등록에 실패하였습니다.");
+		System.out.println(service.isWalking(dto.getPetId()));
+		System.out.println(dto.getPetId());
+		if(!service.isWalking(dto.getPetId()))
+				response.put("msg", "이미 등록된 반려동물입니다.");
+		else {
+			boolean result = service.registerWalking(dto.getPetId(), dto.getLocation());
+			if (result) 
+				response.put("msg", "산책 게시판에 등록하였습니다.");
+			else
+				response.put("msg", "산책 게시판 등록에 실패하였습니다.");
+		}
 		
 		return ResponseEntity.ok(response);
 	}
