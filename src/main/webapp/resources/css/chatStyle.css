@@ -94,7 +94,6 @@
 	z-index: 2999; /* ← 리스트보다 위, 버튼보단 아래 */
 }
 
-.
 .chat-list-header, .chat-detail-header {
 	display: grid; /* ← 유지 */
 	grid-template-columns: 40px 1fr 40px;

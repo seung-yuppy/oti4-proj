@@ -40,7 +40,7 @@
 
 				</ul>
 				<div>
-					<button type="button" class="btn btn-gray w-100 chat-name">1대1 채팅</button>
+					<button type="button" class="btn btn-gray w-100" data-chat-with="${pet.petId}">1대1 채팅</button>
 				</div>
 			</div>
 		</div>

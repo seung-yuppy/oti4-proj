@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/mvc      http://www.springframework.org/schema/mvc/spring-mvc.xsd
+         http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <!-- 애노테이션 기반 MVC 활성화 (RequestMappingHandlerMapping/Adapter + Jackson 컨버터 포함) -->
+  <mvc:annotation-driven/>
+
+  <!-- 컨트롤러/웹소켓/설정 클래스가 있는 패키지 스캔 -->
+  <context:component-scan base-package="edu.example.bughunters"/>
+
+  <!-- 정적 리소스 위임 (선택) -->
+  <mvc:default-servlet-handler/>
+
+  <!-- JSP 뷰리졸버 (필요 시) -->
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix" value="/WEB-INF/views/page/"/>
+    <property name="suffix" value=".jsp"/>
+  </bean>
+</beans>

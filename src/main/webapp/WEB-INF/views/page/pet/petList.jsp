@@ -88,7 +88,7 @@ body {
 		<!-- 펫 리스트 영역 -->
 		<section class="mt-10 pt-4">
 			<ul class="wrapper-like-pet" id="pet-list-wrapper">
-				
+
 			</ul>
 		</section>
 
@@ -134,7 +134,7 @@ body {
 	<script>	
 		/* 채팅 스크립트 */
 		 const CTX = '<%=request.getContextPath()%>';
-		 const BASE = `${location.origin}${CTX}`;
+		 const BASE = `\${location.origin}\${CTX}`;
 		 console.log('CTX=', CTX, 'BASE=', BASE);
 					 
   const MY_PET_ID = <%=(session.getAttribute("PET_ID") == null ? -1 : (Integer) session.getAttribute("PET_ID"))%>;
@@ -174,8 +174,11 @@ body {
 
   async function loadRooms(){
     try{
-      const res = await fetch(`${CTX}/api/chat/rooms`);
-      const rooms = await res.json();
+    	const res = await fetch(`/bughunters/api/chat/rooms`, { 
+    		method:"GET",
+    		 credentials:"include",
+    	});
+	  const rooms = await res.json();
       renderRoomList(rooms);
     }catch(e){ console.error('loadRooms failed', e); }
   }
@@ -226,9 +229,11 @@ body {
   });
 
   async function loadMessages(roomId, cursor){
-    const url = new URL(`${location.origin}${CTX}/api/chat/rooms/${roomId}/messages`);
+	  const url = new URL(`${BASE}/api/chat/rooms/${roomId}/messages`);
     if (cursor) url.searchParams.set('cursor', cursor);
-    const res = await fetch(url.toString());
+    const res = await fetch(url.toString(), {
+    	  credentials: 'include'
+    	});
     const list = await res.json();
     chatMessages.innerHTML = '';
     list.slice().reverse().forEach(m => appendMessage(m));
@@ -299,7 +304,11 @@ body {
       const toPetId = parseInt(btn.dataset.chatWith, 10);
       if (isNaN(toPetId)) return;
       try{
-        const res = await fetch(`${CTX}/api/chat/rooms/direct?toPetId=${toPetId}`, { method:'POST' });
+    	  const res = await fetch(`${BASE}/api/chat/rooms/direct?toPetId=${toPetId}`, {
+    		     method:'POST',
+    		     headers: { 'Accept':'application/json' },
+    	  		 credentials:'include'
+    		  });
         if (!res.ok) throw new Error('direct create failed');
         const data = await res.json(); // {roomId: number}
         openList(); // 목록 배경 열려 있으면 자연스럽게 전환
@@ -309,9 +318,19 @@ body {
   });
 
   // 초기: 목록 로드(버튼을 누르면 보이지만, 데이터는 미리 준비)
-  document.addEventListener('DOMContentLoaded', loadRooms);
+  document.addEventListener('DOMContentLoaded', async () => {
+	  try {
+	    // 먼저 내 펫 정보를 조회(세션에 PET_ID/NICK 세팅 효과)
+	    await fetch(`${BASE}/pet/mypet`, { credentials: 'include' });
+
+	    // 그 다음 방 목록
+	    await loadRooms();
+	  } catch(e) {
+	    console.error(e);
+	  }
+	});
 	</script>
-	
+
 	<script>
 	/* 스와이퍼 */
 /* 	const swiper = new Swiper('.swiper-container', {
@@ -507,7 +526,7 @@ body {
 						</li>
 					</ul>
 					<div>
-						<button type="button" class="btn btn-gray w-100 chat-name">1대1 채팅</button>
+						<button type="button" class="btn btn-gray w-100" data-chat-with="${pet.petId}">1대1 채팅</button>
 					</div>
 				</div>
 			</li>

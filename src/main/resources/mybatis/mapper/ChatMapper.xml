@@ -26,17 +26,16 @@
 		AND (pet_id1 = #{petId} OR pet_id2 = #{petId})
 	</select>
 
-	<!-- Oracle 예시: 시퀀스로 PK 선발급 후 INSERT -->
 	<insert id="insertMessageDTO"
 		parameterType="edu.example.bughunters.domain.ChatMessageDTO">
-		<selectKey keyProperty="chatMessageId" resultType="long"
+		<selectKey keyProperty="chatMessageId" resultType="int"
 			order="BEFORE">
 			SELECT chat_message_seq.NEXTVAL FROM dual
 		</selectKey>
 		INSERT INTO chat_message
 		(chat_message_id, chat_room_id, pet_id, chat_message, created_at)
 		VALUES
-		(#{chatMessageId}, #{chatRoomeId}, #{petId}, #{chatMessage}, SYSTIMESTAMP)
+		(#{chatMessageId}, #{chatRoomId}, #{petId}, #{chatMessage}, SYSTIMESTAMP)
 	</insert>
 
 	<select id="findMessageById" parameterType="long"
@@ -61,6 +60,22 @@
 			AND chat_message_id &lt; #{cursor}
 		</if>
 		ORDER BY chat_message_id DESC
-		OFFSET 0 ROWS FETCH NEXT #{size} ROWS ONLY
+		OFFSET 0 ROWS FETCH FIRST #{size} ROWS ONLY
 	</select>
+
+	<!-- (a,b)와 (b,a)를 동일 취급 -->
+	<select id="findRoomIdByPair" resultType="int">
+		SELECT chat_room_id
+		FROM chat_room
+		WHERE pet_id1 = LEAST(#{a},#{b})
+		AND pet_id2 = GREATEST(#{a},#{b})
+		FETCH FIRST 1 ROWS ONLY
+	</select>
+
+	<!-- selectKey 제거, 시퀀스 직접 사용 + 순서 정규화 -->
+	<insert id="insertRoom">
+		INSERT INTO chat_room (chat_room_id, created_at, pet_id1, pet_id2)
+		VALUES (chat_room_seq.NEXTVAL, SYSTIMESTAMP, LEAST(#{a},#{b}),
+		GREATEST(#{a},#{b}))
+	</insert>
 </mapper>

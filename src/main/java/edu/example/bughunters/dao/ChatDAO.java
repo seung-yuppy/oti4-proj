@@ -22,4 +22,7 @@ public interface ChatDAO {
     List<ChatMessageDTO> selectMessages(@Param("roomId") int roomId,
                                         @Param("cursor") Long cursor,
                                         @Param("size") int size);
+    
+    Integer findRoomIdByPair(@Param("a") int a, @Param("b") int b);
+    int insertRoom(@Param("a") int a, @Param("b") int b);
 }
