@@ -216,6 +216,20 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.8.0</version>
 		</dependency>
+		
+		<!-- 웹소캣 -->
+		<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-websocket</artifactId>
+		<version>${springframework-version}</version>
+		</dependency>
+		
+		<dependency>
+		<groupId>javax.websocket</groupId>
+		<artifactId>javax.websocket-api</artifactId>
+		<version>1.1</version>
+		<scope>provided</scope>
+		</dependency>
 
 	</dependencies>
 

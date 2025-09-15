@@ -10,5 +10,7 @@
 		<typeAlias alias="AbandonedPetDTO" type="edu.example.bughunters.domain.AbandonedPetDTO"/>
 		<typeAlias alias="UserDTO" type="edu.example.bughunters.domain.UserDTO"/>
 		<typeAlias alias="PetDTO" type="edu.example.bughunters.domain.PetDTO" />
+		<typeAlias alias="ChatMessageDTO" type="edu.example.bughunters.domain.ChatMessageDTO" />
+		<typeAlias alias="ChatRoomDTO" type="edu.example.bughunters.domain.ChatRoomDTO" />
 	</typeAliases>
 </configuration>

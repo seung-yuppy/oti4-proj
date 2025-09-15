@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="edu.example.bughunters.dao.ChatDAO">
+
+	<resultMap id="ChatMsgMap"
+		type="edu.example.bughunters.domain.ChatMessageDTO">
+		<id property="chatMessageId" column="chat_message_id" />
+		<result property="chatMessage" column="chat_message" />
+		<result property="createdAt" column="created_at" />
+		<result property="chatRoomId" column="chat_room_id" />
+		<result property="petId" column="pet_id" />
+	</resultMap>
+
+	<resultMap id="ChatRoomMap"
+		type="edu.example.bughunters.domain.ChatRoomDTO">
+		<id property="chatRoomId" column="chat_room_id" />
+		<result property="createdAt" column="created_at" />
+		<result property="petId1" column="pet_id1" />
+		<result property="petId2" column="pet_id2" />
+	</resultMap>
+
+	<select id="countMember" resultType="int">
+		SELECT COUNT(*)
+		FROM chat_room
+		WHERE chat_room_id = #{roomId}
+		AND (pet_id1 = #{petId} OR pet_id2 = #{petId})
+	</select>
+
+	<!-- Oracle 예시: 시퀀스로 PK 선발급 후 INSERT -->
+	<insert id="insertMessageDTO"
+		parameterType="edu.example.bughunters.domain.ChatMessageDTO">
+		<selectKey keyProperty="chatMessageId" resultType="long"
+			order="BEFORE">
+			SELECT chat_message_seq.NEXTVAL FROM dual
+		</selectKey>
+		INSERT INTO chat_message
+		(chat_message_id, chat_room_id, pet_id, chat_message, created_at)
+		VALUES
+		(#{chatMessageId}, #{chatRoomeId}, #{petId}, #{chatMessage}, SYSTIMESTAMP)
+	</insert>
+
+	<select id="findMessageById" parameterType="long"
+		resultMap="ChatMsgMap">
+		SELECT chat_message_id, chat_room_id, pet_id, chat_message, created_at
+		FROM chat_message
+		WHERE chat_message_id = #{msgId}
+	</select>
+
+	<select id="selectRoomsByPet" resultMap="ChatRoomMap">
+		SELECT chat_room_id, created_at, pet_id1, pet_id2
+		FROM chat_room
+		WHERE pet_id1 = #{petId} OR pet_id2 = #{petId}
+		ORDER BY chat_room_id DESC
+	</select>
+
+	<select id="selectMessages" resultMap="ChatMsgMap">
+		SELECT chat_message_id, chat_room_id, pet_id, chat_message, created_at
+		FROM chat_message
+		WHERE chat_room_id = #{roomId}
+		<if test="cursor != null">
+			AND chat_message_id &lt; #{cursor}
+		</if>
+		ORDER BY chat_message_id DESC
+		OFFSET 0 ROWS FETCH NEXT #{size} ROWS ONLY
+	</select>
+</mapper>

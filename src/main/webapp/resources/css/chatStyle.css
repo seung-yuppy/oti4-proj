@@ -11,8 +11,8 @@
 	border-radius: 12px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	overflow-y: auto;
-	display: none; /* 기본은 숨김 */
-	z-index: 2000;
+	display: none;
+	z-index: 2998; /* ← 기존 2000 → 2998로 올리기 */
 }
 
 .chat-list-header {
@@ -89,34 +89,40 @@
 	border: 1px solid #ddd;
 	border-radius: 12px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	display: none; /* 기본 숨김 */
+	display: none; /* JS에서 'flex'로 바꿔 사용 */
 	flex-direction: column;
-	z-index: 2100;
+	z-index: 2999; /* ← 리스트보다 위, 버튼보단 아래 */
 }
 
-.chat-detail-header {
-	display: grid;
+.
+.chat-list-header, .chat-detail-header {
+	display: grid; /* ← 유지 */
 	grid-template-columns: 40px 1fr 40px;
 	align-items: center;
+	gap: 8px; /* 선택 */
 	padding: 12px 8px;
 	border-bottom: 1px solid #eee;
 }
-.chat-title{            /* 중앙 제목 */
-justify-self: center;   
-  text-align: center;
-  font-weight: 700;
-}
-.chat-nav-btn{          /* 뒤로/닫기 공통 버튼 */
-  background: none;
-  border: 0;
-  font-size: 18px;
-  color: #666;
-  cursor: pointer;
-  padding: 4px;
+
+.chat-title { /* 중앙 제목 */
+	justify-self: center;
+	text-align: center;
+	font-weight: 700;
 }
 
-.chat-list-spacer{ width:40px; height:1px; } /* 왼쪽 공간 맞추기용 */
+.chat-nav-btn { /* 뒤로/닫기 공통 버튼 */
+	background: none;
+	border: 0;
+	font-size: 18px;
+	color: #666;
+	cursor: pointer;
+	padding: 4px;
+}
 
+.chat-list-spacer {
+	width: 40px;
+	height: 1px;
+} /* 왼쪽 공간 맞추기용 */
 .chat-messages {
 	flex: 1;
 	padding: 12px;
@@ -173,7 +179,9 @@ justify-self: center;
 	margin-left: 6px;
 }
 
-.chat-nav-btn:hover{ color:#000; }
+.chat-nav-btn:hover {
+	color: #000;
+}
 
 .swiper-button-next::after, .swiper-button-prev::after {
 	display: none;

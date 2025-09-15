@@ -1,52 +1,67 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%
+	// 내 펫 ID (좌/우 말풍선 구분용)
+	Integer __MY_PET_ID__ = (Integer) session.getAttribute("PET_ID");
+	if (__MY_PET_ID__ == null) {
+		__MY_PET_ID__ = -1;
+	}
+	String ctx = request.getContextPath(); // /bughunters
+%>
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>내 주변 펫 찾기</title>
-	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
-	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet"
-		href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-	<link href="/bughunters/resources/css/chatStyle.css" rel="stylesheet">
-	<style>
-	body {
-		background-color: #f8f9fa;
-	}
-	
-	.search-card {
-		max-width: 1320px;
-		margin: 0 auto;
-		height: 410px;
-	}
-	
-	.rounded {
-		width: 100%;
-		height: 410px;
-	}
-	
-	.swiper-button-next {
-		background: url(/bughunters/resources/image/ico_next.png) no-repeat;
-		background-size: 50% auto;
-		background-position: center;
-		
-		&::after{
-			display:none;
-		}
-	}
-	
-	.swiper-button-prev {
-		background: url(/bughunters/resources/image/ico_prev.png) no-repeat;
-		background-size: 50% auto;
-		background-position: center;
-		
-		&::after {
-			display:none;
-		}
-	}
-	</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>내 주변 펫 찾기</title>
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link href="/bughunters/resources/css/chatStyle.css" rel="stylesheet">
+<style>
+body {
+	background-color: #f8f9fa;
+}
+
+.search-card {
+	max-width: 1320px;
+	margin: 0 auto;
+	height: 410px;
+}
+
+.rounded {
+	width: 100%;
+	height: 410px;
+}
+
+.swiper-button-next {
+	background: url(/bughunters/resources/image/ico_next.png) no-repeat;
+	background-size: 50% auto;
+	background-position: center;
+	&::
+	after
+	{
+	display
+	:
+	none;
+}
+
+}
+.swiper-button-prev {
+	background: url(/bughunters/resources/image/ico_prev.png) no-repeat;
+	background-size: 50% auto;
+	background-position: center;
+	&::
+	after
+	{
+	display
+	:
+	none;
+}
+}
+</style>
 </head>
 <body>
 	<!-- 헤더 영역 -->
@@ -64,7 +79,7 @@
 								<jsp:include page="/WEB-INF/views/component/myPetCard.jsp"></jsp:include>
 							</div>
 						</div>
-<!-- 						<div class="swiper-button-next"></div>
+						<!-- 						<div class="swiper-button-next"></div>
 						<div class="swiper-button-prev"></div> -->
 					</div>
 				</div>
@@ -74,107 +89,43 @@
 		<section class="mt-10 pt-4">
 			<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
 				<%
-				for (int i = 0; i < 5; i++) {
+					for (int i = 0; i < 5; i++) {
 				%>
 				<jsp:include page="/WEB-INF/views/component/petCard.jsp"></jsp:include>
 				<%
-				}
+					}
 				%>
 			</div>
 		</section>
-		<button type="button" class="card-like-btn p-absolute" id="chatToggleBtn">
-			<img src="/bughunters/resources/image/ico_chatting.png" class="chat-btn">
+
+		<button type="button" class="card-like-btn p-absolute"
+			id="chatToggleBtn">
+			<img src="/bughunters/resources/image/ico_chatting.png"
+				class="chat-btn">
 		</button>
 
-		<!-- 채팅 리스트 -->
+		<!-- 채팅 목록 패널 -->
 		<div class="chat-list" id="chatList">
 			<div class="chat-list-header">
-			<span class="chat-list-spacer" aria-hidden="true"></span>
-				<span class="chat-title">채팅 목록</span>
+				<span class="chat-list-spacer" aria-hidden="true"></span> <span
+					class="chat-title">채팅 목록</span>
 				<button class="chat-close-btn" id="chatCloseBtn">×</button>
 			</div>
-
-			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/resources/image/petDummy1.jpg" class="chat-avatar" >
-				<div class="chat-info">
-					<div class="chat-name">
-						보리 <span class="chat-time">10분 전</span>
-					</div>
-					<div class="chat-msg">보리 산책 예약 문의드립니다.</div>
-				</div>
-			</div>
-
-			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/resources/image/petDummy2.jpg" class="chat-avatar" >
-				<div class="chat-info">
-					<div class="chat-name">
-						나비 <span class="chat-time">어제</span>
-					</div>
-					<div class="chat-msg">나비 간식 추천해주세요.</div>
-				</div>
-			</div>
-
-			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/resources/image/petDummy3.jpg" class="chat-avatar" >
-				<div class="chat-info">
-					<div class="chat-name">
-						토토 <span class="chat-time">2일 전</span>
-					</div>
-					<div class="chat-msg">토토와 함께 놀아줄 친구 찾아요.</div>
-				</div>
-			</div>
-
-			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/resources/image/petDummy4.jpg" class="chat-avatar" >
-				<div class="chat-info">
-					<div class="chat-name">
-						초코 <span class="chat-time">방금 전</span>
-					</div>
-					<div class="chat-msg">초코 산책 예약 문의드립니다.</div>
-				</div>
-			</div>
-
-			<div class="chat-item">
-				<img src="${pageContext.request.contextPath}/resources/image/petDummy5.jpg" class="chat-avatar" >
-				<div class="chat-info">
-					<div class="chat-name">
-						구름이 <span class="chat-time">하루 전</span>
-					</div>
-					<div class="chat-msg">구름이 산책 예약 문의드립니다.</div>
-				</div>
-			</div>
+			<!-- 동적 렌더 영역 -->
+			<div id="chatListBody"></div>
 		</div>
 
-		<!-- 채팅 상세창 -->
+		<!-- 채팅 상세 패널 -->
 		<div class="chat-detail" id="chatDetail">
 			<div class="chat-detail-header">
-			<button class="chat-nav-btn" id="chatBackBtn">←</button>
-				<span id="chatRoomTitle" class="chat-title">보리 (Bori)</span>
+				<button class="chat-nav-btn" id="chatBackBtn">←</button>
+				<span id="chatRoomTitle" class="chat-title">채팅</span>
 				<button class="chat-close-btn" id="chatDetailCloseBtn">×</button>
 			</div>
-			<div class="chat-messages">
-				<div class="message left">
-					<div class="text">안녕하세요! 보리예요. 무엇을 도와드릴까요?</div>
-				</div>
-				<div class="message right">
-					<div class="text">안녕하세요! 보리와 함께 산책하고 싶어요.</div>
-				</div>
-				<div class="message left">
-					<div class="text">정말 좋네요! 보리는 공원 산책을 가장 좋아해요.</div>
-				</div>
-				<div class="message right">
-					<div class="text">그럼 이번 주말에 만날 수 있을까요?</div>
-				</div>
-				<div class="message left">
-					<div class="text">네, 좋아요! 토요일 오후는 어떠신가요?</div>
-				</div>
-				<div class="message right">
-					<div class="text">완벽해요! 장소와 시간을 정해주세요.</div>
-				</div>
-			</div>
+			<div class="chat-messages" id="chatMessages"></div>
 			<div class="chat-input">
-				<input type="text" placeholder="메시지를 입력하세요...">
-				<button>➤</button>
+				<input id="chatInput" type="text" placeholder="메시지를 입력하세요...">
+				<button id="chatSendBtn">➤</button>
 			</div>
 		</div>
 	</div>
@@ -301,64 +252,183 @@
 		}
 	
 		/* 채팅 스크립트 */
-		const chatBtn = document.getElementById("chatToggleBtn");
-		const chatList = document.getElementById("chatList");
-		const chatCloseBtn = document.getElementById("chatCloseBtn");
-		const chatDetailEl = document.getElementById("chatDetail");
-		const chatDetailCloseBtn = document.getElementById("chatDetailCloseBtn");
-		const chatRoomTitle = document.getElementById("chatRoomTitle");
-	
-		const show = (el, v) => (el.style.display = v);
-		const isShown = (el) => window.getComputedStyle(el).display !== "none";
-	
-		function openList() {
-		    show(chatList, "block");
-		    show(chatDetailEl, "none");
-		}
-		function openDetail() {
-		    show(chatDetailEl, "flex");
-		    show(chatList, "none");
-		}
-		function closeAll() {
-		    show(chatList, "none");
-		    show(chatDetailEl, "none");
-		}
-	
-		// chat 버튼: 상세 열려있으면 리스트로, 아니면 토글
-		chatBtn.addEventListener("click", () => {
-		    if (isShown(chatDetailEl)) openList();
-		    else isShown(chatList) ? closeAll() : openList();
-		});
-	
-		// 리스트 X 버튼
-		chatCloseBtn.addEventListener("click", closeAll);
-	
-		// 상세 X 버튼
-		chatDetailCloseBtn.addEventListener("click", closeAll);
-	
-		const chatBackBtn = document.getElementById("chatBackBtn");
-		chatBackBtn.addEventListener("click", openList); // 상세 닫고 리스트 열기
-	
-		// 리스트 항목 클릭 → 상세 열기 (보리만 연결 예시)
-		document.querySelectorAll(".chat-item").forEach((item) => {
-		    item.addEventListener("click", () => {
-		        const nameText = item.querySelector(".chat-name")?.textContent || "";
-		        if (nameText.includes("보리")) {
-		            if (chatRoomTitle) chatRoomTitle.textContent = "보리 (Bori)";
-		            openDetail(); // 리스트 닫고 상세 열기
-		        }
-		    });
-		});
-	
-		document.querySelectorAll(".card-body").forEach((item) => {
-		    item.addEventListener("click", () => {
-		        const nameText = item.querySelector(".chat-name")?.textContent || "";
-		        if (nameText.includes("초코")) {
-		            if (chatRoomTitle) chatRoomTitle.textContent = "보리 (Bori)";
-		            openDetail();
-		        }
-		    });
-		});
+		 const CTX = '<%=request.getContextPath()%>';
+		 const BASE = `${location.origin}${CTX}`;
+		 console.log('CTX=', CTX, 'BASE=', BASE);
+					 
+  const MY_PET_ID = <%=(session.getAttribute("PET_ID") == null ? -1 : (Integer) session.getAttribute("PET_ID"))%>;
+
+  /* ===== 토글/패널 ===== */
+  const chatBtn = document.getElementById('chatToggleBtn');
+  const chatList = document.getElementById('chatList');
+  const chatListBody = document.getElementById('chatListBody') || (function(){ const d=document.createElement('div'); d.id='chatListBody'; chatList.appendChild(d); return d; })();
+  const chatCloseBtn = document.getElementById('chatCloseBtn');
+
+  const chatDetail = document.getElementById('chatDetail');
+  const chatBackBtn = document.getElementById('chatBackBtn');
+  const chatDetailCloseBtn = document.getElementById('chatDetailCloseBtn');
+  const chatRoomTitle = document.getElementById('chatRoomTitle');
+  const chatMessages = document.getElementById('chatMessages') || document.querySelector('.chat-messages');
+  const chatInput = document.getElementById('chatInput') || document.querySelector('.chat-input input');
+  const chatSendBtn = document.getElementById('chatSendBtn') || document.querySelector('.chat-input button');
+
+  const show = (el,v)=> el && (el.style.display = v);
+  const isShown = (el)=> el && window.getComputedStyle(el).display !== 'none';
+  function openList(){ show(chatList,'block'); show(chatDetail,'none'); }
+  function openDetail(){ show(chatDetail,'flex'); show(chatList,'none'); }
+  function closeAll(){ show(chatList,'none'); show(chatDetail,'none'); }
+
+  // 버튼이 혹시 없으면 조용히 패스
+  chatBtn && chatBtn.addEventListener('click', () => {
+    if (isShown(chatDetail)) openList();
+    else isShown(chatList) ? closeAll() : openList();
+  });
+  chatCloseBtn && chatCloseBtn.addEventListener('click', closeAll);
+  chatDetailCloseBtn && chatDetailCloseBtn.addEventListener('click', closeAll);
+  chatBackBtn && chatBackBtn.addEventListener('click', openList);
+
+  /* ===== 방 목록/메시지/웹소켓 ===== */
+  let currentRoomId = null;
+  let ws = null;
+
+  async function loadRooms(){
+    try{
+      const res = await fetch(`${CTX}/api/chat/rooms`);
+      const rooms = await res.json();
+      renderRoomList(rooms);
+    }catch(e){ console.error('loadRooms failed', e); }
+  }
+
+  function renderRoomList(rooms){
+    chatListBody.innerHTML = '';
+    if (!rooms || rooms.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'p-3 text-muted';
+      empty.textContent = '채팅방이 없습니다.';
+      chatListBody.appendChild(empty);
+      return;
+    }
+    rooms.forEach(r=>{
+      const item = document.createElement('div');
+      item.className = 'chat-item';
+      item.dataset.roomId = r.chatRoomId;
+
+      const img = document.createElement('img');
+      img.className = 'chat-avatar';
+      img.src = `${CTX}/resources/image/petDummy1.jpg`;
+
+      const info = document.createElement('div');
+      info.className = 'chat-info';
+      const name = document.createElement('div');
+      name.className = 'chat-name';
+      name.textContent = `Room #${r.chatRoomId}`;
+      const time = document.createElement('span');
+      time.className = 'chat-time'; time.textContent = '';
+      name.appendChild(document.createTextNode(' '));
+      name.appendChild(time);
+
+      const last = document.createElement('div');
+      last.className = 'chat-msg'; last.textContent = '';
+
+      info.appendChild(name); info.appendChild(last);
+      item.appendChild(img); item.appendChild(info);
+      chatListBody.appendChild(item);
+    });
+  }
+
+  // 목록에서 방 클릭하여 열기
+  chatListBody.addEventListener('click', async (e)=>{
+    const item = e.target.closest('.chat-item');
+    if(!item) return;
+    const roomId = +item.dataset.roomId;
+    await openRoom(roomId);
+  });
+
+  async function loadMessages(roomId, cursor){
+    const url = new URL(`${location.origin}${CTX}/api/chat/rooms/${roomId}/messages`);
+    if (cursor) url.searchParams.set('cursor', cursor);
+    const res = await fetch(url.toString());
+    const list = await res.json();
+    chatMessages.innerHTML = '';
+    list.slice().reverse().forEach(m => appendMessage(m));
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function appendMessage(m){
+    const side = (m.petId === MY_PET_ID) ? 'right' : 'left';
+    const wrap = document.createElement('div');
+    wrap.className = `message ${side}`;
+    const text = document.createElement('div');
+    text.className = 'text';
+    text.textContent = m.chatMessage || '';
+    wrap.appendChild(text);
+    chatMessages.appendChild(wrap);
+  }
+
+  function ensureWs(){
+    if (ws && ws.readyState === WebSocket.OPEN) return;
+    const scheme = (location.protocol === 'https:') ? 'wss' : 'ws';
+    ws = new WebSocket(`${scheme}://${location.host}${CTX}/ws/chat`);
+    ws.onmessage = (evt)=>{
+      try{
+        const data = JSON.parse(evt.data);
+        if (data.type === 'MESSAGE' && data.roomId === currentRoomId){
+          appendMessage({ chatMessage: data.body, petId: data.senderPetId });
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      }catch(e){ console.error(e); }
+    };
+  }
+
+  async function openRoom(roomId){
+    currentRoomId = roomId;
+    chatRoomTitle && (chatRoomTitle.textContent = `Room #${roomId}`);
+    openDetail();
+    await loadMessages(roomId);
+    ensureWs();
+    ws && ws.send(JSON.stringify({ type:'JOIN', roomId }));
+  }
+
+  function send(){
+    const text = (chatInput.value || '').trim();
+    if(!text || !ws || ws.readyState !== WebSocket.OPEN || currentRoomId == null) return;
+    ws.send(JSON.stringify({ type:'SEND', roomId: currentRoomId, body: text }));
+    chatInput.value = '';
+  }
+  chatSendBtn && chatSendBtn.addEventListener('click', send);
+  chatInput && chatInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }});
+
+  // 1:1 채팅 버튼(카드/상세 등)에 대한 이벤트 위임
+  document.addEventListener('click', async (e)=>{
+    const btn = e.target.closest('[data-chat-room-id], [data-chat-with]');
+    if(!btn) return;
+
+    // 1) 이미 roomId가 있으면 바로 열기
+    if (btn.dataset.chatRoomId){
+      const roomId = parseInt(btn.dataset.chatRoomId, 10);
+      if (!isNaN(roomId)) {
+        openDetail();
+        await openRoom(roomId);
+      }
+      return;
+    }
+
+    // 2) 상대 petId로 방 생성/조회 후 열기
+    if (btn.dataset.chatWith){
+      const toPetId = parseInt(btn.dataset.chatWith, 10);
+      if (isNaN(toPetId)) return;
+      try{
+        const res = await fetch(`${CTX}/api/chat/rooms/direct?toPetId=${toPetId}`, { method:'POST' });
+        if (!res.ok) throw new Error('direct create failed');
+        const data = await res.json(); // {roomId: number}
+        openList(); // 목록 배경 열려 있으면 자연스럽게 전환
+        await openRoom(data.roomId);
+      }catch(err){ console.error(err); alert('채팅방 생성에 실패했습니다.'); }
+    }
+  });
+
+  // 초기: 목록 로드(버튼을 누르면 보이지만, 데이터는 미리 준비)
+  document.addEventListener('DOMContentLoaded', loadRooms);
 	</script>
 </body>
 </html>
