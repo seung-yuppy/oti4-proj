@@ -1,19 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<!-- 폰트 -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@200..900&display=swap" rel="stylesheet">
-<style>
-.round_font {
-	font-family: "Chiron GoRound TC", sans-serif;
-	font-optical-sizing: auto;
-	font-weight: <weight>;
-	font-style: normal;
-}
 </style>
-<div class="card pet-card shadow-sm round_font">
+<div class="card pet-card shadow-sm">
 	<img src="${param.profileImage}" class="card-img-top card-image"
 		alt="${empty param.kind ? '사진 없음' : param.kind}" />
 
@@ -58,38 +47,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-async function renderHeartButton(button) {
-    const id = button.dataset.petId;
-    try {
-        const res = await fetch(`/bughunters/abandonedpet/islike/\${id}`, {
-            method: "GET"
-        });
-        const data = await res.json();
-
-        if (data.isLike) {
-            button.innerHTML = `<img src="/bughunters/resources/image/ico_fullheart.png" class="heart card-icon">`;
-        } else {
-            button.innerHTML = `<img src="/bughunters/resources/image/ico_mbti.png" class="card-icon">`;
-        }
-    } catch (error) {
-        console.error('Failed to fetch like status:', error);
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-	document.querySelectorAll(".card-like-btn").forEach(async(button) => { 
-		await renderHeartButton(button);
-		button.addEventListener("click", async (event) => {
-			const petId = event.currentTarget.dataset.petId;
-			const res = await fetch(`/bughunters/abandonedpet/like/\${petId}`, {
-				method: "POST"
-			});
-            if (res.ok) {
-                await renderHeartButton(button);
-            } else {
-                console.error('Failed to toggle like status.');
-            }
-		});
-	});
-});
 </script>

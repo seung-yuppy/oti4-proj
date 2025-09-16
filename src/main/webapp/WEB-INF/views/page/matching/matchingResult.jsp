@@ -99,7 +99,7 @@
  	 font-size: 3rem;
     }
    
-   .round_fontw {
+   .round_font {
 	 font-family: "Chiron GoRound TC", sans-serif;
 	 font-optical-sizing: auto;
  	 font-weight: <weight>;
@@ -120,9 +120,6 @@
 	<h1 class="text-center fw-bold round_font">당신의 운명의 발바닥</h1>
 	<p class="text-center fw-bold text-muted">퀴즈를 여러번 진행할수록 결과는 더욱 더 정교해집니다 !</p>
 	<br>
-	<a href="/bughunters/matchingQuiz"
-		class="d-block h5 text-center fw-bold text-muted text-decoration-none gnb-item round_font">
-		퀴즈 다시 풀러가기 </a>
 	<div class="container my-5" id="result-section" style="display: none;">
 		<c:choose>
 			<c:when test="${finishedQuiz}">
@@ -154,6 +151,9 @@
 			</c:otherwise>
 		</c:choose>
 	</div>
+	<a href="/bughunters/matchingQuiz"
+		class="d-block h5 text-center fw-bold text-muted  gnb-item round_font"
+		style="text-decoration: none;"> 퀴즈 다시 풀러가기 </a>
 
 
 	<%@ include file="../../component/footer.jsp"%>
@@ -189,6 +189,41 @@
 		const colors = ["#f44336", "#e91e63", "#ff9800", "#4caf50", "#3f51b5", "#9c27b0"];
 		return colors[Math.floor(Math.random() * colors.length)];
 	}
+	
+	async function renderHeartButton(button) {
+	    const id = button.dataset.petId;
+	    try {
+	        const res = await fetch(`/bughunters/abandonedpet/islike/\${id}`, {
+	            method: "GET"
+	        });
+	        const data = await res.json();
+
+	        if (data.isLike) {
+	            button.innerHTML = `<img src="/bughunters/resources/image/ico_fullheart.png" class="heart card-icon">`;
+	        } else {
+	            button.innerHTML = `<img src="/bughunters/resources/image/ico_mbti.png" class="card-icon">`;
+	        }
+	    } catch (error) {
+	        console.error('Failed to fetch like status:', error);
+	    }
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		document.querySelectorAll(".card-like-btn").forEach(async(button) => { 
+			await renderHeartButton(button);
+			button.addEventListener("click", async (event) => {
+				const petId = event.currentTarget.dataset.petId;
+				const res = await fetch(`/bughunters/abandonedpet/like/\${petId}`, {
+					method: "POST"
+				});
+	            if (res.ok) {
+	                await renderHeartButton(button);
+	            } else {
+	                console.error('Failed to toggle like status.');
+	            }
+			});
+		});
+	});
 </script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package edu.example.bughunters.domain;
 
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +12,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommunityDTO {
-	private int community_id;
-	private String title;
-	private String kind;
-	private int age;
-	private String gender;
-	private double weight;
-	private String color;
-	private int meetingTemperature;
-	private String intro;
+    private int communityId;  
+    private String title;
+    private String content;
+    private byte[] image;
+    private String category;
+    private Date createdAt;
+    private int viewcount;
     private int userId;
+    private String nickname;
+    private int commentCount;
 }

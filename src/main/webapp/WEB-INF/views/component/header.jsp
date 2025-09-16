@@ -19,7 +19,7 @@
 				<li class="nav-item"><a class="nav-link gnb-item"
 					href="<c:url value='/pet'/>"> 펫과 펫 </a></li>
 				<li class="nav-item"><a class="nav-link gnb-item"
-					href="<c:url value='/communityMain'/>"> 커뮤니티 </a></li>
+					href="<c:url value='/community'/>"> 커뮤니티 </a></li>
 			</ul>
 			<ul class="navbar-nav ms-auto header-list">
 				<c:choose>

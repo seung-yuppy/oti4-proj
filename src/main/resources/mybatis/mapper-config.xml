@@ -12,5 +12,11 @@
 		<typeAlias alias="PetDTO" type="edu.example.bughunters.domain.PetDTO" />
 		<typeAlias alias="ChatMessageDTO" type="edu.example.bughunters.domain.ChatMessageDTO" />
 		<typeAlias alias="ChatRoomDTO" type="edu.example.bughunters.domain.ChatRoomDTO" />
+		
+		<typeAlias alias="CommunityDTO" type="edu.example.bughunters.domain.CommunityDTO"/>
+    	<typeAlias alias="CommentDTO" type="edu.example.bughunters.domain.CommentDTO"/>
+    	<typeAlias alias="MatchingQuizDTO" type="edu.example.bughunters.domain.MatchingQuizDTO"/>
+    	<typeAlias alias="MatchingAnswerDTO" type="edu.example.bughunters.domain.MatchingAnswerDTO"/>
+   		<typeAlias alias="MatchingResultDTO" type="edu.example.bughunters.domain.MatchingResultDTO"/>
 	</typeAliases>
 </configuration>

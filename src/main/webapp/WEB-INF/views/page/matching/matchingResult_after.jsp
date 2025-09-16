@@ -8,28 +8,40 @@
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
+<!-- 폰트 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@200..900&display=swap" rel="stylesheet">
 <style>
 h1.text-center.fw-bold {
 	color: #a75d00;
-	margin: 30px 0; 
+	margin: 30px 0;
 	font-size: 3rem;
 }
 
 .card {
-	width: 100%; 
+	width: 100%;
 	max-width: 100%;
 	height: auto !important;
 	min-height: unset !important;
-	}
+}
+
+.round_font {
+	font-family: "Chiron GoRound TC", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: <weight>;
+	font-style: normal;
+}
 </style>
 </head>
 <body>
 
 	<%@ include file="../../component/header.jsp"%>
-	<h1 class="text-center fw-bold">당신의 운명의 발바닥</h1>
-	<div class="container my-5" id="result-section" >
+	<h1 class="text-center fw-bold round_font">당신의 운명의 발바닥</h1>
+	<p class="text-center fw-bold text-muted round_font">퀴즈를 여러번 진행할수록 결과는 더욱 더 정교해집니다 !</p>
+	<br>
+
+	<div class="container my-5" id="result-section">
 		<c:choose>
 			<c:when test="${finishedQuiz}">
 				<div class="row g-4">
@@ -60,8 +72,47 @@ h1.text-center.fw-bold {
 			</c:otherwise>
 		</c:choose>
 	</div>
-
-
+	<a href="/bughunters/matchingQuiz"
+		class="d-block h5 text-center fw-bold text-muted  gnb-item round_font"
+		style="text-decoration: none;"> 퀴즈 다시 풀러가기 </a>
 	<%@ include file="../../component/footer.jsp"%>
+
+	<script>
+	async function renderHeartButton(button) {
+	    const id = button.dataset.petId;
+	    try {
+	        const res = await fetch(`/bughunters/abandonedpet/islike/\${id}`, {
+	            method: "GET"
+	        });
+	        const data = await res.json();
+
+	        if (data.isLike) {
+	            button.innerHTML = `<img src="/bughunters/resources/image/ico_fullheart.png" class="heart card-icon">`;
+	        } else {
+	            button.innerHTML = `<img src="/bughunters/resources/image/ico_mbti.png" class="card-icon">`;
+	        }
+	    } catch (error) {
+	        console.error('Failed to fetch like status:', error);
+	    }
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		document.querySelectorAll(".card-like-btn").forEach(async(button) => { 
+			await renderHeartButton(button);
+			button.addEventListener("click", async (event) => {
+				const petId = event.currentTarget.dataset.petId;
+				const res = await fetch(`/bughunters/abandonedpet/like/\${petId}`, {
+					method: "POST"
+				});
+	            if (res.ok) {
+	                await renderHeartButton(button);
+	            } else {
+	                console.error('Failed to toggle like status.');
+	            }
+			});
+		});
+	});
+	
+	</script>
 </body>
 </html>

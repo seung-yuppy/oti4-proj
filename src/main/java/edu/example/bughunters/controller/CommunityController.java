@@ -1,0 +1,261 @@
+package edu.example.bughunters.controller;
+
+import edu.example.bughunters.domain.CommunityDTO;
+import edu.example.bughunters.domain.CommentDTO;
+import edu.example.bughunters.service.CommunityService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+@Slf4j
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/community")
+public class CommunityController {
+
+    private final CommunityService communityService;
+    
+    private static boolean hasText(String s) {
+        return s != null && !s.trim().isEmpty();
+    }
+    
+    @GetMapping
+    public String list(@RequestParam(required = false) String q,
+                       @RequestParam(required = false) String category,
+                       @RequestParam(defaultValue = "1") int page,
+                       @RequestParam(defaultValue = "10") int size,
+                       Model model) {
+
+        Map<String,Object> filters = new HashMap<>();
+        if (hasText(q))        filters.put("q", q.trim());
+        if (hasText(category)) filters.put("category", category.trim());
+
+        List<CommunityDTO> items = communityService.getList(filters, page, size);
+        int total = communityService.countList(filters);
+        int totalPages = (int)Math.ceil((double) total / Math.max(1, size));
+
+        model.addAttribute("list", items);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("q", q);
+        model.addAttribute("category", category);
+        return "community/communityMain";
+    }
+
+
+    // 상세 (조회수 +1)
+    @GetMapping("/{id:\\d+}")
+    public String detail(@PathVariable("id") int id,
+            @RequestParam(defaultValue = "1") int cpage,
+            @RequestParam(defaultValue = "20") int csize,
+            HttpSession session,
+            Model model) {
+        CommunityDTO post = communityService.getDetailAndIncreaseView(id);
+        if (post == null) return "redirect:/community";
+
+        List<CommentDTO> comments = communityService.getComments(id, cpage, csize);
+        int commentCount = communityService.getCommentCount(id);
+
+        Integer loginUserId = toInt(session.getAttribute("userId"));
+
+        boolean isAuthenticated = (loginUserId != null);
+        boolean isOwner = isAuthenticated && (loginUserId == post.getUserId());
+
+        model.addAttribute("post", post);
+        model.addAttribute("comments", comments);
+        model.addAttribute("commentCount", commentCount);
+        model.addAttribute("cpage", cpage);
+        model.addAttribute("csize", csize);
+        model.addAttribute("isAuthenticated", isAuthenticated);
+        model.addAttribute("isOwner", isOwner);
+
+        return "community/communityDetail";
+    }
+
+
+    // 이미지 바이트 서빙
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> image(@PathVariable("id") int id) {
+        CommunityDTO post = communityService.getById(id);
+        if (post == null || post.getImage() == null || post.getImage().length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+        byte[] bytes = post.getImage();
+        MediaType mt = sniff(bytes); 
+        return ResponseEntity.ok()
+                .contentType(mt)
+                .header(HttpHeaders.CACHE_CONTROL, "public, max-age=604800") 
+                .body(bytes);
+    }
+
+    private MediaType sniff(byte[] b){
+        if (b == null || b.length < 10) return MediaType.APPLICATION_OCTET_STREAM;
+        // JPEG
+        if ((b[0] & 0xFF) == 0xFF && (b[1] & 0xFF) == 0xD8) return MediaType.IMAGE_JPEG;
+        // PNG
+        if (b[0]==(byte)0x89 && b[1]==0x50 && b[2]==0x4E && b[3]==0x47) return MediaType.IMAGE_PNG;
+        // GIF
+        if (b[0]==0x47 && b[1]==0x49 && b[2]==0x46) return MediaType.IMAGE_GIF;
+        return MediaType.APPLICATION_OCTET_STREAM;
+    }
+
+
+    // ======= 새 글 작성 =======
+
+    // 작성 폼
+    @GetMapping("/new")
+    public String newForm(Model model, HttpSession session, RedirectAttributes rttr) {
+        if (toInt(session.getAttribute("userId")) == null) {
+            rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
+            rttr.addFlashAttribute("openLogin", true);
+            return "redirect:/home"; // 홈이나 로그인 페이지로 리다이렉트
+        }
+        if (!model.containsAttribute("form")) {
+            model.addAttribute("form", new CommunityDTO()); 
+        }
+        return "community/communityCreate";
+    }
+
+    // 작성 저장
+
+    
+    @PostMapping
+    public String create(@ModelAttribute("form") CommunityDTO form,
+                         @RequestParam(required = false) MultipartFile imageFile,
+                         HttpSession session,
+                         RedirectAttributes rttr,
+                         Model model) throws IOException {
+        Integer loginUserId = toInt(session.getAttribute("userId"));
+        if (loginUserId == null) {
+            rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
+            rttr.addFlashAttribute("openLogin", true);
+            return "redirect:/home";
+        }
+
+        boolean noImage = (imageFile == null || imageFile.isEmpty());
+        if ("PRIDE".equals(form.getCategory()) && noImage) {
+            model.addAttribute("error", "내 반려동물을 자랑하는 게시판은 이미지를 반드시 업로드해야 합니다.");
+            return "community/communityCreate";
+        }
+
+        form.setUserId(loginUserId);
+        if (!noImage) {
+            form.setImage(imageFile.getBytes());
+        }
+
+        int newId = communityService.createPost(form);
+        return "redirect:/community/" + newId;
+        
+    }
+
+    // ======= 글 수정 =======
+
+    // 수정 폼
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable("id") int id, Model model) {
+        CommunityDTO post = communityService.getById(id);
+        if (post == null) return "redirect:/community";
+        model.addAttribute("post", post);
+        if (!model.containsAttribute("form")) {
+            model.addAttribute("form", post); 
+        }
+        return "community/communityUpdate";
+    }
+
+    // 수정 저장
+    @PostMapping("/{id}/edit")
+    public String update(@PathVariable("id") int id,
+                         @ModelAttribute("form") CommunityDTO form,
+                         @RequestParam(required = false) MultipartFile imageFile,
+                         HttpSession session, Model model) throws IOException {
+
+        Integer loginUserId = toInt(session.getAttribute("userId"));
+        if (loginUserId == null) return "redirect:/login";
+
+        CommunityDTO current = communityService.getById(id);
+        if (current == null) return "redirect:/community";
+
+        boolean noNewImage = (imageFile == null || imageFile.isEmpty());
+        boolean hasExisting = current.getImage() != null && current.getImage().length > 0;
+        boolean isPride = "PRIDE".equals(form.getCategory());
+
+        if (isPride && noNewImage && !hasExisting) {
+            model.addAttribute("error", "내 반려동물을 자랑하는 게시판은 이미지를 반드시 업로드해야 합니다.");
+            model.addAttribute("post", current);
+            return "community/communityUpdate";
+        }
+
+        form.setCommunityId(id);
+        form.setUserId(loginUserId);
+        if (!noNewImage) {
+            form.setImage(imageFile.getBytes()); 
+        } 
+
+        communityService.updatePost(form);
+        return "redirect:/community/" + id;
+    }
+
+
+    // 글 삭제
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable("id") int id, HttpSession session) {
+        Integer loginUserId = toInt(session.getAttribute("userId"));
+        if (loginUserId == null) return "redirect:/login";
+        communityService.deletePost(id, loginUserId);
+        return "redirect:/community";
+    }
+
+    // ---- helpers ----
+    private Integer toInt(Object o) {
+        if (o == null) return null;
+        if (o instanceof Integer) return (Integer) o;
+        if (o instanceof Long) return ((Long) o).intValue();
+        try { return Integer.parseInt(String.valueOf(o)); } catch (Exception e) { return null; }
+    }
+    
+    @PostMapping("/{id}/comments")
+    public String addComment(@PathVariable("id") int id,
+                             @RequestParam("content") String content,
+                             HttpSession session,
+                             RedirectAttributes rttr) {
+
+        Object uid = session.getAttribute("userId");
+        if (uid == null) uid = session.getAttribute("user_id");
+        Integer loginUserId = null;
+        if (uid instanceof Integer) loginUserId = (Integer) uid;
+        else if (uid instanceof Long) loginUserId = ((Long) uid).intValue();
+        else if (uid != null) { try { loginUserId = Integer.parseInt(String.valueOf(uid)); } catch (Exception ignore) {} }
+
+        if (loginUserId == null) {
+            rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
+            rttr.addFlashAttribute("openLogin", true);
+            return "redirect:/home";
+        }
+
+        CommentDTO dto = new CommentDTO();
+        dto.setCommunityId(id);
+        dto.setUserId(loginUserId);
+        dto.setContent(content);
+        communityService.addComment(dto);
+
+        return "redirect:/community/" + id;
+    }
+
+
+}

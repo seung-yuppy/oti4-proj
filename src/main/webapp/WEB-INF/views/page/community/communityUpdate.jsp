@@ -5,8 +5,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<link href="/miniproj/resource/css/bootstrap.min.css" rel="stylesheet">
-<link href="/miniproj/resource/css/common.css" rel="stylesheet">
 </head>
 <style>
 .nav-pills {
@@ -55,8 +53,8 @@
 }
 </style>
 <body>
-<!-- 헤더 영역 -->
-	<%@ include file="/WEB-INF/views/component/header.jsp" %>
+	<!-- 헤더 영역 -->
+	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 	<div class="container my-5" style="max-width: 980px;">
 		<!-- Title -->
 		<h1 class="fw-bold fs-1 mb-4">커뮤니티</h1>
@@ -87,7 +85,8 @@
 					href="#" class="nav-link rounded-pill tab">실종 동물을 찾아주세요 게시판</a>
 			</nav>
 			<div class="d-flex gap-2 ms-auto">
-				<a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/page/community/communityMain.jsp">전체보기</a>
+				<a class="btn btn-outline-secondary"
+					href="${pageContext.request.contextPath}/page/community/communityMain.jsp">전체보기</a>
 				<button class="btn btn-brown">새 글 작성</button>
 			</div>
 		</div>
@@ -96,15 +95,15 @@
 		<section class="card border-0 shadow-sm mb-5">
 			<div class="card-body">
 				<!-- 수정 폼 -->
-				<!-- 파일 업로드가 아니라 URL만 수정하면 되면 아래 그대로 사용.
-         파일 업로드까지 하려면 enctype="multipart/form-data" 로 바꿔주세요. -->
-				<form method="post" action="/community/${post.id}/edit"
-					class="row g-4">
+				<form method="post"
+					action="<c:url value='/community/${post.communityId}/edit'/>"
+					enctype="multipart/form-data" class="row g-4">
+
 					<!-- 제목 -->
 					<div class="col-12">
 						<label class="form-label fw-semibold">제목</label> <input
 							type="text" name="title" class="form-control" required
-							placeholder="제목을 입력하세요" value="${post.title}">
+							maxlength="100" placeholder="제목을 입력하세요" value="${post.title}">
 					</div>
 
 					<!-- 본문 -->
@@ -112,55 +111,66 @@
 						<label class="form-label fw-semibold">본문 내용</label>
 						<textarea name="content" id="content" class="form-control"
 							rows="12" placeholder="본문을 입력하세요">${post.content}</textarea>
-						<div class="form-text">줄바꿈은 그대로 저장됩니다. (Shift+Enter로 줄바꿈)</div>
+						<div class="form-text">Shift+Enter로 줄바꿈</div>
 					</div>
 
-					<!-- 이미지 업로드 + 미리보기 (Bootstrap) -->
-					<div class="mb-3">
-						<label for="imageFiles" class="form-label fw-semibold">이미지
-							파일 업로드</label> <input type="file" id="imageFiles" name="images"
-							class="form-control" accept="image/*" multiple>
-						<div class="form-text">여러 장 선택 가능합니다. (JPG, PNG 등)</div>
-					</div>
-					
-					<!-- 미리보기 영역: 업로드 아래에 위치 -->
-					<div class="d-flex align-items-center justify-content-between mb-2">
-						<div class="fw-semibold">미리보기</div>
-						<div class="d-flex gap-2">
-						</div>
-					</div>
+					<!-- 현재 이미지 + 교체/삭제 옵션 -->
+					<div class="col-12">
+						<label class="form-label fw-semibold d-block mb-2">현재 이미지</label>
+						<img class="edit-current-img mb-2"
+							src="<c:url value='/community/${post.communityId}/image'/>"
+							alt="현재 이미지">
 
-					<div id="previewList" class="row g-3">
-						<!-- 기본 더미 (아무것도 없을 때) -->
-						<div class="col-6 col-md-4 col-lg-3" data-dummy="true">
-							<div class="card h-100">
-								<img
-									src="https://images.unsplash.com/photo-1534361960057-19889db9621e?q=80&amp;w=1200&amp;auto=format&amp;fit=crop"
-									class="card-img-top" alt="더미 이미지">
-								<div class="card-body p-2">
-									<div class="small text-muted">더미 이미지</div>
-								</div>
+						<div class="d-flex flex-wrap align-items-center gap-3 mt-2">
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="imgAction"
+									id="imgKeep" value="keep" checked> <label
+									class="form-check-label" for="imgKeep">유지</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="imgAction"
+									id="imgReplace" value="replace"> <label
+									class="form-check-label" for="imgReplace">교체</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio"
+									name="deleteImage" id="imgDelete" value="1"> <label
+									class="form-check-label" for="imgDelete">이미지 삭제</label>
 							</div>
 						</div>
 					</div>
 
+					<!-- 교체 선택 시에만 보일 파일 입력 + 미리보기 -->
+					<div class="col-12" id="replaceBlock" style="display: none;">
+						<label for="imageFile" class="form-label fw-semibold">새
+							이미지 업로드</label> <input type="file" id="imageFile" name="image"
+							class="form-control" accept="image/*">
+						<div class="form-text">JPG/PNG 권장</div>
 
-					<!-- 하단 버튼 -->
-					<div class="col-12 d-flex justify-content-end gap-2">
-						<a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/page/community/communityMain.jsp">취소</a>
-						<div class="d-flex gap-2">
-							<button type="submit" class="btn btn-primary">저장</button>
+						<div class="mt-3">
+							<div class="fw-semibold mb-1">미리보기</div>
+							<img id="previewImg" class="edit-preview-img" alt="미리보기"
+								style="display: none;">
 						</div>
 					</div>
+
+					<!-- 버튼 -->
+					<div class="col-12 d-flex justify-content-end gap-2">
+						<a class="btn btn-outline-secondary"
+							href="<c:url value='/community'/>">취소</a>
+						<button type="submit" class="btn btn-primary">저장</button>
+					</div>
 				</form>
+
+
 			</div>
 			<!-- footer 영역 -->
-	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
+			<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 		</section>
 		<!-- ===== 게시글 수정 END ===== -->
 
-<script>
-(function () {
+		<script>
+/* (function () {
   const fileInput = document.getElementById('imageFiles');
   const previewList = document.getElementById('previewList');
 
@@ -226,7 +236,44 @@
 
   // 초기 렌더
   renderPreviews();
+})(); */
+
+(function(){
+  const keep = document.getElementById('imgKeep');
+  const replace = document.getElementById('imgReplace');
+  const del = document.getElementById('imgDelete');
+  const block = document.getElementById('replaceBlock');
+  const input = document.getElementById('imageFile');
+  const preview = document.getElementById('previewImg');
+
+  function syncUI(){
+    // 삭제 체크 시 교체 비활성화
+    if (del.checked){
+      replace.checked = false;
+      keep.checked = true;
+    }
+    block.style.display = replace.checked ? '' : 'none';
+    if (!replace.checked){
+      input.value = '';
+      preview.style.display = 'none';
+      preview.src = '';
+    }
+  }
+
+  [keep, replace, del].forEach(el => el.addEventListener('change', syncUI));
+
+  input && input.addEventListener('change', (e)=>{
+    const f = e.target.files && e.target.files[0];
+    if (!f){ preview.style.display='none'; return; }
+    const url = URL.createObjectURL(f);
+    preview.src = url;
+    preview.style.display = '';
+    preview.onload = ()=> URL.revokeObjectURL(url);
+  });
+
+  syncUI();
 })();
+
 </script>
 </body>
 </html>
