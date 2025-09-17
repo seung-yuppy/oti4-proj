@@ -50,14 +50,10 @@
 }
 </style>
 <body>
-	<jsp:include page="/WEB-INF/views/component/header.jsp" />
+	<%@ include file="/WEB-INF/views/component/header.jsp"%>
 
 	<div class="container my-5" style="max-width: 980px;">
 		<h1 class="fw-bold fs-1 mb-4">새 글 작성</h1>
-
-		<c:if test="${not empty error}">
-			<div class="alert alert-danger">${error}</div>
-		</c:if>
 
 		<section class="card shadow-sm border-0">
 			<div class="card-body">
@@ -102,8 +98,8 @@
 					<!-- 이미지 한 장  -->
 					<div class="col-12">
 						<label class="form-label fw-semibold"> 대표 이미지 <span
-							id="imageRequiredMark" class="badge text-bg-danger"
-							style="display: none;">PRIDE: 필수</span>
+							id="imageRequiredMark" class="badge text-bg-secondary"
+							style="display: none;">동물 자랑 게시판은 사진이 필수입니다.</span>
 						</label> <input type="file" name="imageFile" id="imageFile"
 							class="form-control" accept="image/*">
 						<div class="form-text">JPG/PNG 권장, 5MB 이하</div>
@@ -131,7 +127,7 @@
 		</section>
 	</div>
 
-	<jsp:include page="/WEB-INF/views/component/footer.jsp" />
+	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 
 	<script>
 	(function () {
@@ -173,7 +169,7 @@
 		    if (categorySel && categorySel.value === 'PRIDE') {
 		      if (!imageInput || !imageInput.files || imageInput.files.length === 0) {
 		        e.preventDefault();
-		        alert('PRIDE 카테고리는 이미지를 반드시 업로드해야 합니다.');
+		        alert('동물 자랑 게시판은 이미지를 반드시 업로드해야 합니다.');
 		        return false;
 		      }
 		    }

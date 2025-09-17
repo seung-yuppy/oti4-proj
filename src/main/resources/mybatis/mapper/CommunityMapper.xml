@@ -108,7 +108,7 @@
     <set>
       <if test="title    != null">title    = #{title},</if>
       <if test="content  != null">content  = #{content},</if>
-      <if test="image    != null">image    = #{image},</if>
+      <if test="image != null">image = #{image,jdbcType=BLOB},</if>
       <if test="category != null">category = #{category},</if>
     </set>
     WHERE community_id = #{communityId}
@@ -117,9 +117,16 @@
 
 	<!-- 삭제 -->
 	<delete id="deleteCommunity" parameterType="map">
-    DELETE FROM Community
-    WHERE community_id = #{communityId}
-      AND user_id      = #{userId}
-  </delete>
+		DELETE FROM Community
+		WHERE community_id = #{communityId}
+		AND user_id = #{userId}
+	</delete>
+
+	<update id="clearImage">
+		UPDATE Community
+		SET image = NULL
+		WHERE community_id = #{communityId}
+		AND user_id = #{userId}
+	</update>
 
 </mapper>

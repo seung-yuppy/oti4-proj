@@ -59,10 +59,18 @@
 }
 
 .post-card-img {
-  height: 200px; !important;     
+  height: 100px; !important;     
   object-fit: contain; !important; 
   border-radius: 8px; !important; 
 }
+
+.post-item { border: 0; border-bottom: 1px solid #e5e7eb; border-radius: 0; }
+.post-thumb-wrap { width: 120px; height: 120px; flex: 0 0 120px; }
+.post-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px;}
+.post-title { font-weight: 700; font-size: 1.5rem; margin: 0; }
+.post-meta { color:#6b7280; font-size: .875rem; }
+.post-stats img { vertical-align: -2px; }
+.post-link { text-decoration: none; color: inherit; display:block; }
 </style>
 <!-- Bootstrap -->
 <body>
@@ -95,76 +103,74 @@
   </div>
 </div>
 
-<!-- Posts (SSR만 사용) -->
-	<div id="postContainer" class="container" style="max-width: 980px;">
-		<c:choose>
-			<c:when test="${empty list}">
-				<div class="text-center text-muted py-5">게시글이 없습니다.</div>
-			</c:when>
-			<c:otherwise>
-				<c:forEach var="p" items="${list}">
-					<a class="text-decoration-none text-dark"
-						href="<c:url value='/community/${p.communityId}'/>">
-						<article class="card shadow-sm border-0 mb-4">
-							<div class="card-body">
-								<!-- Author (아바타 없음) -->
-								<div
-									class="d-flex justify-content-between align-items-start mb-3">
-									<div class="d-flex align-items-center">
-										<div>
-											<div class="d-flex align-items-center">
-												<span class="fw-bold"><c:out value="${p.nickname}" /></span>
-											</div>
-											<small class="text-muted"> <fmt:formatDate
-													value="${p.createdAt}" pattern="yyyy-MM-dd HH:mm" />
-											</small>
-										</div>
-									</div>
-									<span class="text-muted fs-4" role="button">⋯</span>
-								</div>
+<!-- Posts -->
+<div id="postContainer" class="container" style="max-width: 980px;">
+  <c:choose>
+    <c:when test="${empty list}">
+      <div class="text-center text-muted py-5">게시글이 없습니다.</div>
+    </c:when>
 
-								<!-- Title -->
-								<h2 class="fs-3 fw-bold mb-3">
-									<c:out value="${p.title}" />
-								</h2>
+    <c:otherwise>
+      <c:forEach var="p" items="${list}">
+        <a class="post-link" href="<c:url value='/community/${p.communityId}'/>">
+          <article class="card post-item py-3">
+            <div class="card-body py-0">
+              <div class="d-flex gap-3">
+                
+                <!-- 썸네일 -->
+                <div class="post-thumb-wrap">
+                  <c:choose>
+                    <c:when test="${p.image != null}">
+                      <img class="post-thumb"
+                           src="<c:url value='/community/${p.communityId}/image'/>?v=${p.viewcount}"
+                           alt="썸네일">
+                    </c:when>
+                    <c:otherwise>
+                      <img class="post-thumb"
+                           src="<c:url value='/resources/image/img_noImg.png'/>"
+                           alt="썸네일 없음">
+                    </c:otherwise>
+                  </c:choose>
+                </div>
 
-								<!-- Thumbnail -->
+                <!-- 우측 내용 -->
+                <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                  
+                  <!-- 닉네임  날짜 -->
+                  <div class="d-flex justify-content-between post-meta-top">
+                    <span class="fw-semibold"><c:out value="${p.nickname}"/></span>
+                    <small>
+                      <fmt:formatDate value="${p.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
+                    </small>
+                  </div>
+                  
+                  <!-- 제목 -->
+                  <h3 class="post-title">
+                    <c:out value="${p.title}"/>
+                  </h3>
 
-								<c:if test="${p.image != null}">
-										<img src="<c:url value='/community/${p.communityId}/image'/>"
-										alt="${p.title}" class="post-card-img"/>
-								</c:if>
+                  <!-- 조회수/댓글 -->
+                  <div class="d-flex gap-3 text-muted post-stats">
+                    <span>
+                      <img src="<c:url value='/resources/image/ico_watch.png'/>" width="16" height="16" alt="조회수">
+                      <c:out value="${p.viewcount}"/>
+                    </span>
+                    <span>
+                      <img src="<c:url value='/resources/image/ico_comment.png'/>" width="16" height="16" alt="댓글">
+                      <c:out value="${p.commentCount}"/>
+                    </span>
+                  </div>
 
-								<!-- Excerpt -->
-								<c:set var="excerpt"
-									value="${fn:length(p.content) > 160 ? fn:substring(p.content, 0, 160) : p.content}" />
-								<p class="text-secondary lh-lg mb-3">
-									<c:out value="${excerpt}" />
-									<c:if test="${fn:length(p.content) > 160}">...</c:if>
-								</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </a>
+      </c:forEach>
+    </c:otherwise>
+  </c:choose>
+</div>
 
-								<hr>
-
-								<!-- Stats -->
-								<div class="d-flex gap-4 text-muted">
-									<div class="d-flex align-items-center gap-1">
-										<img src="<c:url value='/resources/image/ico_watch.png'/>"
-											alt="조회수" width="18" height="18"> <span><c:out
-												value="${p.viewcount}" /></span>
-									</div>
-									<div class="d-flex align-items-center gap-1">
-										<img src="<c:url value='/resources/image/ico_comment.png'/>"
-											alt="댓글" width="18" height="18"> <span><c:out
-												value="${p.commentCount}" /></span>
-									</div>
-								</div>
-							</div>
-						</article>
-					</a>
-				</c:forEach>
-			</c:otherwise>
-		</c:choose>
-	</div>
 
 	<!-- Pagination (SSR) -->
 	<div class="container" style="max-width: 980px;">

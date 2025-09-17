@@ -100,4 +100,9 @@ public class CommunityService {
     public boolean deleteComment(int commentId, int userId) {
         return communityDAO.deleteComment(commentId, userId) > 0;
     }
+    
+    @Transactional
+    public boolean clearPostImage(int communityId, int userId) {
+        return communityDAO.clearImage(communityId, userId) > 0;
+    }
 }

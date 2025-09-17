@@ -127,7 +127,7 @@
 .post-detail-img {
   width: 100%; !important; 
   height: auto; !important;      
-  object-fit: contain; !important; 
+  /* object-fit: contain; !important;  */
 }
 </style>
 <body>
@@ -158,7 +158,11 @@
 								href="${pageContext.request.contextPath}/community/${post.communityId}/edit">수정하기</a>
 							<form method="post"
 								action="${pageContext.request.contextPath}/community/${post.communityId}/delete"
-								class="m-0">
+								class="m-0" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
+								<c:if test="${not empty _csrf}">
+									<input type="hidden" name="${_csrf.parameterName}"
+										value="${_csrf.token}" />
+								</c:if>
 								<button type="submit" class="btn btn-outline-gray btn-sm">삭제하기</button>
 							</form>
 						</div>
@@ -172,11 +176,13 @@
 
 				<!-- 썸네일: 이미지 있을 때만 표시 -->
 				<c:if test="${post.image != null}">
-					<!-- <div class="overflow-hidden border mb-3"> -->
-						<img
-							src="${pageContext.request.contextPath}/community/${post.communityId}/image"
-							alt="${post.title}" class="post-detail-img"/>
-					<!-- </div> -->
+					<div class="mb-3">
+						<img class="mb-2 post-detail-img"
+							src="<c:url value='/community/${post.communityId}/image'/>?v=${post.viewcount}"
+							alt="현재 이미지" style="display: none"
+							onload="this.style.display='';"
+							onerror="this.style.display='none'">
+					</div>
 				</c:if>
 
 				<!-- 본문 (개행 유지) -->
@@ -209,13 +215,17 @@
 
 			<!-- 댓글 작성 -->
 			<form class="mb-4" method="post"
-				action="${pageContext.request.contextPath}/community/${post.communityId}/comments">
-				<textarea name="content" class="form-control mb-2" rows="3"
-					placeholder="댓글을 남겨보세요" required></textarea>
-				<div class="text-end">
+				action="${pageContext.request.contextPath}/community/${post.communityId}/comments"
+				onsubmit="return checkCommentLength();">
+				<textarea id="commentContent" name="content" class="form-control mb-2" rows="3"  placeholder="댓글을 남겨보세요" required></textarea>
+				<!-- maxlength는 빼고 JS에서 바이트 기준 체크 -->
+				<div class="d-flex justify-content-between">
+					<small id="charCount" class="text-muted">255 바이트까지 가능합니다</small>
+					<!-- ✅ 카운터 -->
 					<button type="submit" class="btn btn-brown btn-sm">댓글 등록</button>
 				</div>
 			</form>
+			<hr>
 
 			<!-- 댓글 리스트 -->
 			<c:choose>
@@ -225,19 +235,32 @@
 				</c:when>
 				<c:otherwise>
 					<div class="list-group list-group-flush" id="commentList">
-						<c:forEach var="cmt" items="${comments}">
-							<div class="list-group-item">
-								<div class="d-flex justify-content-between">
-									<div class="fw-semibold">
-										<c:out value="${cmt.nickname}" />
-									</div>
-									<small class="text-muted"><fmt:formatDate
-											value="${cmt.createdAt}" pattern="yyyy-MM-dd HH:mm" /></small>
+						<c:forEach var="c" items="${comments}">
+							<div class="d-flex align-items-center justify-content-between">
+								<div class="comment-meta">
+									<span>${c.nickname}</span>
+									<span class="text-muted">
+										<fmt:formatDate value="${c.createdAt}" pattern="yyyy-MM-dd HH:mm" />
+									</span>
 								</div>
-								<div class="mt-1">
-									<c:out value="${cmt.content}" />
-								</div>
+
+								<c:if
+									test="${isAuthenticated && c.userId == sessionScope.userId}">
+									<form method="post"
+										action="${pageContext.request.contextPath}/community/${post.communityId}/comments/${c.commentId}/delete"
+										onsubmit="return confirm('댓글을 삭제할까요?');" class="m-0">
+										<input type="hidden" name="cpage" value="${cpage}"> <input
+											type="hidden" name="csize" value="${csize}">
+										<c:if test="${not empty _csrf}">
+											<input type="hidden" name="${_csrf.parameterName}"
+												value="${_csrf.token}">
+										</c:if>
+										<button type="submit" class="btn btn-outline-gray btn-sm">삭제</button>
+									</form>
+								</c:if>
 							</div>
+							<c:out value="${c.content}" />
+							<hr>
 						</c:forEach>
 					</div>
 				</c:otherwise>
@@ -263,7 +286,31 @@
 		</div>
 
 	</div>
-
 	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
+<script>
+  const MAX_BYTES = 255;
+
+  // 문자열의 바이트 길이 구하기 (UTF-8 기준)
+  function byteLength(str) {
+    return new TextEncoder().encode(str).length;
+  }
+
+  function checkCommentLength() {
+    const textarea = document.getElementById('commentContent');
+    const bytes = byteLength(textarea.value);
+    if (bytes > MAX_BYTES) {
+      alert("댓글은 " + MAX_BYTES + "바이트 이내로 입력해야 합니다.");
+      return false;
+    }
+    return true;
+  }
+
+  // 입력 시 바이트 수 표시
+  document.getElementById('commentContent').addEventListener('input', function() {
+    const bytes = byteLength(this.value);
+    document.getElementById('charCount').textContent = bytes + " / " + MAX_BYTES + "Bytes";
+  });
+</script>
+
 </body>
 </html>

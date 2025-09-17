@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -124,7 +125,7 @@ public class CommunityController {
         if (toInt(session.getAttribute("userId")) == null) {
             rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
             rttr.addFlashAttribute("openLogin", true);
-            return "redirect:/home"; // 홈이나 로그인 페이지로 리다이렉트
+            return "redirect:/community"; // 홈이나 로그인 페이지로 리다이렉트
         }
         if (!model.containsAttribute("form")) {
             model.addAttribute("form", new CommunityDTO()); 
@@ -145,7 +146,7 @@ public class CommunityController {
         if (loginUserId == null) {
             rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
             rttr.addFlashAttribute("openLogin", true);
-            return "redirect:/home";
+            return "redirect:/community";
         }
 
         boolean noImage = (imageFile == null || imageFile.isEmpty());
@@ -167,11 +168,13 @@ public class CommunityController {
     // ======= 글 수정 =======
 
     // 수정 폼
-    @GetMapping("/{id}/edit")
+    @GetMapping("/{id:\\d+}/edit")
     public String editForm(@PathVariable("id") int id, Model model) {
         CommunityDTO post = communityService.getById(id);
         if (post == null) return "redirect:/community";
+        boolean hasImage = post.getImage() != null && post.getImage().length > 0;
         model.addAttribute("post", post);
+        model.addAttribute("hasImage", hasImage);
         if (!model.containsAttribute("form")) {
             model.addAttribute("form", post); 
         }
@@ -179,10 +182,11 @@ public class CommunityController {
     }
 
     // 수정 저장
-    @PostMapping("/{id}/edit")
+    @PostMapping("/{id:\\d+}/edit")
     public String update(@PathVariable("id") int id,
                          @ModelAttribute("form") CommunityDTO form,
                          @RequestParam(required = false) MultipartFile imageFile,
+                         @RequestParam(name = "imgAction", defaultValue = "keep") String imgAction,
                          HttpSession session, Model model) throws IOException {
 
         Integer loginUserId = toInt(session.getAttribute("userId"));
@@ -191,26 +195,50 @@ public class CommunityController {
         CommunityDTO current = communityService.getById(id);
         if (current == null) return "redirect:/community";
 
-        boolean noNewImage = (imageFile == null || imageFile.isEmpty());
         boolean hasExisting = current.getImage() != null && current.getImage().length > 0;
         boolean isPride = "PRIDE".equals(form.getCategory());
 
-        if (isPride && noNewImage && !hasExisting) {
-            model.addAttribute("error", "내 반려동물을 자랑하는 게시판은 이미지를 반드시 업로드해야 합니다.");
+        // PRIDE에서 삭제 금지
+        if ("delete".equals(imgAction) && isPride) {
+            model.addAttribute("error", "PRIDE 게시판은 이미지를 삭제할 수 없습니다.");
             model.addAttribute("post", current);
             return "community/communityUpdate";
         }
 
         form.setCommunityId(id);
         form.setUserId(loginUserId);
-        if (!noNewImage) {
-            form.setImage(imageFile.getBytes()); 
-        } 
 
-        communityService.updatePost(form);
+        // 교체
+        if ("replace".equals(imgAction) && imageFile != null && !imageFile.isEmpty()) {
+            form.setImage(imageFile.getBytes());
+        }
+        // keep이면 form.image 건드리지 않음
+
+        // PRIDE 강제 검증(유지/교체 후에도 이미지가 없으면 막기)
+        boolean willHaveImage = !"delete".equals(imgAction) && (
+                (form.getImage() != null && form.getImage().length > 0) || hasExisting
+        );
+        if (isPride && !willHaveImage) {
+            model.addAttribute("error", "내 반려동물을 자랑하는 게시판은 이미지를 반드시 업로드해야 합니다.");
+            model.addAttribute("post", current);
+            return "community/communityUpdate";
+        }
+
+        // 제목/본문(+이미지 교체시 이미지) 업데이트
+        boolean ok = communityService.updatePost(form);
+        if (!ok) {
+            model.addAttribute("error", "수정 권한이 없거나 변경할 내용이 없습니다.");
+            model.addAttribute("post", current);
+            return "community/communityUpdate";
+        }
+
+        // 삭제 선택 시 실제로 NULL 처리
+        if ("delete".equals(imgAction)) {
+            communityService.clearPostImage(id, loginUserId);
+        }
+
         return "redirect:/community/" + id;
     }
-
 
     // 글 삭제
     @PostMapping("/{id}/delete")
@@ -255,6 +283,25 @@ public class CommunityController {
         communityService.addComment(dto);
 
         return "redirect:/community/" + id;
+    }
+    
+    //댓글삭제
+    @PostMapping("/{id:\\d+}/comments/{commentId:\\d+}/delete")
+    public String deleteComment(@PathVariable("id") int communityId,
+                                @PathVariable("commentId") int commentId,
+                                @RequestParam(defaultValue = "1") int cpage,
+                                @RequestParam(defaultValue = "20") int csize,
+                                HttpSession session,
+                                RedirectAttributes rttr) {
+        Integer loginUserId = toInt(session.getAttribute("userId"));
+        if (loginUserId == null) return "redirect:/login";
+
+        boolean ok = communityService.deleteComment(commentId, loginUserId);
+        if (!ok) {
+            rttr.addFlashAttribute("msg", "삭제 권한이 없거나 이미 삭제되었습니다.");
+        }
+        // 댓글 목록 페이지 유지
+        return "redirect:/community/" + communityId + "?cpage=" + cpage + "&csize=" + csize;
     }
 
 

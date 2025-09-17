@@ -17,8 +17,10 @@ public interface CommunityDAO {
     int insertCommunity(CommunityDTO dto);
     int updateCommunity(CommunityDTO dto);
     int deleteCommunity(@Param("communityId") int communityId,
-                        @Param("user_id") int user_id);
+                        @Param("userId") int userId);
     int countList(Map<String, Object> params);
+    int clearImage(@Param("communityId") int communityId,
+            @Param("userId") int userId);
     // Comment 관련
     List<CommentDTO> selectComments(@Param("communityId") int communityId);
     List<CommentDTO> selectCommentsPaged(
