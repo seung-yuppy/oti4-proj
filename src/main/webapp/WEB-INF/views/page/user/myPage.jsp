@@ -1,50 +1,8 @@
 <%@ page contentType="text/html; charset=UTF-8" language="java"%>
 <%@ page import="java.util.List, java.util.ArrayList"%>
 <%@ include file="../../component/passwordConfirm_modal.jsp"%>
-<%
-	//예시용 게시글&댓글 데이터(나중에 다른정보 추가해야함)
-	class Post {
-		String author;
-		String content;
-		String time;
-		int likes;
-		int comments;
-		int views;
-
-		Post(String author, String content, String time, int likes, int comments, int views) {
-			this.author = author;
-			this.content = content;
-			this.time = time;
-			this.likes = likes;
-			this.comments = comments;
-			this.views = views;
-		}
-	}
-
-	class Comment {
-		String author;
-		String targetAuthor;
-		String content;
-		String time;
-
-		Comment(String author, String targetAuthor, String content, String time) {
-			this.author = author;
-			this.targetAuthor = targetAuthor;
-			this.content = content;
-			this.time = time;
-		}
-	}
-
-	List<Post> posts = new ArrayList<>();
-	posts.add(new Post("이서연", "새로운 입양 가이드라인에 대한 의견을 나누고 싶습니다. 최근 변경된 부분이 있는데, 공유해주신 분 계신가요?", "2시간 전", 1234, 45,
-			210));
-	posts.add(new Post("박지훈", "저희 집 고양이 뿌잉이가 새로운 장난감을 너무 좋아하네요! 고양이 장난감 추천 좀 해주세요.", "1분 전", 1234, 45, 210));
-
-	List<Comment> comments = new ArrayList<>();
-	comments.add(new Comment("김민준", "이서연", "저도 같은 의견입니다. 새로운 기준 좋네요.", "30분 전"));
-	comments.add(new Comment("김민준", "정하윤", "다음 봉사활동도 같이 가요!", "1일 전"));
-%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -150,6 +108,16 @@ body {
 	margin: 0 auto;
 	height: 410px;
 }
+
+.post-item { border: 0; border-bottom: 1px solid #e5e7eb; border-radius: 0; }
+.post-thumb-wrap { width: 90px; height: 90px; flex: 0 0 90px; }
+.post-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px;}
+.post-title { font-weight: 700; font-size: 1.1rem; margin: 0; }
+.post-meta { color:#6b7280; font-size: .875rem; }
+.post-stats img { vertical-align: -2px; }
+.post-link { text-decoration: none; color: inherit !important; display:block;
+  text-decoration: none !important; }
+
 </style>
 <!-- Bootstrap 5 -->
 <link
@@ -277,12 +245,13 @@ body {
 	<div class="container my-5 section">
 		<h3>내가 관심있는 유기 동물</h3>
 		<ul class="wrapper-like-pet">
-		
+
 		</ul>
 	</div>
 
 
 	<!-- 커뮤니티 활동 (탭 전환) -->
+
 	<div class="container my-5 section">
 		<h3 class="mb-3">내 커뮤니티 활동</h3>
 
@@ -301,54 +270,28 @@ body {
 		<!-- 탭 콘텐츠 -->
 		<div class="tab-content border border-top-0 p-3"
 			id="activityTabsContent">
+
 			<!-- 게시글 -->
 			<div class="tab-pane fade show active" id="posts" role="tabpanel">
-				<%
-					for (Post p : posts) {
-				%>
-				<div class="mb-3">
-					<strong><%=p.author%></strong> <small class="text-muted">·
-						<%=p.time%></small>
-					<p><%=p.content%></p>
-					<div class="d-flex align-items-center gap-3 mt-2">
-						<div class="d-flex align-items-center gap-1">
-							<img src="/bughunters/resources/image/ico_like.png" alt="좋아요"
-								width="18" height="18"> <span><%=p.likes%></span>
-						</div>
-						<div class="d-flex align-items-center gap-1">
-							<img src="/bughunters/resources/image/ico_comment.png" alt="댓글"
-								width="18" height="18"> <span><%=p.comments%></span>
-						</div>
-						<div class="d-flex align-items-center gap-1">
-							<img src="/bughunters/resources/image/ico_watch.png" alt="조회수"
-								width="18" height="18"> <span><%=p.views%></span>
-						</div>
-					</div>
+				<div id="postsList"></div>
+				<div class="d-flex gap-2 mt-2">
+					<button class="btn btn-outline-secondary" id="postsPrev">이전</button>
+					<button class="btn btn-outline-secondary" id="postsNext">다음</button>
 				</div>
-				<%
-					}
-				%>
 			</div>
 
 			<!-- 댓글 -->
 			<div class="tab-pane fade" id="comments" role="tabpanel">
-				<%
-					for (Comment c : comments) {
-				%>
-				<div class="mb-3">
-					<strong><%=c.author%></strong> <small class="text-muted">·
-						<%=c.time%></small>
-					<p>
-						<%=c.targetAuthor%>님의 글에 댓글:
-						<%=c.content%></p>
+				<div id="commentsList"></div>
+				<div class="d-flex gap-2 mt-2">
+					<button class="btn btn-outline-secondary" id="commentsPrev">이전</button>
+					<button class="btn btn-outline-secondary" id="commentsNext">다음</button>
 				</div>
-				<%
-					}
-				%>
 			</div>
 
 		</div>
 	</div>
+
 	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 	<script>
@@ -450,6 +393,151 @@ body {
 		        likePetBox.innerHTML = '<li><p>Error loading pets. Please try again later.</p></li>';
 		    }
 		});
+		
+		 // 상태
+		  let postsPage = 1, commentsPage = 1;
+		  const size = 5;
+
+		  // 엘리먼트
+		  const postsListEl    = document.querySelector('#postsList');
+		  const commentsListEl = document.querySelector('#commentsList');
+
+		  // 게시글 로드
+		  
+		  async function loadPosts() {
+    try {
+      const res = await fetch(`/bughunters/community/my/posts?page=\${postsPage}&size=\${size}`, {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      if (data.error === 'UNAUTHORIZED') {
+        postsListEl.innerHTML = `<p class="text-danger">로그인이 필요합니다.</p>`;
+        return;
+      }
+
+      const items = data.items || [];
+      renderPosts(items);  
+
+      document.getElementById('postsPrev').disabled = postsPage <= 1;
+      document.getElementById('postsNext').disabled = !data.hasNext;
+    } catch (e) {
+      console.error('게시글 로드 실패:', e);
+      postsListEl.innerHTML = `<p class="text-danger">게시글을 불러오지 못했습니다.</p>`;
+    }
+  }
+		  
+		  // createdAt => "yyyy-MM-dd HH:mm" 비슷하게
+const fmtDate = (v) => {
+  try {
+    const d = new Date(v);
+    const pad = n => n.toString().padStart(2,'0');
+    return d.getFullYear() + '-' +
+           pad(d.getMonth()+1) + '-' +
+           pad(d.getDate()) + ' ' +
+           pad(d.getHours()) + ':' +
+           pad(d.getMinutes());
+  } catch { return v ?? ''; }
+};
+
+// 커뮤니티 렌더
+function renderPosts(items = []) {
+  if (!items.length) {
+    postsListEl.innerHTML = `<div class="text-center text-muted py-5">작성한 게시글이 없습니다.</div>`;
+    return;
+  }
+  postsListEl.innerHTML = items.map(p => `
+    <a class="post-link" href="/bughunters/community/\${p.communityId}">
+      <article class="card post-item py-3 mb-3 card-body">
+          <div class="d-flex gap-3">
+
+            <!-- 썸네일 (이미지 없으면 onerror로 기본 이미지 대체) -->
+            <div class="post-thumb-wrap">
+              <img class="post-thumb"
+                   src="/bughunters/community/\${p.communityId}/image?v=\${p.viewcount ?? 0}"
+                   alt="썸네일"
+                   onerror="this.onerror=null;this.src='/bughunters/resources/image/img_noImg.png';">
+            </div>
+
+            <!-- 우측 내용 -->
+            <div class="flex-grow-1 d-flex flex-column justify-content-between">
+
+              <!-- 닉네임 / 날짜 -->
+              <div class="d-flex justify-content-between post-meta-top">
+                <span class="fw-semibold">\${p.nickname ?? ''}</span>
+                <small>\${fmtDate(p.createdAt)}</small>
+              </div>
+
+              <!-- 제목 -->
+              <h3 class="post-title">\${p.title ?? '제목 없음'}</h3>
+
+              <!-- 조회수/댓글 -->
+              <div class="d-flex gap-3 text-muted post-stats">
+                <span>
+                  <img src="/bughunters/resources/image/ico_watch.png" width="16" height="16" alt="조회수">
+                  \${p.viewcount ?? 0}
+                </span>
+                <span>
+                  <img src="/bughunters/resources/image/ico_comment.png" width="16" height="16" alt="댓글">
+                  \${p.commentCount ?? 0}
+                </span>
+              </div>
+
+            </div>
+          </div>
+      </article>
+    </a>
+  `).join('');
+}
+
+		  // 댓글 로드
+		  async function loadComments() {
+		    const res = await fetch(`/bughunters/community/my/comments?page=\${commentsPage}&size=\${size}`, {
+		      headers: { 'Accept': 'application/json' }
+		    });
+		    const data = await res.json();
+		    if (data.error === 'UNAUTHORIZED') {
+		      commentsListEl.innerHTML = `<p class="text-danger">로그인이 필요합니다.</p>`;
+		      return;
+		    }
+		    const items = data.items || [];
+		    if (items.length === 0) {
+		      commentsListEl.innerHTML = `<p class="text-muted">작성한 댓글이 없습니다.</p>`;
+		    } else {
+		      commentsListEl.innerHTML = items.map(c => `
+		      <a class="post-link" href="/bughunters/community/\${c.communityId}">
+		        <div class="mb-3">
+		        <small class="text-muted">\${fmtDate(c.createdAt)}</small>
+		          <p class="mb-1">\${c.content ?? ''}</p>
+		          <div>
+		            <span class="me-2">게시글: <strong>\${c.title ?? '(제목 없음)'}</strong></span>
+		          </div>
+		        </div>
+		        </a>
+		        <hr>
+		      `).join('');
+		    }
+		    document.getElementById('commentsPrev').disabled = commentsPage <= 1;
+		    document.getElementById('commentsNext').disabled = !data.hasNext;
+		  }
+
+		  // 이벤트 바인딩
+		  document.addEventListener('DOMContentLoaded', () => {
+		    // 게시글 먼저
+		    loadPosts();
+
+		    // 탭 전환 시 로딩
+		    document.getElementById('posts-tab')?.addEventListener('shown.bs.tab', loadPosts);
+		    document.getElementById('comments-tab')?.addEventListener('shown.bs.tab', loadComments);
+
+		    // 페이징
+		    document.getElementById('postsPrev')?.addEventListener('click', () => { if (postsPage > 1) { postsPage--; loadPosts(); } });
+		    document.getElementById('postsNext')?.addEventListener('click', () => { postsPage++; loadPosts(); });
+		    document.getElementById('commentsPrev')?.addEventListener('click', () => { if (commentsPage > 1) { commentsPage--; loadComments(); } });
+		    document.getElementById('commentsNext')?.addEventListener('click', () => { commentsPage++; loadComments(); });
+		  });
+		
 	</script>
 </body>
 </html>

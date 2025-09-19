@@ -128,5 +128,26 @@
 		WHERE community_id = #{communityId}
 		AND user_id = #{userId}
 	</update>
+	
+	<select id="countPostsByUser" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM Community c
+    WHERE c.user_id = #{userId}
+  </select>
+
+  <select id="selectPostsByUser" resultType="edu.example.bughunters.domain.CommunityDTO">
+    SELECT
+      c.community_id AS communityId,
+      c.title,
+      c.content,
+      c.created_at AS createdAt,
+      c.viewcount,
+      c.user_id AS userId,
+      NVL( (SELECT COUNT(*) FROM "Comment" x WHERE x.community_id = c.community_id), 0) AS commentCount
+    FROM Community c
+    WHERE c.user_id = #{userId}
+    ORDER BY c.created_at DESC
+    OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+  </select>
 
 </mapper>

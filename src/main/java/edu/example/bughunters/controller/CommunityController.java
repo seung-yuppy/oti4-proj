@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ public class CommunityController {
         return s != null && !s.trim().isEmpty();
     }
     
+    //메인 커뮤니티
     @GetMapping
     public String list(@RequestParam(required = false) String q,
                        @RequestParam(required = false) String category,
@@ -58,7 +60,6 @@ public class CommunityController {
         model.addAttribute("category", category);
         return "community/communityMain";
     }
-
 
     // 상세 (조회수 +1)
     @GetMapping("/{id:\\d+}")
@@ -115,7 +116,6 @@ public class CommunityController {
         if (b[0]==0x47 && b[1]==0x49 && b[2]==0x46) return MediaType.IMAGE_GIF;
         return MediaType.APPLICATION_OCTET_STREAM;
     }
-
 
     // ======= 새 글 작성 =======
 
@@ -302,6 +302,53 @@ public class CommunityController {
         }
         // 댓글 목록 페이지 유지
         return "redirect:/community/" + communityId + "?cpage=" + cpage + "&csize=" + csize;
+    }
+    
+    @GetMapping(value = "/my/posts")
+    @ResponseBody
+    public Map<String, Object> myPosts(@RequestParam(defaultValue = "1") int page,
+                                       @RequestParam(defaultValue = "5") int size,
+                                       HttpSession session) {
+        Integer uid = toInt(session.getAttribute("userId"));
+        if (uid == null) {
+            // 401을 내려주고 싶으면 ResponseEntity로 바꿔도 됨
+            Map<String,Object> err = new LinkedHashMap<>();
+            err.put("error", "UNAUTHORIZED");
+            return err;
+        }
+        int total = communityService.countPostsByUser(uid);
+        List<CommunityDTO> items = communityService.findPostsByUser(uid, page, size);
+
+        Map<String,Object> res = new LinkedHashMap<>();
+        res.put("items", items);
+        res.put("page", page);
+        res.put("size", size);
+        res.put("total", total);
+        res.put("hasNext", page * size < total);
+        return res;
+    }
+
+    @GetMapping(value = "/my/comments")
+    @ResponseBody
+    public Map<String, Object> myComments(@RequestParam(defaultValue = "1") int page,
+                                          @RequestParam(defaultValue = "5") int size,
+                                          HttpSession session) {
+        Integer uid = toInt(session.getAttribute("userId"));
+        if (uid == null) {
+            Map<String,Object> err = new LinkedHashMap<>();
+            err.put("error", "UNAUTHORIZED");
+            return err;
+        }
+        int total = communityService.countCommentsByUser(uid);
+        List<CommentDTO> items = communityService.findCommentsByUser(uid, page, size);
+
+        Map<String,Object> res = new LinkedHashMap<>();
+        res.put("items", items);
+        res.put("page", page);
+        res.put("size", size);
+        res.put("total", total);
+        res.put("hasNext", page * size < total);
+        return res;
     }
 
 

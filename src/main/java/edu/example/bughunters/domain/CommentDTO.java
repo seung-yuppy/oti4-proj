@@ -15,5 +15,7 @@ public class CommentDTO {
     private int userId; 
     private int communityId; 
     private String nickname;
+    
+    private String  title;
 }
 

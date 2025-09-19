@@ -82,7 +82,7 @@ public class PetController {
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> p6(@RequestBody WalkingDTO dto) {
 		Map<String, Object> response = new HashMap<>();
-		System.out.println(service.isWalking(dto.getPetId()));
+		System.out.println("산책 게시판 등록 : " + service.isWalking(dto.getPetId()));
 		System.out.println(dto.getPetId());
 		if(!service.isWalking(dto.getPetId()))
 				response.put("msg", "이미 등록된 반려동물입니다.");

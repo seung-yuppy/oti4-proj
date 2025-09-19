@@ -23,13 +23,13 @@
 }
 
 .option.selected {
-	background-color: #a75d00;
-	border-color: #6a5acd;
+	background-color: #a48073;
+	border-color: #a48073;
 	color: white;
 }
 
 .progress-bar {
-	background-color: #c68c53 !important;
+	background-color: #836a61 !important;
 	height: 30px;
 	transition: width 0.4s ease-in-out;
 }

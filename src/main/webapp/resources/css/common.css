@@ -98,12 +98,12 @@ p {
 }
 
 .btn-brown {
-	background-color: #a75d00 !important;
+	background-color: #a48073 !important;
    	color: white !important; 
 	transition: background-color !important;
 	
  	&:hover {
-   		background-color: #cc7000 !important;
+   		background-color: #b38f83 !important;
 	} 
 }
 
@@ -114,13 +114,13 @@ p {
 	border: 1px solid #ccc7c7b0 !important;
 	
 	&:hover {
-   		background-color: #F3F4F6FF !important; 
+   		background-color: #836a61 !important; 
 	} 
 }
 
 .btn-secondary-brown {
-	border: 1px solid #a75d00 !important; 
-	color: #a75d00 !important; 
+	border: 1px solid #a48073 !important; 
+	color: #a48073 !important; 
 	background-color: transparent !important;
 }
 
@@ -168,12 +168,13 @@ p {
 }
 /* 헤더 컴포넌트 */
 .gnb-title {
-	color: #a75d00 !important;
+	color: #a48073 !important;
 	font-weight: bold !important;
 	transition: color 0.5s !important;
+	font-size: 1.5rem;
 	
 	&:hover {
-		color: #cc7000 !important; 
+		color: #a48073 !important; 
 	}
 }
 
@@ -182,7 +183,7 @@ p {
 	font-weight: bolder;
 	
 	&:hover {
-		color: #cc7000 !important;
+		color: #a48073 !important;
 	}
 }
 

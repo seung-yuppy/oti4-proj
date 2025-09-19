@@ -114,8 +114,27 @@
 		WHERE comment_id = #{commentId}
 		AND user_id = #{userId}
 	</delete>
+	
+	 <select id="countCommentsByUser" parameterType="int" resultType="int">
+    SELECT COUNT(*)
+    FROM "Comment" cmt
+    WHERE cmt.user_id = #{userId}
+  </select>
 
-
-
+  <!-- 목록 -->
+  <select id="selectCommentsByUser" resultType="edu.example.bughunters.domain.CommentDTO">
+    SELECT
+      cmt.comment_id                   AS commentId,
+      cmt.community_id                 AS communityId,
+      cmt.content,
+      cmt.created_at                   AS createdAt,
+      c.title,
+      c.user_id                       AS userId
+    FROM "Comment" cmt
+    JOIN Community c ON c.community_id = cmt.community_id
+    WHERE cmt.user_id = #{userId}
+    ORDER BY cmt.created_at DESC
+    OFFSET #{offset} ROWS FETCH NEXT #{size} ROWS ONLY
+  </select>
 
 </mapper>
