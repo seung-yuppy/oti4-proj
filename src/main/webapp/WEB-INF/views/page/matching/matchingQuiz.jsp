@@ -19,17 +19,18 @@
 }
 
 .option:hover {
-	background-color: #f2f2f2;
+	background-color: #de9c48;
+	color: white;
 }
 
 .option.selected {
-	background-color: #a48073;
-	border-color: #a48073;
+	background-color: #cb7100;
+	border-color: #cb7100;
 	color: white;
 }
 
 .progress-bar {
-	background-color: #836a61 !important;
+	background-color: #a75d00 !important;
 	height: 30px;
 	transition: width 0.4s ease-in-out;
 }

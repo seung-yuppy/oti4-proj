@@ -9,23 +9,23 @@
 	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
 	<style>
 		.bg-brown-custom {
-            background-color: #8D6E63;
+            background-color: #a75d00;
         }
         
         .text-brown-custom {
-            color: #8D6E63;
+            color: #a75d00;
         }
         
         .btn-secondary-brown-custom  {
         	text-decoration: none;
-            background-color: #A1887F;
+            background-color: #c07a22;
             color: white;
             border-radius: 9999px;
             padding: 0.75rem 2rem;
             transition: all 0.3s ease;
             
             &:hover {
-	            background-color: #8D6E63;
+	            background-color: #99611a;
 	            transform: translateY(-2px);
 	            color: white;
 	            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -99,7 +99,7 @@
                         <div class="fs-1 mb-3 text-brown-custom card-emoji">🗣️</div>
                         <h3 class="fs-4 fw-bold mb-2">다양한 커뮤니티</h3>
                         <p class="text-muted">육아 팁, 자랑, 실종 신고 등 다양한 주제의 <br/> 커뮤니티에서 정보를 공유하고 소통하세요.</p>
-                        <a href="<c:url value='/communityMain'/>" class="mt-auto d-block text-brown-custom fw-medium text-decoration-none">자세히보기 &rarr;</a>
+                        <a href="<c:url value='/community'/>" class="mt-auto d-block text-brown-custom fw-medium text-decoration-none">자세히보기 &rarr;</a>
                     </div>
                 </div>
             </div>

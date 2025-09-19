@@ -34,15 +34,15 @@
 
 /* Hover: 원본과 동일 */
 .nav-pills .tab:hover, .nav-pills .tab.active:hover {
-	background: #b38f83; /* 호버 배경색 */
-	border-color: #b38f83; /* 호버 테두리색 */
+	background: #de9c48; /* 호버 배경색 */
+	border-color: #de9c48; /* 호버 테두리색 */
 	color: white; /* 호버 글자색 */
 }
 
 /* Bootstrap의 기본 active(파란 배경) 제거 → 원본과 같은 '평상시' 스타일 유지 */
 .nav-pills .tab.active {
-	background: transparent !important;
-	color: #374151 !important;
+	background: #cb7100 !important;
+	color: white !important;
 	border-color: transparent !important;
 }
 
@@ -50,6 +50,20 @@
 .nav-pills .tab:focus {
 	outline: none;
 	box-shadow: 0 0 0 0.2rem rgba(185, 118, 26, 0.15);
+}
+
+.btn-secondary-brown:hover {
+	background: #b1a08b !important;
+	color: white !important;
+}
+
+.btn-secondary-brown.active {
+	background: #6e5d47 !important;
+	color: white !important;
+}
+
+.btn-fixed-width {
+  width: 150px;
 }
 
 .pagination-brown {
@@ -76,34 +90,43 @@
 <body>
 <%@ include file="/WEB-INF/views/component/header.jsp"%>
 
-<div class="container my-5" style="max-width:980px;">
-  <h1 class="fw-bold fs-1 mb-4">커뮤니티</h1>
-  
+	<div class="container my-5" style="max-width: 980px;">
+		<h1 class="fw-bold fs-1 mb-4">커뮤니티</h1>
 
-  <!-- Search -->
-  <form class="d-flex align-items-center gap-2 mb-3 flex-wrap"
-        method="get" action="<c:url value='/community'/>">
-    <input type="hidden" name="category" value="${category}">
-    <div class="position-relative flex-grow-1">
-      <input type="text" name="q" value="${q}" class="form-control ps-5" placeholder="제목 또는 닉네임으로 검색">
-    </div>
-    <button class="btn btn-outline-secondary">검색</button>
-  </form>
 
-  <!-- Tabs -->
-  <nav class="nav nav-pills gap-2" id="categoryTabs">
-    <a href="#" class="nav-link rounded-pill tab ${category == 'PRIDE' ? 'active' : ''}"   data-category="PRIDE">내 반려동물을 자랑하는 게시판</a>
-    <a href="#" class="nav-link rounded-pill tab ${category == 'JOB' ? 'active' : ''}"     data-category="JOB">펫 관련 알바 구하기 게시판</a>
-    <a href="#" class="nav-link rounded-pill tab ${category == 'TIPS' ? 'active' : ''}"    data-category="TIPS">반려동물 키우는 팁 게시판</a>
-    <a href="#" class="nav-link rounded-pill tab ${category == 'MISSING' ? 'active' : ''}" data-category="MISSING">실종 동물을 찾아주세요 게시판</a>
-  </nav>
-  <div class="d-flex gap-2 ms-auto mt-2">
-    <button type="button" class="btn btn-outline-secondary" id="btnAll">전체보기</button>
-    <a class="btn btn-brown" href="<c:url value='/community/new'/>">새 글 작성</a>
-  </div>
-</div>
+		<!-- Search -->
+		<form class="d-flex align-items-center gap-2 mb-3 flex-wrap"
+			method="get" action="<c:url value='/community'/>">
+			<input type="hidden" name="category" value="${category}">
+			<div class="position-relative flex-grow-1">
+				<input type="text" name="q" value="${q}" class="form-control ps-5"
+					placeholder="제목 또는 닉네임으로 검색">
+			</div>
+			<button class="btn btn-outline-secondary">검색</button>
+		</form>
 
-<!-- Posts -->
+		<!-- Tabs -->
+		<nav class="nav nav-pills gap-2" id="categoryTabs">
+			<a href="#"
+				class="nav-link rounded-pill tab ${category == 'PRIDE' ? 'active' : ''}"
+				data-category="PRIDE"> 내 반려동물 자랑 게시판</a> <a href="#"
+				class="nav-link rounded-pill tab ${category == 'JOB' ? 'active' : ''}"
+				data-category="JOB">펫 관련 알바 구하기 게시판</a> <a href="#"
+				class="nav-link rounded-pill tab ${category == 'TIPS' ? 'active' : ''}"
+				data-category="TIPS">반려동물 키우는 팁 게시판</a> <a href="#"
+				class="nav-link rounded-pill tab ${category == 'MISSING' ? 'active' : ''}"
+				data-category="MISSING">실종 동물 찾기 게시판</a>
+		</nav>
+		<div class="d-flex justify-content-between align-items-center mt-2">
+			<button type="button"
+				class="btn btn-secondary-brown btn-fixed-width ${category == null ? 'active' : ''}	"
+				id="btnAll">전체보기</button>
+			<a class="btn btn-brown btn-fixed-width" id="btnNewPost"
+				href="<c:url value='/community/new'/>">새 글 작성</a>
+		</div>
+	</div>
+
+	<!-- Posts -->
 <div id="postContainer" class="container" style="max-width: 980px;">
   <c:choose>
     <c:when test="${empty list}">
@@ -226,6 +249,8 @@
 
 <!--탭/전체보기만 서버 이동 -->
 <script>
+const isLoggedIn = ${not empty sessionScope.loginUser ? 'true' : 'false'};
+
   (function() {
     const tabs = document.querySelectorAll('#categoryTabs .tab');
     const btnAll = document.getElementById('btnAll');
@@ -244,6 +269,19 @@
     });
     if (btnAll) btnAll.addEventListener('click', () => go({}));
   })();
+  
+  document.addEventListener('DOMContentLoaded', function () {
+    const btnNewPost = document.getElementById('btnNewPost');
+
+    if (btnNewPost) {
+      btnNewPost.addEventListener('click', function (e) {
+        if (!isLoggedIn) {
+          e.preventDefault();
+          alert('로그인 후 이용해주세요.');
+        }
+      });
+    }
+  });
 </script>
 
 </body>

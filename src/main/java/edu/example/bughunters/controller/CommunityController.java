@@ -51,6 +51,8 @@ public class CommunityController {
         List<CommunityDTO> items = communityService.getList(filters, page, size);
         int total = communityService.countList(filters);
         int totalPages = (int)Math.ceil((double) total / Math.max(1, size));
+        
+        System.out.println("categor는 " + category);
 
         model.addAttribute("list", items);
         model.addAttribute("totalPages", totalPages);
