@@ -293,7 +293,7 @@ async function openRoom(roomId){
   await hydrateChatItemByRoomId(roomId, item || document); // item 없으면 document
 										 					// 범위로 타이틀만 보정
 
-  ensureWs();
+  ensureWs(); 
   try{
     await waitWsOpen();
     ws.send(JSON.stringify({ type:'JOIN', roomId }));
