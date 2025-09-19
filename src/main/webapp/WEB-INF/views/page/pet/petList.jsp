@@ -199,12 +199,14 @@ body {
 						body: JSON.stringify(postData), // JSON.stringify로 수정
 					});
 					const data = await res.json();
-					console.log(data);
-					if (data.msg === "산책 게시판에 등록하였습니다.") 
+					if (data.msg === "산책 게시판에 등록하였습니다.") {
 						alert(data.msg);
+						window.location.reload();
+					}
 					else 
 						alert(data.msg);
 					});
+					
 				}	
 	        },
 	        function (error) {

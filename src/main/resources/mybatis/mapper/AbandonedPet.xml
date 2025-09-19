@@ -101,16 +101,16 @@
 			<if test="age != 'all'">
 				<choose>
 					<when test="age == '0-1'">
-						AND age BETWEEN 0 AND 1
+						AND age BETWEEN 2024 AND 2025
 					</when>
 					<when test="age == '2-4'">
-						AND age BETWEEN 2 AND 4
+						AND age BETWEEN 2021 AND 2023
 					</when>
 					<when test="age == '5-7'">
-						AND age BETWEEN 5 AND 7
+						AND age BETWEEN 2018 AND 2020
 					</when>
 					<when test="age == '8+'">
-						AND age >= 8
+						AND 2017 >= age
 					</when>
 				</choose>
 			</if>
@@ -197,20 +197,20 @@
                         </choose>
                     </if>
                     <if test="age != 'all'">
-                        <choose>
-                            <when test="age == '0-1'">
-                                AND age BETWEEN 0 AND 1
-                            </when>
-                            <when test="age == '2-4'">
-                                AND age BETWEEN 2 AND 4
-                            </when>
-                            <when test="age == '5-7'">
-                                AND age BETWEEN 5 AND 7
-                            </when>
-                            <when test="age == '8+'">
-                                AND age >= 8
-                            </when>
-                        </choose>
+						<choose>
+							<when test="age == '0-1'">
+								AND age BETWEEN 2024 AND 2025
+							</when>
+							<when test="age == '2-4'">
+								AND age BETWEEN 2021 AND 2023
+							</when>
+							<when test="age == '5-7'">
+								AND age BETWEEN 2018 AND 2020
+							</when>
+							<when test="age == '8+'">
+								AND 2017 >= age
+							</when>
+						</choose>
                     </if>
                 </where>
                 ORDER BY abandoned_pet_id DESC
