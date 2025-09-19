@@ -291,7 +291,7 @@ async function openRoom(roomId){
   // ✅ 추가: 상세 화면에서도 보정
   const item = chatListBody && chatListBody.querySelector(`[data-room-id="${roomId}"]`);
   await hydrateChatItemByRoomId(roomId, item || document); // item 없으면 document
-															// 범위로 타이틀만 보정
+										 					// 범위로 타이틀만 보정
 
   ensureWs();
   try{
