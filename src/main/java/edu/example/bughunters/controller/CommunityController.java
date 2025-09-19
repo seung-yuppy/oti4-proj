@@ -42,8 +42,10 @@ public class CommunityController {
                        @RequestParam(required = false) String category,
                        @RequestParam(defaultValue = "1") int page,
                        @RequestParam(defaultValue = "10") int size,
-                       Model model) {
+                       Model model,
+                       HttpSession session) {
 
+    	Integer userId = (Integer) session.getAttribute("userId");
         Map<String,Object> filters = new HashMap<>();
         if (hasText(q))        filters.put("q", q.trim());
         if (hasText(category)) filters.put("category", category.trim());
@@ -54,6 +56,7 @@ public class CommunityController {
         
         System.out.println("categor는 " + category);
 
+        model.addAttribute("userId", userId);
         model.addAttribute("list", items);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("page", page);
@@ -123,17 +126,13 @@ public class CommunityController {
 
     // 작성 폼
     @GetMapping("/new")
-    public String newForm(Model model, HttpSession session, RedirectAttributes rttr) {
-        if (toInt(session.getAttribute("userId")) == null) {
-            rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
-            rttr.addFlashAttribute("openLogin", true);
-            return "redirect:/community"; // 홈이나 로그인 페이지로 리다이렉트
-        }
+    public String newForm(Model model, HttpSession session) {
         if (!model.containsAttribute("form")) {
             model.addAttribute("form", new CommunityDTO()); 
         }
         return "community/communityCreate";
     }
+
 
     // 작성 저장
 

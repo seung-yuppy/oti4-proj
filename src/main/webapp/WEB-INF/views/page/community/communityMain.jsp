@@ -121,8 +121,12 @@
 			<button type="button"
 				class="btn btn-secondary-brown btn-fixed-width ${category == null ? 'active' : ''}	"
 				id="btnAll">전체보기</button>
-			<a class="btn btn-brown btn-fixed-width" id="btnNewPost"
-				href="<c:url value='/community/new'/>">새 글 작성</a>
+				<c:if test="${!empty userId }">
+					<a class="btn btn-brown btn-fixed-width" id="btnNewPost" href="<c:url value='/community/new'/>">
+						새 글 작성
+					</a>
+				</c:if>
+
 		</div>
 	</div>
 
@@ -249,7 +253,6 @@
 
 <!--탭/전체보기만 서버 이동 -->
 <script>
-const isLoggedIn = ${not empty sessionScope.loginUser ? 'true' : 'false'};
 
   (function() {
     const tabs = document.querySelectorAll('#categoryTabs .tab');
@@ -270,18 +273,7 @@ const isLoggedIn = ${not empty sessionScope.loginUser ? 'true' : 'false'};
     if (btnAll) btnAll.addEventListener('click', () => go({}));
   })();
   
-  document.addEventListener('DOMContentLoaded', function () {
-    const btnNewPost = document.getElementById('btnNewPost');
-
-    if (btnNewPost) {
-      btnNewPost.addEventListener('click', function (e) {
-        if (!isLoggedIn) {
-          e.preventDefault();
-          alert('로그인 후 이용해주세요.');
-        }
-      });
-    }
-  });
+  
 </script>
 
 </body>
