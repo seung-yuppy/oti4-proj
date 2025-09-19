@@ -1,16 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="../../component/deleteAccount_modal.jsp" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="../../component/deleteAccount_modal.jsp"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
 	String emailValue = (String) request.getAttribute("email");
 	if (emailValue == null) {
 		emailValue = "";
 	}
 
-    String nicknameValue = (String) request.getAttribute("nickname");
-    if (nicknameValue == null) {
-    	nicknameValue = "";
-    }
+	String nicknameValue = (String) request.getAttribute("nickname");
+	if (nicknameValue == null) {
+		nicknameValue = "";
+	}
 %>
 <!DOCTYPE html>
 <html>
@@ -18,7 +19,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="/bughunters/resources/css/common.css" rel="stylesheet">
-<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="/bughunters/resources/css/bootstrap.min.css"
+	rel="stylesheet">
 <style>
 body {
 	padding: 20px;
@@ -34,6 +36,7 @@ body {
 	border-radius: 12px;
 	box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
+
 .form-label, .form-check-label {
 	color: #a75d00;
 }
@@ -48,7 +51,6 @@ body {
 	border: 2px solid #8B5E3C;
 	border-radius: 8px;
 }
-
 </style>
 </head>
 <body>
@@ -60,12 +62,12 @@ body {
 			<div class="mb-3">
 				<label class="form-label">비밀번호</label> <input type="password"
 					name="password" class="form-control" placeholder="비밀번호를 입력하세요"
-					required>
+					required autocomplete="new-password">
 			</div>
 
 			<div class="mb-3">
 				<label class="form-label">닉네임</label> <input type="text"
-					name="nickname" class="form-control" value="<%= nicknameValue %>"
+					name="nickname" class="form-control" value="<%=nicknameValue%>"
 					placeholder="사용할 닉네임을 입력하세요" required>
 			</div>
 
@@ -78,7 +80,8 @@ body {
 						onclick="sample2_execDaumPostcode()">우편번호 찾기</button>
 				</div>
 				<input type="text" id="sample2_address" name="address"
-					class="form-control mb-2" placeholder="주소" readonly> <input
+					class="form-control mb-2" placeholder="주소" readonly
+					value="${address != null ? address : ''}"> <input
 					type="text" id="sample2_detailAddress" name="detailAddress"
 					class="form-control mb-2" placeholder="상세주소"> <input
 					type="text" id="sample2_extraAddress" name="extraAddress"
@@ -89,12 +92,12 @@ body {
 				<label class="form-label d-block">반려동물 소유 여부</label>
 				<div class="form-check form-check-inline">
 					<input class="form-check-input" type="radio" name="hasPet" id="yes"
-						value="yes" required> <label class="form-check-label"
+						value="yes" <c:if test="${hasPet == 1}">checked</c:if> required> <label class="form-check-label"
 						for="yes">예</label>
 				</div>
 				<div class="form-check form-check-inline">
 					<input class="form-check-input" type="radio" name="hasPet" id="no"
-						value="no"> <label class="form-check-label" for="no">아니오</label>
+						value="no" <c:if test="${hasPet == 0}">checked</c:if>> <label class="form-check-label" for="no">아니오</label>
 				</div>
 			</div>
 
@@ -192,12 +195,15 @@ body {
 		var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
 			return new bootstrap.Popover(popoverTriggerEl)
 		});
-		
-		document.getElementById("deleteAccountLink").addEventListener("click", function() {
-		    var deleteModal = new bootstrap.Modal(document.getElementById('deleteAccountModal'));
-		    deleteModal.show();
-		});
+
+		document.getElementById("deleteAccountLink").addEventListener(
+				"click",
+				function() {
+					var deleteModal = new bootstrap.Modal(document
+							.getElementById('deleteAccountModal'));
+					deleteModal.show();
+				});
 	</script>
-	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
+	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 </body>
 </html>

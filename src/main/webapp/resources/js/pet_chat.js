@@ -332,6 +332,11 @@ document.addEventListener('click', async (e)=>{
   if (btn.dataset.chatWith){
     const toPetId = parseInt(btn.dataset.chatWith, 10);
     if (!isNaN(toPetId)) {
+    	 // ✅ 본인에게는 1:1 불가
+    	    if (Number(toPetId) === Number(MY_PET_ID)) {
+    	       alert('나와의 채팅은 불가능합니다.');
+    	       return;
+    	     }
     	await openDirect(toPetId);
     }
   }

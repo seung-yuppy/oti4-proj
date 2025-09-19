@@ -123,9 +123,16 @@ public class UserController {
 	
 	// 화면 열기
 	@GetMapping("/user/editProfile")
-	public String editProfileForm(HttpSession session) {
-	    // 로그인 체크 원하면 여기서 session 검사 후 redirect
-	    return "user/editProfile"; // /WEB-INF/views/page/user/editProfile.jsp
+	public String editProfileForm(HttpSession session, Model model) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		if (userId != null) {
+	        UserDTO me = userService.getProfileByUserId(userId);
+	        if (me != null) {
+	            model.addAttribute("address", me.getAddress()); // DB의 전체 주소 문자열
+	            model.addAttribute("hasPet", me.getIsPet());    // 1 or 0
+	        }
+	    }
+	    return "user/editProfile";
 	}
 
 	// 저장 처리
