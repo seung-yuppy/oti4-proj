@@ -415,7 +415,7 @@ async function fetchPeerPetId(roomId) {
 	    if (d.name) (window.PET_NAME ||= {})[petId] = d.name;
 	    return src;
 	  } catch {
-	    return null;
+	    return null; 
 	  }
 }
 
