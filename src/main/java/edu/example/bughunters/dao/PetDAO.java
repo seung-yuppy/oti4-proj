@@ -26,4 +26,14 @@ public interface PetDAO {
 	
 	// 산책 게시판 중복 등록 방지
 	public int isRegisterWalking(@Param("petId") int petId);
+	
+	// 유저 테이블 isPet 바꾸기
+	public boolean changeIsPet(@Param("userId") int userId);
+
+	// 마이페이지에서 반려동물 존재여부 확인하기
+	public int isUserPet(@Param("userId") int userId);
+
+	public boolean updatingPet(@Param("pet") PetDTO dto, @Param("image") byte[] imageBytes);
+	
+	public PetVO selectPetById(@Param("petId") int petId);
 }

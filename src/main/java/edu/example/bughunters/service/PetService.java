@@ -53,8 +53,9 @@ public class PetService {
 
 		// 2. DAO에 DTO와 파일 바이트 배열을 함께 전달
 		boolean result = dao.signUpPet(dto, fileBytes);
+		boolean changeIsPet = dao.changeIsPet(dto.getUserId());
 
-		if (result) {
+		if (result && changeIsPet) {
 			if (!file.isEmpty()) {
 				try {
 					String originalFilename = file.getOriginalFilename();
@@ -134,5 +135,62 @@ public class PetService {
 			return false;
 		else
 			return true;
+	}
+	
+	public boolean isUserGetPet(int userId) {
+		int isPet = dao.isUserPet(userId);
+		if(isPet == 1) 
+			return true;
+		else
+			return false;
+	}
+
+	public boolean updatePet(PetDTO dto, MultipartFile file) {
+	    byte[] fileBytes = null;
+
+	    if (file != null && !file.isEmpty()) {
+	        try {
+	            fileBytes = file.getBytes();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            System.out.println("새 파일 변환 오류 발생.");
+	            return false;
+	        }
+	    } else {
+	        PetVO existingPet = dao.selectPetById(dto.getPetId());
+	        System.out.println("현재 내 펫 : " + existingPet);
+
+	        if (existingPet != null) {
+	            fileBytes = existingPet.getProfileImage();
+	            System.out.println("프로필 이미지 : " + fileBytes);
+	        }
+	    }
+
+	    boolean result = dao.updatingPet(dto, fileBytes);
+	    
+		if (result) {
+			if (!file.isEmpty()) {
+				try {
+					String originalFilename = file.getOriginalFilename();
+					File saveDir = new File("C:/uploadtest/");
+					if (!saveDir.exists())
+						saveDir.mkdirs();
+
+					String fileNameWithoutExt = originalFilename.substring(0, originalFilename.lastIndexOf("."));
+					String fileExt = originalFilename.substring(originalFilename.lastIndexOf("."));
+					String newFileName = fileNameWithoutExt + "_" + System.currentTimeMillis() + fileExt;
+
+					File saveFile = new File(saveDir, newFileName);
+					file.transferTo(saveFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("로컬 파일 저장 중 오류 발생.");
+				}
+			}
+		} else {
+			System.out.println("DB 삽입 실패.");
+		}
+
+	    return result;
 	}
 }

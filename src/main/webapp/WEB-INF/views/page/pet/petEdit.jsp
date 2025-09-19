@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>새로운 반려동물 등록</title>
+    <title>반려동물 수정하기</title>
 	<link href="/bughunters/resources/css/common.css" rel="stylesheet">
 	<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -64,8 +64,9 @@
 	<!-- 헤더 영역 -->
 	<%@ include file="/WEB-INF/views/component/header.jsp" %> 
     <div class="form-container">
-        <h2 class="text-center mb-5 fw-bold text-brown">새로운 반려동물 등록</h2>
-		<form method="post" enctype="multipart/form-data" action="/bughunters/pet/register">
+        <h2 class="text-center mb-5 fw-bold text-brown">반려동물 수정</h2>
+		<form method="post" enctype="multipart/form-data" action="/bughunters/pet/update">
+		    <input type="hidden" name="id" value="${pet.petId}">
             <div class="card shadow-sm mb-4"> 
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-3 text-brown">
@@ -75,33 +76,32 @@
                     
                     <div class="mb-3">
                         <label for="petName" class="form-label">반려동물 이름</label>
-                        <input type="text" class="form-control" id="petName" name="name" placeholder="반려동물의 이름을 입력하세요" required>
+                        <input type="text" class="form-control" id="petName" name="name" value="${pet.name}" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="petBreedSelect" class="form-label">품종</label>
-                        <select class="form-select" id="petBreedSelect" name="kind">
-                            <option selected>품종을 선택하세요</option>
-                            <option value="리트리버">리트리버</option>
-                            <option value="푸들">푸들</option>
-                            <option value="말티즈">말티즈</option>
-                            <option value="시츄">시츄</option>
-                        </select>
+						<select class="form-select" id="petBreedSelect" name="kind">
+						    <option value="리트리버" ${pet.kind == '리트리버' ? 'selected' : ''}>리트리버</option>
+						    <option value="푸들" ${pet.kind == '푸들' ? 'selected' : ''}>푸들</option>
+						    <option value="말티즈" ${pet.kind == '말티즈' ? 'selected' : ''}>말티즈</option>
+						    <option value="시츄" ${pet.kind == '시츄' ? 'selected' : ''}>시츄</option>
+						</select>
                     </div>
                     
 					<div class="mb-3">
                         <label for="petWeight" class="form-label">나이(년도)</label>
-                        <input type="number" class="form-control" id="petAge" name="age" placeholder="예: 2025년생" required>
+                        <input type="number" class="form-control" id="petAge" name="age" value="${pet.age}" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="petColor" class="form-label">털 색상</label>
                         <select class="form-select" id="petColor" name="color">
                             <option selected>털 색상을 선택하세요</option>
-                            <option value="흰색">흰색</option>
-                            <option value="갈색">갈색</option>
-                            <option value="검은색">검은색</option>
-                            <option value="믹스색">믹스색</option>
+                            <option value="흰색" ${pet.color == '흰색' ? 'selected' : ''}>흰색</option>
+                            <option value="갈색" ${pet.color == '갈색' ? 'selected' : ''}>갈색</option>
+                            <option value="검은색" ${pet.color == '검은색' ? 'selected' : ''}>검은색</option>
+                            <option value="믹스색" ${pet.color == '믹스색' ? 'selected' : ''}>믹스색</option>
                         </select>
                     </div>
 
@@ -109,24 +109,24 @@
                         <label class="form-label">성별</label>
                         <div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" id="genderMale" value="M">
-                                <label class="form-check-label" for="genderMale">수컷</label>
+								<input class="form-check-input" type="radio" name="gender" id="genderMale" value="M" ${pet.gender == '수컷' ? 'checked' : ''}>
+								<label class="form-check-label" for="genderMale">수컷</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="gender" id="genderFemale" value="F">
-                                <label class="form-check-label" for="genderFemale">암컷</label>
+								<input class="form-check-input" type="radio" name="gender" id="genderFemale" value="F" ${pet.gender == '암컷' ? 'checked' : ''}>
+								<label class="form-check-label" for="genderFemale">암컷</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="petWeight" class="form-label">체중 (kg)</label>
-                        <input type="number" class="form-control" id="petWeight" name="weight" placeholder="예: 5.2" step="0.1" required>
+                        <input type="number" class="form-control" id="petWeight" name="weight" value="${pet.weight}" step="0.1" required>
                     </div>
                     
                     <div class="mb-3">
                         <label for="petWeight" class="form-label">자기 소개</label>
-                        <input type="text" class="form-control" id="petIntro" name="intro" placeholder="동물을 한 줄로 소개해주세요." required>
+                        <input type="text" class="form-control" id="petIntro" name="intro" value="${pet.intro}" required>
                     </div>
                 </div>
             </div>
@@ -141,9 +141,15 @@
 					<input type="file" id="fileInput" name="profileImage" accept="image/*" class="d-none">
 
 					<div id="dropbox" class="file-upload-wrapper">
-						<div id="initial-message">
-							<p class="mt-2 mb-0">사진 파일을 끌어다 놓거나 아래 버튼을 클릭하여 업로드하세요</p>
-						</div>
+						<c:if test="${empty pet.base64ProfileImage}">
+						    <div id="initial-message">
+						        <p class="mt-2 mb-0">사진 파일을 끌어다 놓거나 아래 버튼을 클릭하여 업로드하세요</p>
+						    </div>						
+						</c:if>
+
+					    <c:if test="${not empty pet.base64ProfileImage}">
+					        <img src="data:image/jpeg;base64,${pet.base64ProfileImage}" style="max-width: 100%; max-height: 250px; object-fit: contain;">
+					    </c:if>
 					</div>
 
 					<div class="d-grid mt-3">
@@ -156,7 +162,7 @@
 
             <div class="d-flex justify-content-end mt-4">
                 <button type="button" class="btn btn-secondary-brown me-2">취소</button>
-                <button type="submit" class="btn btn-brown">반려동물 등록</button>
+                <button type="submit" class="btn btn-brown">반려동물 수정하기</button>
             </div>
         </form>
     </div>

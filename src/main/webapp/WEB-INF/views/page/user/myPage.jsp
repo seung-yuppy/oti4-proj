@@ -28,6 +28,25 @@ body {
 	height: 300px !important;
 }
 
+.card-flex {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding-inline: 40px;
+}
+
+.card-flex-left {
+	display: flex;
+	flex-direction: column;
+	gap: 8.5px;
+	padding-inline: 20px;
+}
+
+.card-profile-img {
+	width: 100%;
+	height: 300px;
+}
+
 /* --------------------
    탭 스타일 (게시글/댓글)
 -------------------- */
@@ -49,55 +68,11 @@ body {
 	display: flex;
 	flex-direction: row;
 	text-align: center;
+	gap: 10px;
 }
 
 .flex-item-left, .flex-item-right {
 	flex: 50%;
-}
-
-/* --------------------
-   Swiper 영역
--------------------- */
-.swiper-container {
-	position: relative;
-}
-
-.swiper-slide .card {
-	width: 50% !important;
-	margin: auto;
-}
-
-/* Swiper 버튼 스타일 */
-.swiper-button-next, .swiper-button-prev {
-	background-size: 50% auto;
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-.swiper-button-next {
-	background-image: url(/bughunters/resources/image/ico_next.png);
-}
-
-.swiper-button-prev {
-	background-image: url(/bughunters/resources/image/ico_prev.png);
-}
-
-/* Swiper 기본 버튼 숨기기 (기본 화살표 제거) */
-.swiper-button-next::after, .swiper-button-prev::after {
-	display: none;
-}
-
-.swiper-container-wrapper {
-	position: relative;
-	width: 100%;
-	height: 550px;
-	overflow: hidden;
-}
-
-/* 카드가 작게 나오는 경우 대비 */
-.swiper-slide {
-	display: flex;
-	justify-content: center;
 }
 
 /* --------------------
@@ -120,14 +95,10 @@ body {
 
 </style>
 <!-- Bootstrap 5 -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="/bughunters/resources/css/common.css" rel="stylesheet">
-<link href="/bughunters/resources/css/bootstrap.min.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link href="/bughunters/resources/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 </head>
 <body>
@@ -136,86 +107,68 @@ body {
 		<!-- 프로필 정보 -->
 		<div class="flex-container">
 			<div class="section flex-item-left">
-				<h3>프로필 정보</h3>
-				<hr>
-				<div class="mb-3">
-					<label class="form-label">이메일 주소</label>
-					<div class="card">
-						<div class="card-body" id="emailVal"></div>
+				<div class="card-flex-left">
+					<h3>프로필 정보</h3>
+					<hr>
+					<div class="mb-3">
+						<label class="form-label">이메일 주소</label>
+						<div class="card">
+							<div class="card-body" id="emailVal"></div>
+						</div>
 					</div>
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label">주소</label>
-					<div class="card">
-						<div class="card-body" id="addressVal"></div>
+	
+					<div class="mb-3">
+						<label class="form-label">주소</label>
+						<div class="card">
+							<div class="card-body" id="addressVal"></div>
+						</div>
 					</div>
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label">닉네임</label>
-					<div class="card">
-						<div class="card-body" id="nicknameVal"></div>
+	
+					<div class="mb-3">
+						<label class="form-label">닉네임</label>
+						<div class="card">
+							<div class="card-body" id="nicknameVal"></div>
+						</div>
 					</div>
-				</div>
-
-				<div class="mb-3">
-					<label class="form-label d-block">반려동물 소유 여부</label>
-					<div class="card">
-						<div class="card-body" id="hasPetVal"></div>
+	
+					<div class="mb-3">
+						<label class="form-label d-block">반려동물 소유 여부</label>
+						<div class="card">
+							<div class="card-body" id="hasPetVal"></div>
+						</div>
 					</div>
 				</div>
 
 				<!-- 수정 버튼 -->
 				<button type="button" class="btn btn-brown" data-bs-toggle="modal"
-					data-bs-target="#passwordComfirmModal">프로필 수정</button>
+					data-bs-target="#passwordComfirmModal" style="width: 80%;">
+					프로필 수정
+				</button>
 			</div>
 			<!-- 오른쪽화면(펫 프로필 확인) -->
-			<div class="flex-item-right d-grid" style="margin-top: -60px;">
-				<!-- ✅ 추가된 wrapper: 여기서 그라데이션 효과 넣을 거야 -->
-				<div class="swiper-container-wrapper"
-					style="width: 100%; height: 550px;">
+			<div class="section flex-item-right">
+				<div class="card-flex">
+					<h3>내 반려동물 정보</h3>
+					<hr>
+					<jsp:include page="/WEB-INF/views/component/myPetCard.jsp" />
+					<c:if test="${isPet == false}">
+						<a class="btn btn-brown" href="/bughunters/pet/signup"> 
+							내 반려동물 등록하기 
+						</a>
+					</c:if>
+					<c:if test="${isPet == true}">
+						<a class="btn btn-brown" href="/bughunters/pet/edit"> 
+							내 반려동물 수정하기 
+						</a>
+					</c:if>
 
-					<div class="swiper swiper-container"
-						style="width: 100%; height: 100%;">
-						<div class="swiper-wrapper">
-							<div class="swiper-slide">
-								<jsp:include page="/WEB-INF/views/component/myPetCard.jsp" />
-							</div>
-						</div>
-
-						<!-- 화살표 -->
-						<div class="swiper-button-next"></div>
-						<div class="swiper-button-prev"></div>
-					</div>
-
-				</div>
-
-				<div class="text-center mt-3">
-					<a class="btn btn-brown" href="/bughunters/pet/signup"> 내 반려동물
-						등록하기 </a>
 				</div>
 			</div>
-
-			<!-- Swiper 라이브러리 불러오기 -->
-			<script
-				src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+				
+		</div>
 
 			<!-- Swiper 초기화 코드 실행 (DOMContentLoaded 후) -->
 			<script>
-			  document.addEventListener("DOMContentLoaded", function () {
-			    const swiper = new Swiper(".swiper-container", {
-			      slidesPerView: 1,
-			      spaceBetween: 20,
-			      centeredSlides: true,
-			      loop: true,
-			      navigation: {
-			        nextEl: ".swiper-button-next",
-			        prevEl: ".swiper-button-prev",
-			      },
-			    });
-			  });
-			  
 			  // 프로필 불러오기
 			  (async function () {
 				  try {
@@ -305,10 +258,10 @@ body {
 			cardbox.innerHTML = `
 				<img 
 					src="data:image/jpeg;base64,\${data.base64ProfileImage}"
-					class="card-img-top card-image"
+					class="card-profile-img"
 					alt="반려동물 사진없음" 
 				>
-				<div class="card-body">
+				<div class="">
 					<h5 class="card-title fw-bold margin-t">\${data.name}</h5>
 					<p class="card-text text-muted text-small">
 						\${data.intro}
@@ -339,7 +292,6 @@ body {
 							<span>\${data.meetingTemperature}°C</span>
 						</li>	
 					</ul>
-					<a href="#" class="btn btn-gray d-block">산책 게시판 등록하기</a>
 				</div>		
 			`; 
 		 });

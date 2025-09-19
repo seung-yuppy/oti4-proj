@@ -44,4 +44,38 @@
 		FROM Walking
 		WHERE pet_id = #{petId}
 	</select>
+	
+	<update id="changeIsPet">
+		UPDATE "User"
+		SET is_pet = 1
+		WHERE user_id = #{userId}
+	</update>
+	
+	<select id="isUserPet">
+		SELECT is_pet
+		FROM "User"
+		WHERE user_id = #{userId}
+	</select>
+	
+	<update id="updatingPet">
+		UPDATE Pet
+		SET
+		    name = #{pet.name},
+		    kind = #{pet.kind},
+		    age = #{pet.age},
+		    gender = #{pet.gender},
+		    profile_image = #{image, jdbcType=BLOB},
+		    color = #{pet.color},
+		    weight = #{pet.weight},
+		    intro = #{pet.intro}
+		WHERE
+		    pet_id = #{pet.petId}
+	</update>
+	
+	<select id="selectPetById">
+    SELECT
+        profile_image
+    FROM Pet
+    WHERE pet_id = #{petId}
+</select>
 </mapper>

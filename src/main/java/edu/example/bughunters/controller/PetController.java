@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,11 +31,19 @@ public class PetController {
 	public String p1() {
 		return "pet/petList";
 	}
-
-	@GetMapping("/mypage")
-	public String p2() {
-		return "user/myPage";
-	}
+	
+    @GetMapping("/mypage")
+    public String p2(HttpSession session, Model model) {
+    	Integer userId = (Integer) session.getAttribute("userId");
+    	if(userId != null) {
+    		if(service.isUserGetPet(userId))
+    			model.addAttribute("isPet", true);
+    		else
+    			model.addAttribute("isPet", false);
+    	}
+    		
+    	return "user/myPage";
+    }
 
 	@GetMapping("/pet/signup")
 	public String p3() {
@@ -104,5 +113,39 @@ public class PetController {
 		Map<String, Object> response = new HashMap<>();
 		response.put("data", service.walkingList());
 		return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/pet/edit")
+	public String p8(HttpSession session, Model model) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		PetVO pet = service.getPet(userId);
+		
+		model.addAttribute("pet", pet);
+	
+		return "pet/petEdit";
+	}
+	
+	@PostMapping("/pet/update")
+	public String p9(
+			@ModelAttribute PetDTO dto, 
+			@RequestParam("profileImage") MultipartFile file,
+			HttpSession session) {
+		// 1. DTO에 userId를 설정
+		Integer userId = (Integer) session.getAttribute("userId");
+		
+		if (userId == null) 
+			return "redirect:/pet/update";
+		else 
+			dto.setUserId(userId);
+		
+		// 2. Service에서 반려동물 등록
+		PetVO pet = service.getPet(userId);
+		dto.setPetId(pet.getPetId());
+		
+		boolean result = service.updatePet(dto, file);
+		if (result)
+			return "redirect:/mypage";
+		else
+			return "redirect:/pet/update";
 	}
 }
