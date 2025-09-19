@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import edu.example.bughunters.domain.AbandonedPetDTO;
+import edu.example.bughunters.domain.PetWeightDTO;
 
 @Mapper
 public interface AbandonedPetDAO {
@@ -47,4 +48,7 @@ public interface AbandonedPetDAO {
 	
 	// 유기동물-회원 좋아요 리스트
 	public List<AbandonedPetDTO> likeList(@Param("userId") int userId);
+	
+	// 유기동물 상세 정보 보여주기
+	public  PetWeightDTO detailAbandonedPet(@Param("abandonedPetId") int abandonedPetId);
 }

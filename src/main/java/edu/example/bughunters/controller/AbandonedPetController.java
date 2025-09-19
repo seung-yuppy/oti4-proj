@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.example.bughunters.domain.AbandonedPetDTO;
+import edu.example.bughunters.domain.PetWeightDTO;
 import edu.example.bughunters.service.AbandonedPetService;
 
 @Controller
@@ -41,9 +42,13 @@ public class AbandonedPetController {
 	@GetMapping("/abandonedpet/{id}")
 	public String a2(Model model, @PathVariable("id") int id) {
 		AbandonedPetDTO dto = service.getAbandonedPetById(id);
+		PetWeightDTO detail = service.getDetail(id);
+		String cleanString = detail.getDescription().replaceAll("\\\\", ", ");
+		detail.setDescription(cleanString);
 		Map<String, Boolean> vaccinStatus = service.getVaccinationStatus(dto);
 		
 		model.addAttribute("pet", dto);
+		model.addAttribute("detail", detail);
 		model.addAttribute("isRabies", vaccinStatus.get("isRabies"));
 		model.addAttribute("isHealthy", vaccinStatus.get("isHealthy"));
 		

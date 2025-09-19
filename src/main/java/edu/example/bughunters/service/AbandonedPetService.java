@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import edu.example.bughunters.dao.AbandonedPetDAO;
 import edu.example.bughunters.domain.AbandonedPetDTO;
+import edu.example.bughunters.domain.PetWeightDTO;
 
 @Service
 public class AbandonedPetService {
@@ -67,6 +68,12 @@ public class AbandonedPetService {
             processAbandonedPetData(dto); // 상세 정보도 가공 로직 적용
     
         return dto;
+    }
+    
+    // Abandoned Pet의 상세정보
+    public PetWeightDTO getDetail(int id) {
+    	PetWeightDTO dto = dao.detailAbandonedPet(id);
+    	return dto;
     }
     
     // 백신 상태를 판단하는 로직을 분리

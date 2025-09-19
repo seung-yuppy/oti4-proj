@@ -242,4 +242,12 @@
 		USING (abandoned_pet_id)
 		WHERE user_id = #{userId}
 	</select>
+	
+	<select id="detailAbandonedPet">
+		SELECT *
+		FROM Abandoned_Pet_Weight
+		INNER JOIN Abandoned_Pet
+		USING (abandoned_pet_id)
+		WHERE abandoned_pet_id = #{abandonedPetId}
+	</select>
 </mapper>

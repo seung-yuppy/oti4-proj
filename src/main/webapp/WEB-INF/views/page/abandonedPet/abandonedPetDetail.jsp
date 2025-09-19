@@ -90,7 +90,7 @@
 <body>
 	<!-- 헤더 영역 -->
 	<%@ include file="/WEB-INF/views/component/header.jsp"%>
-	<c:if test="${!empty pet }">
+	<c:if test="${!empty pet}">
 		<div class="container main-container">
 			<div class="card shadow-sm">
 				<div class="card-body">
@@ -105,6 +105,11 @@
 	
 						<div class="col-md-7">
 							<h2 class="fw-bold mb-3">${pet.kind}</h2>
+					        <c:if test="${!empty detail}">
+					        <p style="color: gray">
+					        	${detail.description}
+					        </p>    
+					        </c:if>
 							<div
 								class="d-flex justify-content-around text-center py-3 my-4 bg-light rounded profile-icon-group">
 								<div class="icon-item">
