@@ -145,19 +145,6 @@ h2 {
 					class="form-control" placeholder="참고항목" readonly>
 			</div>
 
-			<div class="mb-3">
-				<label class="form-label d-block">반려동물 소유 여부</label>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="hasPet" id="yes"
-						value="yes" required> <label class="form-check-label"
-						for="yes">예</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="hasPet" id="no"
-						value="no"> <label class="form-check-label" for="no">아니오</label>
-				</div>
-			</div>
-
 			<div class="d-grid">
 				<button type="submit" class="btn btn-brown" id="signUp">회원가입</button>
 			</div>

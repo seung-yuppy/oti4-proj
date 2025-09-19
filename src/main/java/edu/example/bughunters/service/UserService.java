@@ -44,7 +44,7 @@ public class UserService {
         dto.setDate(new Timestamp(System.currentTimeMillis()));
         dto.setRole("USER");
         dto.setIsQuiz(0);
-        dto.setIsPet(isPet);
+        dto.setIsPet(0);
 
         int n = userDAO.insertUser(dto);
         if (n != 1) throw new IllegalStateException("회원가입 저장에 실패했습니다.");
