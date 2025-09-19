@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="edu.example.bughunters.dao.ChatDAO">
 
+	<!-- ========== ResultMaps ========== -->
 	<resultMap id="ChatMsgMap"
 		type="edu.example.bughunters.domain.ChatMessageDTO">
 		<id property="chatMessageId" column="chat_message_id" />
@@ -17,65 +18,134 @@
 		<result property="createdAt" column="created_at" />
 		<result property="petId1" column="pet_id1" />
 		<result property="petId2" column="pet_id2" />
+		<!-- 나감 표시 -->
+		<result property="pet1LeftAt" column="pet1_left_at" />
+		<result property="pet2LeftAt" column="pet2_left_at" />
 	</resultMap>
 
+	<!-- ========== Queries ========== -->
 	<select id="countMember" resultType="int">
 		SELECT COUNT(*)
-		FROM chat_room
+		FROM
+		chat_room
 		WHERE chat_room_id = #{roomId}
-		AND (pet_id1 = #{petId} OR pet_id2 = #{petId})
+		AND (pet_id1 = #{petId} OR
+		pet_id2 = #{petId})
 	</select>
 
 	<insert id="insertMessageDTO"
-		parameterType="edu.example.bughunters.domain.ChatMessageDTO">
-		<selectKey keyProperty="chatMessageId" resultType="int"
-			order="BEFORE">
-			SELECT chat_message_seq.NEXTVAL FROM dual
-		</selectKey>
-		INSERT INTO chat_message
-		(chat_message_id, chat_room_id, pet_id, chat_message, created_at)
-		VALUES
-		(#{chatMessageId}, #{chatRoomId}, #{petId}, #{chatMessage}, SYSTIMESTAMP)
+		parameterType="edu.example.bughunters.domain.ChatMessageDTO"
+		useGeneratedKeys="true" keyProperty="chatMessageId"
+		keyColumn="CHAT_MESSAGE_ID">
+		INSERT INTO chat_message (chat_room_id, pet_id,
+		chat_message, created_at)
+		VALUES (#{chatRoomId}, #{petId},
+		#{chatMessage}, SYSTIMESTAMP)
 	</insert>
 
 	<select id="findMessageById" parameterType="long"
 		resultMap="ChatMsgMap">
-		SELECT chat_message_id, chat_room_id, pet_id, chat_message, created_at
+		SELECT chat_message_id, chat_room_id, pet_id, chat_message,
+		created_at
 		FROM chat_message
 		WHERE chat_message_id = #{msgId}
 	</select>
 
-	<select id="selectRoomsByPet" resultMap="ChatRoomMap">
-		SELECT chat_room_id, created_at, pet_id1, pet_id2
+	<select id="selectRoomsByPet" parameterType="int"
+		resultMap="ChatRoomMap">
+		SELECT chat_room_id, created_at, pet_id1, pet_id2,
+		pet1_left_at,
+		pet2_left_at
 		FROM chat_room
-		WHERE pet_id1 = #{petId} OR pet_id2 = #{petId}
+		WHERE (pet_id1 = #{petId} AND
+		pet1_left_at IS NULL)
+		OR (pet_id2 = #{petId} AND pet2_left_at IS NULL)
 		ORDER BY chat_room_id DESC
 	</select>
 
 	<select id="selectMessages" resultMap="ChatMsgMap">
-		SELECT chat_message_id, chat_room_id, pet_id, chat_message, created_at
-		FROM chat_message
-		WHERE chat_room_id = #{roomId}
+		SELECT m.chat_message_id, m.chat_room_id, m.pet_id, m.chat_message,
+		m.created_at
+		FROM chat_message m
+		JOIN chat_room r ON r.chat_room_id =
+		m.chat_room_id
+		WHERE m.chat_room_id = #{roomId}
+		<!-- 내 기준 '삭제 시각' 이후만 보이게 -->
+		AND (
+		(r.pet_id1 = #{me}
+		AND (r.pet1_deleted_at IS NULL OR m.created_at
+		&gt; r.pet1_deleted_at))
+		OR
+		(r.pet_id2 = #{me}
+		AND (r.pet2_deleted_at IS
+		NULL OR m.created_at &gt; r.pet2_deleted_at))
+		)
 		<if test="cursor != null">
-			AND chat_message_id &lt; #{cursor}
+			AND m.chat_message_id &lt; #{cursor}
 		</if>
-		ORDER BY chat_message_id DESC
-		OFFSET 0 ROWS FETCH FIRST #{size} ROWS ONLY
+		ORDER BY m.chat_message_id DESC
+		OFFSET 0 ROWS FETCH FIRST #{size} ROWS
+		ONLY
 	</select>
 
-	<!-- (a,b)와 (b,a)를 동일 취급 -->
 	<select id="findRoomIdByPair" resultType="int">
 		SELECT chat_room_id
 		FROM chat_room
 		WHERE pet_id1 = LEAST(#{a},#{b})
-		AND pet_id2 = GREATEST(#{a},#{b})
+		AND pet_id2 =
+		GREATEST(#{a},#{b})
 		FETCH FIRST 1 ROWS ONLY
 	</select>
 
-	<!-- selectKey 제거, 시퀀스 직접 사용 + 순서 정규화 -->
 	<insert id="insertRoom">
-		INSERT INTO chat_room (chat_room_id, created_at, pet_id1, pet_id2)
-		VALUES (chat_room_seq.NEXTVAL, SYSTIMESTAMP, LEAST(#{a},#{b}),
-		GREATEST(#{a},#{b}))
+		INSERT INTO chat_room (created_at, pet_id1, pet_id2)
+		VALUES (SYSTIMESTAMP, LEAST(#{a},#{b}), GREATEST(#{a},#{b}))
 	</insert>
+
+	<!-- ========== Leave/Status/GC ========== -->
+	<update id="markLeft">
+		UPDATE chat_room
+		SET
+		pet1_left_at = CASE WHEN pet_id1 = #{petId} THEN SYSTIMESTAMP ELSE pet1_left_at
+		END,
+		pet2_left_at = CASE WHEN pet_id2 = #{petId} THEN SYSTIMESTAMP ELSE pet2_left_at
+		END,
+		/* ★ 추가: 내 기준 삭제 컷 시각도 동일하게 찍기 */
+		pet1_deleted_at = CASE WHEN pet_id1 = #{petId} THEN SYSTIMESTAMP ELSE pet1_deleted_at
+		END,
+		pet2_deleted_at = CASE WHEN pet_id2 = #{petId} THEN SYSTIMESTAMP ELSE pet2_deleted_at
+		END
+		WHERE chat_room_id = #{roomId}
+	</update>
+
+	<select id="getRoomStatus" parameterType="int"
+		resultMap="ChatRoomMap">
+		SELECT chat_room_id, created_at, pet_id1, pet_id2,
+		pet1_left_at,
+		pet2_left_at
+		FROM chat_room
+		WHERE chat_room_id = #{roomId}
+	</select>
+
+	<delete id="deleteMessagesByRoomId" parameterType="int">
+		DELETE FROM
+		chat_message WHERE chat_room_id = #{roomId}
+	</delete>
+
+	<delete id="deleteRoomById" parameterType="int">
+		DELETE FROM chat_room
+		WHERE chat_room_id = #{roomId}
+	</delete>
+
+	<update id="unmarkLeft">
+		UPDATE chat_room
+		SET pet1_left_at = CASE WHEN pet_id1
+		= #{petId} THEN NULL ELSE
+		pet1_left_at END,
+		pet2_left_at = CASE WHEN
+		pet_id2 = #{petId} THEN NULL ELSE pet2_left_at END
+		WHERE chat_room_id =
+		#{roomId}
+	</update>
+
 </mapper>

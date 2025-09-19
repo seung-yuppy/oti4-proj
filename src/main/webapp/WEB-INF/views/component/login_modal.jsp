@@ -66,7 +66,7 @@
 					<!-- Modal footer -->
 					<div class="modal-footer">
 						<button type="submit" class="btn btn-brown" id="loginBtn">로그인</button>
-						<a href="/miniproj/page/user/forgotPassword.jsp" class="btn w-100">비밀번호를
+						<a href="/bughunters/views/page/user/forgotPassword.jsp" class="btn w-100">비밀번호를
 							잊어버렸나요?</a>
 					</div>
 				</div>

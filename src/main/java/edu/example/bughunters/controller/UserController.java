@@ -78,16 +78,18 @@ public class UserController {
 	}
 
 	@PostMapping("/auth/login")
-	public String login(HttpSession session, @RequestParam("username") String email,
-			@RequestParam("password") String password, RedirectAttributes rttr) {
+	public String login(HttpSession session, 
+						@RequestParam("username") String email,
+						@RequestParam("password") String password, 
+						RedirectAttributes rttr) {
 		boolean ok = userService.login(email, password, session);
 		if (!ok) {
-			rttr.addFlashAttribute("msg", "이메일 또는 비밀번호가 올바르지 않습니다.");
-			rttr.addFlashAttribute("openLogin", true); // 실패 시에도 모달 자동 오픈
-		} else {
-			rttr.addFlashAttribute("msg", "로그인되었습니다.");
-		}
-		return "redirect:/home";
+	        rttr.addFlashAttribute("msg", "이메일 또는 비밀번호가 올바르지 않습니다.");
+	        rttr.addFlashAttribute("openLogin", true);
+	    } else {
+	        rttr.addFlashAttribute("msg", "로그인되었습니다.");
+	    }
+	    return "redirect:/home";
 	}
 	
 	@PostMapping("/auth/logout")

@@ -49,7 +49,7 @@
 }
 
 .chat-item:hover {
-	background: #f9f9f9;
+	background: #f2f2f2;
 }
 
 .chat-avatar {
@@ -184,4 +184,40 @@
 
 .swiper-button-next::after, .swiper-button-prev::after {
 	display: none;
+}
+
+/* === 채팅방 나가기 버튼 === */
+.chat-item { position: relative; }
+
+.chat-leave {
+  margin-left: auto;            /* 오른쪽 끝 정렬 */
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fff;
+  color: #888;
+  cursor: pointer;
+  transition: all .15s ease;
+  opacity: 0;                   /* 기본은 숨김(호버시 보임) */
+}
+
+.chat-item:hover .chat-leave {  /* 마우스 사용자: 호버 시만 보여 */
+  opacity: 1;
+}
+
+.chat-leave:hover {
+  background: #fff5f5;
+  border-color: #ffd6d6;
+  color: #d33;
+}
+
+.chat-leave:focus-visible {     /* 접근성/키보드 포커스 */
+  outline: 2px solid #b9761a33;
+  opacity: 1;
+}
+
+/* 터치 환경에서는 항상 보이도록(호버 개념 없음) */
+@media (hover: none) {
+  .chat-leave { opacity: 1; }
 }

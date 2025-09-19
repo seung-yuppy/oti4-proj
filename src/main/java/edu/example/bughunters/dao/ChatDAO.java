@@ -12,17 +12,27 @@ import edu.example.bughunters.domain.ChatRoomDTO;
 public interface ChatDAO {
 	int countMember(@Param("roomId") int roomId, @Param("petId") int petId);
 
-    /** selectKey로 chatMessageId 채워서 INSERT */
-    int insertMessageDTO(ChatMessageDTO dto);
+	int insertMessageDTO(ChatMessageDTO dto);
 
-    ChatMessageDTO findMessageById(@Param("msgId") long msgId);
+	ChatMessageDTO findMessageById(@Param("msgId") long msgId);
 
-    List<ChatRoomDTO> selectRoomsByPet(@Param("petId") int petId);
+	List<ChatRoomDTO> selectRoomsByPet(@Param("petId") int petId);
 
-    List<ChatMessageDTO> selectMessages(@Param("roomId") int roomId,
-                                        @Param("cursor") Long cursor,
-                                        @Param("size") int size);
-    
-    Integer findRoomIdByPair(@Param("a") int a, @Param("b") int b);
-    int insertRoom(@Param("a") int a, @Param("b") int b);
+	List<ChatMessageDTO> selectMessages(@Param("roomId") int roomId, @Param("cursor") Long cursor,
+			@Param("size") int size, @Param("me") int mePetId);
+
+	Integer findRoomIdByPair(@Param("a") int a, @Param("b") int b);
+
+	int insertRoom(@Param("a") int a, @Param("b") int b);
+
+	// ✅ 추가
+	int markLeft(@Param("roomId") int roomId, @Param("petId") int petId);
+
+	ChatRoomDTO getRoomStatus(@Param("roomId") int roomId);
+
+	int deleteMessagesByRoomId(@Param("roomId") int roomId);
+
+	int deleteRoomById(@Param("roomId") int roomId);
+
+	int unmarkLeft(@Param("roomId") int roomId, @Param("petId") int petId);
 }

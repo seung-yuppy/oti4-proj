@@ -11,4 +11,6 @@ public interface ChatService {
 	    ChatMessageDTO saveMessage(int roomId, int petId, String body);
 	    List<ChatRoomDTO> listRoomsByPet(int petId);
 	    List<ChatMessageDTO> listMessages(int roomId, Long cursor, int size);
+	    
+	    
 }

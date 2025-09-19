@@ -132,205 +132,13 @@ body {
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c54be34b2a7cdb69fed5bbd7c59a90bb"></script>
 	<script>	
-		/* 채팅 스크립트 */
-		 const CTX = '<%=request.getContextPath()%>';
-		 const BASE = `\${location.origin}\${CTX}`;
-		 console.log('CTX=', CTX, 'BASE=', BASE);
-					 
-  const MY_PET_ID = <%=(session.getAttribute("PET_ID") == null ? -1 : (Integer) session.getAttribute("PET_ID"))%>;
-
-  /* ===== 토글/패널 ===== */
-  const chatBtn = document.getElementById('chatToggleBtn');
-  const chatList = document.getElementById('chatList');
-  const chatListBody = document.getElementById('chatListBody') || (function(){ const d=document.createElement('div'); d.id='chatListBody'; chatList.appendChild(d); return d; })();
-  const chatCloseBtn = document.getElementById('chatCloseBtn');
-
-  const chatDetail = document.getElementById('chatDetail');
-  const chatBackBtn = document.getElementById('chatBackBtn');
-  const chatDetailCloseBtn = document.getElementById('chatDetailCloseBtn');
-  const chatRoomTitle = document.getElementById('chatRoomTitle');
-  const chatMessages = document.getElementById('chatMessages') || document.querySelector('.chat-messages');
-  const chatInput = document.getElementById('chatInput') || document.querySelector('.chat-input input');
-  const chatSendBtn = document.getElementById('chatSendBtn') || document.querySelector('.chat-input button');
-
-  const show = (el,v)=> el && (el.style.display = v);
-  const isShown = (el)=> el && window.getComputedStyle(el).display !== 'none';
-  function openList(){ show(chatList,'block'); show(chatDetail,'none'); }
-  function openDetail(){ show(chatDetail,'flex'); show(chatList,'none'); }
-  function closeAll(){ show(chatList,'none'); show(chatDetail,'none'); }
-
-  // 버튼이 혹시 없으면 조용히 패스
-  chatBtn && chatBtn.addEventListener('click', () => {
-    if (isShown(chatDetail)) openList();
-    else isShown(chatList) ? closeAll() : openList();
-  });
-  chatCloseBtn && chatCloseBtn.addEventListener('click', closeAll);
-  chatDetailCloseBtn && chatDetailCloseBtn.addEventListener('click', closeAll);
-  chatBackBtn && chatBackBtn.addEventListener('click', openList);
-
-  /* ===== 방 목록/메시지/웹소켓 ===== */
-  let currentRoomId = null;
-  let ws = null;
-
-  async function loadRooms(){
-    try{
-    	const res = await fetch(`/bughunters/api/chat/rooms`, { 
-    		method:"GET",
-    		 credentials:"include",
-    	});
-	  const rooms = await res.json();
-      renderRoomList(rooms);
-    }catch(e){ console.error('loadRooms failed', e); }
-  }
-
-  function renderRoomList(rooms){
-    chatListBody.innerHTML = '';
-    if (!rooms || rooms.length === 0){
-      const empty = document.createElement('div');
-      empty.className = 'p-3 text-muted';
-      empty.textContent = '채팅방이 없습니다.';
-      chatListBody.appendChild(empty);
-      return;
-    }
-    rooms.forEach(r=>{
-      const item = document.createElement('div');
-      item.className = 'chat-item';
-      item.dataset.roomId = r.chatRoomId;
-
-      const img = document.createElement('img');
-      img.className = 'chat-avatar';
-      img.src = `${CTX}/resources/image/petDummy1.jpg`;
-
-      const info = document.createElement('div');
-      info.className = 'chat-info';
-      const name = document.createElement('div');
-      name.className = 'chat-name';
-      name.textContent = `Room #${r.chatRoomId}`;
-      const time = document.createElement('span');
-      time.className = 'chat-time'; time.textContent = '';
-      name.appendChild(document.createTextNode(' '));
-      name.appendChild(time);
-
-      const last = document.createElement('div');
-      last.className = 'chat-msg'; last.textContent = '';
-
-      info.appendChild(name); info.appendChild(last);
-      item.appendChild(img); item.appendChild(info);
-      chatListBody.appendChild(item);
-    });
-  }
-
-  // 목록에서 방 클릭하여 열기
-  chatListBody.addEventListener('click', async (e)=>{
-    const item = e.target.closest('.chat-item');
-    if(!item) return;
-    const roomId = +item.dataset.roomId;
-    await openRoom(roomId);
-  });
-
-  async function loadMessages(roomId, cursor){
-	  const url = new URL(`${BASE}/api/chat/rooms/${roomId}/messages`);
-    if (cursor) url.searchParams.set('cursor', cursor);
-    const res = await fetch(url.toString(), {
-    	  credentials: 'include'
-    	});
-    const list = await res.json();
-    chatMessages.innerHTML = '';
-    list.slice().reverse().forEach(m => appendMessage(m));
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function appendMessage(m){
-    const side = (m.petId === MY_PET_ID) ? 'right' : 'left';
-    const wrap = document.createElement('div');
-    wrap.className = `message ${side}`;
-    const text = document.createElement('div');
-    text.className = 'text';
-    text.textContent = m.chatMessage || '';
-    wrap.appendChild(text);
-    chatMessages.appendChild(wrap);
-  }
-
-  function ensureWs(){
-    if (ws && ws.readyState === WebSocket.OPEN) return;
-    const scheme = (location.protocol === 'https:') ? 'wss' : 'ws';
-    ws = new WebSocket(`${scheme}://${location.host}${CTX}/ws/chat`);
-    ws.onmessage = (evt)=>{
-      try{
-        const data = JSON.parse(evt.data);
-        if (data.type === 'MESSAGE' && data.roomId === currentRoomId){
-          appendMessage({ chatMessage: data.body, petId: data.senderPetId });
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-      }catch(e){ console.error(e); }
-    };
-  }
-
-  async function openRoom(roomId){
-    currentRoomId = roomId;
-    chatRoomTitle && (chatRoomTitle.textContent = `Room #${roomId}`);
-    openDetail();
-    await loadMessages(roomId);
-    ensureWs();
-    ws && ws.send(JSON.stringify({ type:'JOIN', roomId }));
-  }
-
-  function send(){
-    const text = (chatInput.value || '').trim();
-    if(!text || !ws || ws.readyState !== WebSocket.OPEN || currentRoomId == null) return;
-    ws.send(JSON.stringify({ type:'SEND', roomId: currentRoomId, body: text }));
-    chatInput.value = '';
-  }
-  chatSendBtn && chatSendBtn.addEventListener('click', send);
-  chatInput && chatInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }});
-
-  // 1:1 채팅 버튼(카드/상세 등)에 대한 이벤트 위임
-  document.addEventListener('click', async (e)=>{
-    const btn = e.target.closest('[data-chat-room-id], [data-chat-with]');
-    if(!btn) return;
-
-    // 1) 이미 roomId가 있으면 바로 열기
-    if (btn.dataset.chatRoomId){
-      const roomId = parseInt(btn.dataset.chatRoomId, 10);
-      if (!isNaN(roomId)) {
-        openDetail();
-        await openRoom(roomId);
-      }
-      return;
-    }
-
-    // 2) 상대 petId로 방 생성/조회 후 열기
-    if (btn.dataset.chatWith){
-      const toPetId = parseInt(btn.dataset.chatWith, 10);
-      if (isNaN(toPetId)) return;
-      try{
-    	  const res = await fetch(`${BASE}/api/chat/rooms/direct?toPetId=${toPetId}`, {
-    		     method:'POST',
-    		     headers: { 'Accept':'application/json' },
-    	  		 credentials:'include'
-    		  });
-        if (!res.ok) throw new Error('direct create failed');
-        const data = await res.json(); // {roomId: number}
-        openList(); // 목록 배경 열려 있으면 자연스럽게 전환
-        await openRoom(data.roomId);
-      }catch(err){ console.error(err); alert('채팅방 생성에 실패했습니다.'); }
-    }
-  });
-
-  // 초기: 목록 로드(버튼을 누르면 보이지만, 데이터는 미리 준비)
-  document.addEventListener('DOMContentLoaded', async () => {
-	  try {
-	    // 먼저 내 펫 정보를 조회(세션에 PET_ID/NICK 세팅 효과)
-	    await fetch(`${BASE}/pet/mypet`, { credentials: 'include' });
-
-	    // 그 다음 방 목록
-	    await loadRooms();
-	  } catch(e) {
-	    console.error(e);
-	  }
-	});
+	window.CTX = '<%= request.getContextPath() %>'; // 보통 '/bughunters'
+	  window.MY_PET_ID = <%= (session.getAttribute("PET_ID") == null ? -1 : (Integer) session.getAttribute("PET_ID")) %>;
 	</script>
 
+	<!-- 외부 스크립트 로드 (경로는 프로젝트에 맞게) -->
+	<%-- <script src="<%= request.getContextPath() %>/resources/js/pet_chat.js"></script> --%>
+	<script src="<%= ctx %>/resources/js/pet_chat.js?v=2025-09-18-01"></script>
 	<script>
 	/* 스와이퍼 */
 /* 	const swiper = new Swiper('.swiper-container', {
@@ -348,55 +156,29 @@ body {
 	const cardbox = document.querySelector("#mypet-card");
 	
 	 document.addEventListener("DOMContentLoaded", async (event) => {
-		const res = await fetch(`/bughunters/pet/mypet`, {
-			method: "GET",
-		});
+		const res = await fetch(BASE + '/pet/mypet', {method: "GET", credentials: 'include', headers:{'Accept':'application/json'} });
 		const data = await res.json();
-		if (data.petId === 0) {
-			cardbox.innerHTML = `
-				<h2>반려동물을 등록해주세요.</h2>
-			`;
+		
+		if (!cardbox) return; // 엘리먼트 없으면 패스
+		
+		if (!data || data.petId === 0) {
+			cardbox.innerHTML = '<h2>반려동물을 등록해주세요.</h2>';
 		} else {
-			cardbox.innerHTML = `
-				<img 
-					src="data:image/jpeg;base64,\${data.base64ProfileImage}"
-					class="card-img-top card-image"
-					alt="반려동물 사진없음" 
-				>
-				<div class="card-body">
-					<h5 class="card-title fw-bold margin-t">\${data.name}</h5>
-					<p class="card-text text-muted text-small">
-						\${data.intro}
-					</p>
-					<ul class="mypet-card-list">
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
-							<span>\${data.kind}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
-							<span>\${data.gender}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
-							<span>\${data.age}년생</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
-							<span>\${data.weight}kg</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_color.png" class="card-icon" />
-							<span>\${data.color}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
-							<span>\${data.meetingTemperature}°C</span>
-						</li>
-					</ul>
-					<button type="button" class="btn btn-gray d-block" id="walking-register-btn" data-pet-id="\${data.petId}">산책 게시판 등록하기</button>
-				</div>		
-			`;
+			cardbox.innerHTML = 
+				'<img src="data:image/jpeg;base64,' + (data.base64ProfileImage || '') + '" class="card-img-top card-image" alt="반려동물 사진없음">' +
+			      '<div class="card-body">' +
+			        '<h5 class="card-title fw-bold margin-t">' + (data.name || '') + '</h5>' +
+			        '<p class="card-text text-muted text-small">' + (data.intro || '') + '</p>' +
+			        '<ul class="mypet-card-list">' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_individual.png" class="card-icon"><span>' + (data.kind || '') + '</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_gender.png" class="card-icon"><span>' + (data.gender || '') + '</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_age.png" class="card-icon"><span>' + (data.age || '') + '년생</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_size.png" class="card-icon"><span>' + (data.weight || '') + 'kg</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_color.png" class="card-icon"><span>' + (data.color || '') + '</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_temperature.png" class="card-icon"><span>' + (data.meetingTemperature || '') + '°C</span></li>' +
+			        '</ul>' +
+			        '<button type="button" class="btn btn-gray d-block" id="walking-register-btn" data-pet-id="' + data.petId + '">산책 게시판 등록하기</button>' +
+			      '</div>';
 			
 			// mypetCard가 로드된 후에 버튼에 이벤트 리스너 추가
 			navigator.geolocation.getCurrentPosition(
@@ -407,12 +189,9 @@ body {
 				if (walkingBtn) {
 					walkingBtn.addEventListener("click", async (event) => { 
 					const petId = event.currentTarget.dataset.petId;
-					const postData = {
-						location: `\${lat},\${lon}`,
-						petId: petId
-					};
+					const postData = { location: lat + ',' + lon, petId: petId };
 							
-					const res = await fetch(`/bughunters/pet/walking/register`, {
+					const res = await fetch(BASE + '/pet/walking/register', {
 						method: "POST",
 						headers: {
 							'Content-Type': 'application/json',
@@ -488,69 +267,64 @@ body {
 	
 	/* 산책 게시판 리스트 */
 	const listBox = document.querySelector("#pet-list-wrapper");
-	document.addEventListener("DOMContentLoaded", async(event) =>{
-		const res = await fetch(`/bughunters/pet/walking/list`, {
+	document.addEventListener("DOMContentLoaded", async() =>{
+		const res = await fetch(BASE + '/pet/walking/list', {
 			method: "GET",
+			credentials:'include', 
+			headers:{'Accept':'application/json'}
 		});
+		
 		const data = await res.json();
-		const pets = data.data;
+		const pets = (data && data.data) || [];
+		
+			// 종현 추가: 채팅방 이미지 빠구기, 전역 캐시
+			window.PET_IMG  = window.PET_IMG  || {};
+			window.PET_NAME = window.PET_NAME || {};
+			pets.forEach(p => {
+			  if (!p?.petId) return;
+			  if (p.base64ProfileImage) window.PET_IMG[p.petId] = 'data:image/jpeg;base64,' + p.base64ProfileImage;
+			  if (p.name)               window.PET_NAME[p.petId] = p.name;
+			});
+			
 		if (Array.isArray(pets) && pets.length > 0) {
-			listBox.innerHTML = pets.map((pet) => `	
-			<li class="like-pet-item">
-				<img 
-					src="data:image/jpeg;base64,\${pet.base64ProfileImage}"
-					class="card-img-top card-image"
-					alt="반려 동물 사진" 
-				>
-				<div class="card-body">
-					<h5 class="card-title fw-bold chat-name">\${pet.name}</h5>
-					<p class="card-text text-muted text-small">
-						\${pet.intro}
-					</p>
-					<ul class="card-list">
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
-							<span>\${pet.kind}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
-							<span>\${pet.gender}</span>
-						</li>
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
-							<span>\${pet.age}년생</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
-							<span>\${pet.meetingTemperature}</span>
-						</li>
-					</ul>
-					<div>
-						<button type="button" class="btn btn-gray w-100" data-chat-with="${pet.petId}">1대1 채팅</button>
-					</div>
-				</div>
-			</li>
-			`).join('');
-			pets.forEach((pet) => {
-                // Split the location string into lat and lon
-                const coords = pet.location.split(',');
-                if (coords.length === 2) {
-                    const lat = parseFloat(coords[0]);
-                    const lon = parseFloat(coords[1]);
-
-                    // Check if coordinates are valid numbers
-                    if (!isNaN(lat) && !isNaN(lon)) {
-                        const petPosition = new kakao.maps.LatLng(lat, lon);
-                        new kakao.maps.Marker({
-                            map: map,
-                            position: petPosition,
-                            title: pet.name,
-                        });
-                    }
-                }
-            });
+			listBox.innerHTML = pets.map(function(pet) {
+				 return ''
+				  	+ '<li class="like-pet-item">'
+			        +   '<img src="data:image/jpeg;base64,' + (pet.base64ProfileImage || '') + '" class="card-img-top card-image" alt="반려 동물 사진">'
+			        +   '<div class="card-body">'
+			        +     '<h5 class="card-title fw-bold chat-name">' + (pet.name || '') + '</h5>'
+			        +     '<p class="card-text text-muted text-small">' + (pet.intro || '') + '</p>'
+			        +     '<ul class="card-list">'
+			        +       '<li class="card-item"><img src="' + CTX + '/resources/image/ico_individual.png" class="card-icon"><span>' + (pet.kind || '') + '</span></li>'
+			        +       '<li class="card-item"><img src="' + CTX + '/resources/image/ico_gender.png" class="card-icon"><span>' + (pet.gender || '') + '</span></li>'
+			        +       '<li class="card-item"><img src="' + CTX + '/resources/image/ico_age.png" class="card-icon"><span>' + (pet.age || '') + '년생</span></li>'
+			        +       '<li class="card-item"><img src="' + CTX + '/resources/image/ico_temperature.png" class="card-icon"><span>' + (pet.meetingTemperature || '') + '</span></li>'
+			        +     '</ul>'
+			        +     '<div>'
+			        +       '<button type="button" class="btn btn-gray w-100" data-chat-with="' + pet.petId + '">1대1 채팅</button>'
+			        +     '</div>'
+			        +   '</div>'
+			        + '</li>';
+			 }).join('');
+			
+			// 지도 마커
+		    pets.forEach(function(pet){
+		      const coords = (pet.location || '').split(',');
+		      if (coords.length === 2) {
+		        const lat = parseFloat(coords[0]);
+		        const lon = parseFloat(coords[1]);
+		        if (!isNaN(lat) && !isNaN(lon)) {
+		          new kakao.maps.Marker({
+		            map: map,
+		            position: new kakao.maps.LatLng(lat, lon),
+		            title: pet.name
+		          });
+		        }
+		      }
+		    });
 		}
 	});
+	console.log('MY_PET_ID=', MY_PET_ID);
 	</script>
 </body>
 </html>

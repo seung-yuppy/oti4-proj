@@ -17,4 +17,7 @@ public class ChatRoomDTO {
 	private int petId1;
 	private int petId2;
 
+	// ✅ 나감 시각 필드 추가
+    private Timestamp pet1LeftAt;
+    private Timestamp pet2LeftAt;
 }
