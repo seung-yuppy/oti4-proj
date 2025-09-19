@@ -119,7 +119,6 @@
   FETCH FIRST 4 ROWS ONLY
 </select>
 
-
 	<!-- 로그인한 사용자 이름으로 is_quiz 조회 -->
 	<select id="selectIsQuizByUsername" parameterType="string"
 		resultType="int">
@@ -127,6 +126,42 @@
 		FROM Member
 		WHERE username = #{username}
 	</select>
+	
+<!-- 		<select id="getMatchingResultByUserId"
+		resultType="edu.example.bughunters.domain.MatchingResultDTO">
+		SELECT * FROM Matching_Abandoned_Pet_And_User
+		WHERE user_id = #{userId}
+	</select>
+
+	<insert id="insertMatchingResult"
+		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
+		INSERT INTO Matching_Abandoned_Pet_And_User (
+		activity_score, sociability_score, dependency_score,
+		trainability_score, aggression_score, user_id
+		)
+		VALUES (
+		#{activityScore}, #{sociabilityScore}, #{dependencyScore},
+		#{trainabilityScore}, #{aggressionScore}, #{userId}
+		)
+	</insert>
+
+	<update id="updateMatchingResult"
+		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
+		UPDATE Matching_Abandoned_Pet_And_User
+		SET
+		activity_score = #{activityScore},
+		sociability_score = #{sociabilityScore},
+		dependency_score = #{dependencyScore},
+		trainability_score = #{trainabilityScore},
+		aggression_score = #{aggressionScore}
+		WHERE user_id = #{userId}
+	</update>
+	
+		<update id="updateIsQuiz" parameterType="int">
+		UPDATE "User"
+		SET is_quiz = 1
+		WHERE user_id = #{userId}
+	</update> -->
 
 
 </mapper>

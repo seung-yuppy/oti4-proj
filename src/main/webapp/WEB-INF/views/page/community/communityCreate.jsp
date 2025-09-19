@@ -83,9 +83,10 @@
 
 					<!-- 제목 -->
 					<div class="col-12">
-						<label class="form-label fw-semibold">제목</label> <input
-							type="text" name="title" class="form-control"
-							placeholder="제목을 입력하세요" value="${form.title}" required>
+						<label class="form-label fw-semibold">제목</label> 
+						<input type="text" id="title" name="title" class="form-control"
+						placeholder="제목을 입력하세요" value="${form.title}" required> 
+						<span id="titleMaxChar" class="badge text-bg-secondary">제목은 최대 255Byte까지 입력할수 있어요.</span>
 					</div>
 
 					<!-- 본문 -->
@@ -181,6 +182,90 @@
 
 		  syncRequired();
 		})();
+	
+	(function () {
+		  const input = document.getElementById('title') ||
+		                document.querySelector('input[name="title"], textarea[name="title"]');
+		  if (!input) return;
+
+		  const MAX_BYTES = 255;        // DB바이트 기준
+		  const enc = new TextEncoder();
+		  let composing = false;
+
+		  // ▶ 추가: 배지 요소
+		  const badge = document.getElementById('titleMaxChar');
+		  const hideBadge = () => { if (badge) badge.style.display = 'none'; };
+		  const showBadge = () => { if (badge) badge.style.display = 'inline-block'; };
+
+		  const bytesLen = s => enc.encode(s).length;
+
+		  // s의 UTF-8 길이가 max 이하가 되도록 앞부분만 남기기
+		  function trimToBytes(s, maxBytes) {
+		    const arr = [...s];
+		    let lo = 0, hi = arr.length;
+		    while (lo < hi) {
+		      const mid = Math.ceil((lo + hi) / 2);
+		      const slice = arr.slice(0, mid).join('');
+		      if (bytesLen(slice) <= maxBytes) lo = mid; else hi = mid - 1;
+		    }
+		    return arr.slice(0, lo).join('');
+		  }
+
+		  // ▶ 추가: UI 업데이트(배지 토글)
+		  function updateBadgeBy(bytes) {
+		    if (!badge) return;
+		    if (bytes >= MAX_BYTES) showBadge(); else hideBadge();
+		  }
+
+		  input.addEventListener('compositionstart', () => composing = true);
+		  input.addEventListener('compositionend',   () => {
+		    composing = false;
+		    if (bytesLen(input.value) > MAX_BYTES) {
+		      input.value = trimToBytes(input.value, MAX_BYTES);
+		    }
+		    updateBadgeBy(bytesLen(input.value)); // ▶ 추가
+		  });
+
+		  input.addEventListener('beforeinput', function (e) {
+		    if (composing) return;
+		    const data = e.data ?? '';
+		    const v = input.value;
+		    const s = input.selectionStart ?? v.length;
+		    const t = input.selectionEnd   ?? v.length;
+		    const future = v.slice(0, s) + data + v.slice(t);
+		    const futureBytes = bytesLen(future);
+
+		    if (futureBytes > MAX_BYTES) {
+		      e.preventDefault(); // 초과 입력 자체를 차단
+		      showBadge();        // ▶ 추가: 넘기려 하면 바로 표시
+		      return;
+		    }
+		    updateBadgeBy(futureBytes);   // ▶ 추가: 정상 입력이면 선반영
+		  });
+
+		  input.addEventListener('input', () => {
+		    if (composing) return;
+		    if (bytesLen(input.value) > MAX_BYTES) {
+		      input.value = trimToBytes(input.value, MAX_BYTES);
+		    }
+		    updateBadgeBy(bytesLen(input.value));   // ▶ 추가
+		  });
+
+		  // 제출 직전 최종 가드 (직접요청/자동완성 등 모든 우회 케이스 대비)
+		  const form = input.closest('form');
+		  if (form) form.addEventListener('submit', (e) => {
+		    if (bytesLen(input.value) > MAX_BYTES) {
+		      e.preventDefault();
+		      input.value = trimToBytes(input.value, MAX_BYTES);
+		      showBadge(); // ▶ 추가
+		      alert('제목은 최대 ' + MAX_BYTES + '바이트(UTF-8)까지 가능합니다.');
+		    }
+		  });
+
+		  // ▶ 추가: 초기 로드 시 숨김
+		  hideBadge();
+		})();
+	
 
   </script>
 </body>

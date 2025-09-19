@@ -30,34 +30,48 @@ public class MatchingQuizService {
             MatchingQuizDTO q = quizDAO.selectRandomQuiz(cat);
             if (q != null) quizzes.add(q);
         }
-        if (quizzes.isEmpty()) return quizzes;
-
-        List<Long> quizIds = quizzes.stream()
-                .map(MatchingQuizDTO::getMatchingQuizId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        List<MatchingAnswerDTO> answers = Optional.ofNullable(quizDAO.selectAnswersByQuizIds(quizIds))
-                                                  .orElse(Collections.emptyList());
-
-        Map<Long, List<MatchingAnswerDTO>> answersByQuizId =
-                answers.stream().collect(Collectors.groupingBy(MatchingAnswerDTO::getMatchingQuizId));
+        
+        List<Long> quizIds = new ArrayList<>();
 
         for (MatchingQuizDTO q : quizzes) {
-            q.setAnswers(answersByQuizId.getOrDefault(q.getMatchingQuizId(), Collections.emptyList()));
+            Long id = q.getMatchingQuizId();
+            if (id != null) {
+                quizIds.add(id);
+            }
         }
+        /*List<Long> quizIds = quizzes.stream()
+                .map(MatchingQuizDTO::getMatchingQuizId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());*/
 
-        quizzes.sort((a, b) ->
-                Integer.compare(CATEGORIES.indexOf(a.getQuizCategory()), CATEGORIES.indexOf(b.getQuizCategory())));
+        List<MatchingAnswerDTO> answers = quizDAO.selectAnswersByQuizIds(quizIds);
+
+        /*Map<Long, List<MatchingAnswerDTO>> answersByQuizId =
+                answers.stream().collect(Collectors.groupingBy(MatchingAnswerDTO::getMatchingQuizId));*/
+        
+        Map<Long, List<MatchingAnswerDTO>> answersByQuizId = new HashMap<>();
+        for (MatchingAnswerDTO ans : answers) {
+            Long quizId = ans.getMatchingQuizId();
+            if (answersByQuizId.containsKey(quizId)) {
+                answersByQuizId.get(quizId).add(ans);
+            } else {
+                List<MatchingAnswerDTO> list = new ArrayList<>();
+                list.add(ans);
+                answersByQuizId.put(quizId, list);
+            }
+        }
+        for (MatchingQuizDTO q : quizzes) {
+        	q.setAnswers(answersByQuizId.get(q.getMatchingQuizId()));
+        }
+        
         return quizzes;
     }
 
+    /*매칭 퀴즈 결과 저장*/
     @Transactional
     public void saveQuizResult(MatchingResultDTO curr) {
-        if (curr.getUserId() == null) curr.setUserId(1L);
-
+    	
         Integer isQuiz = resultDao.selectIsQuizByUserId(curr.getUserId());
-        if (isQuiz == null) throw new IllegalStateException("유저 없음");
 
         MatchingResultDTO prev = resultDao.selectResultByUserId(curr.getUserId());
         
@@ -97,13 +111,14 @@ public class MatchingQuizService {
         return r;
     }
     
+    
+    /*매칭결과계산(+상위4마리저장)*/
     @Transactional
     public List<Long> matchAndSaveTop4(Long userId) {
         MatchingResultDTO u = resultDao.selectResultByUserId(userId);
         if (u == null) throw new IllegalStateException("유저 결과가 없습니다.");
 
         List<PetWeightDTO> rows = resultDao.selectAllPetWeights();
-        if (rows == null || rows.isEmpty()) return Collections.emptyList();
 
         class PS { Long id; double s; PS(Long i,double sc){id=i;s=sc;} }
         List<PS> scores = new ArrayList<>(rows.size());
@@ -138,9 +153,8 @@ public class MatchingQuizService {
             resultDao.insertTopMatch(userId, i + 1, topIds.get(i));
         }
         return topIds;
-        
-        
     }
+    
     //퀴즈 완료 여부 
     @Transactional(readOnly = true)
     public boolean hasFinishedQuiz(Long userId) {
@@ -151,7 +165,7 @@ public class MatchingQuizService {
     //카드 데이터 로드
     @Transactional(readOnly = true)
     public List<AbandonedPetDTO> loadTop4Cards(Long userId) {
-        List<AbandonedPetDTO> list = resultDao.selectTop4PetsForCard(userId); // rank_no 순서로 4개
+        List<AbandonedPetDTO> list = resultDao.selectTop4PetsForCard(userId);
         if (list == null) return Collections.emptyList();
         list.forEach(this::processAbandonedPetData);
         return list;

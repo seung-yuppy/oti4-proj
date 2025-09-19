@@ -34,9 +34,9 @@
 
 /* Hover: 원본과 동일 */
 .nav-pills .tab:hover, .nav-pills .tab.active:hover {
-	background: #B9761A; /* 호버 배경색 */
-	border-color: #e6e8eb; /* 호버 테두리색 */
-	color: #374151; /* 호버 글자색 */
+	background: #b38f83; /* 호버 배경색 */
+	border-color: #b38f83; /* 호버 테두리색 */
+	color: white; /* 호버 글자색 */
 }
 
 /* Bootstrap의 기본 active(파란 배경) 제거 → 원본과 같은 '평상시' 스타일 유지 */

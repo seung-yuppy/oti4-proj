@@ -36,4 +36,17 @@ public interface CommunityDAO {
                       @Param("userId") int userId);
 
     int deleteCommentsByCommunity(@Param("communityId") int communityId);
+    
+    //마이페이지 넣기용
+    int countPostsByUser(@Param("userId") int userId);
+
+    List<CommunityDTO> selectPostsByUser(@Param("userId") int userId,
+                                         @Param("offset") int offset,
+                                         @Param("size") int size);
+
+    int countCommentsByUser(@Param("userId") int userId);
+
+    List<CommentDTO> selectCommentsByUser(@Param("userId") int userId,
+                                          @Param("offset") int offset,
+                                          @Param("size") int size);
 }

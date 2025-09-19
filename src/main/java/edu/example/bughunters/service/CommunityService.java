@@ -105,4 +105,26 @@ public class CommunityService {
     public boolean clearPostImage(int communityId, int userId) {
         return communityDAO.clearImage(communityId, userId) > 0;
     }
+    
+    @Transactional(readOnly = true)
+    public int countPostsByUser(int userId) {
+        return communityDAO.countPostsByUser(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommunityDTO> findPostsByUser(int userId, int page, int size) {
+        int offset = (page - 1) * size;
+        return communityDAO.selectPostsByUser(userId, offset, size);
+    }
+
+    @Transactional(readOnly = true)
+    public int countCommentsByUser(int userId) {
+        return communityDAO.countCommentsByUser(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CommentDTO> findCommentsByUser(int userId, int page, int size) {
+        int offset = (page - 1) * size;
+        return communityDAO.selectCommentsByUser(userId, offset, size);
+    }
 }
