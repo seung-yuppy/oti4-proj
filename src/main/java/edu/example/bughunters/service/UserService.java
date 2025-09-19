@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 	private final UserDAO userDAO;
-    private final BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     @Transactional
     public void signUp(String email, String rawPassword, String nickName,
@@ -37,8 +37,8 @@ public class UserService {
 
         UserDTO dto = new UserDTO();
         dto.setUserName(email);
-      //dto.setPassword(encoder.encode(rawPassword)); 암호화저장
-        dto.setPassword(rawPassword);  				//평문저장
+        dto.setPassword(encoder.encode(rawPassword)); // 암호화저장
+        //dto.setPassword(rawPassword);  				//평문저장
         dto.setNickName(nickName);
         dto.setAddress(addr.toString().trim());
         dto.setDate(new Timestamp(System.currentTimeMillis()));
@@ -56,7 +56,12 @@ public class UserService {
         UserDTO user = userDAO.findByUserName(email);
         if (user == null) return false;
         //if (!encoder.matches(rawPassword, user.getPassword())) return false; // BCrypt 암호 저장
-        if (!rawPassword.equals(user.getPassword())) return false; // 평문 저장
+        //if (!rawPassword.equals(user.getPassword())) return false; // 평문 저장
+        
+        String stored = user.getPassword();
+        boolean isHash = stored != null && (stored.startsWith("$2a$") || stored.startsWith("$2b$") || stored.startsWith("$2y$"));
+        boolean ok = isHash ? encoder.matches(rawPassword, stored) : rawPassword.equals(stored);
+        if (!ok) return false;
 
         session.setAttribute("LOGIN_USER", user.getUserName()); // 필요한 값 넣기
         session.setAttribute("userId", user.getUserId());
@@ -76,10 +81,10 @@ public class UserService {
         if (user == null) return false;
 
         // 지금은 평문 저장이라 문자열 비교
-        return rawPassword.equals(user.getPassword());
+        //return rawPassword.equals(user.getPassword());
 
         // 나중에 해시 저장으로 바꾸면 ↓ 한 줄로 변경
-        // return encoder.matches(rawPassword, user.getPassword());
+         return encoder.matches(rawPassword, user.getPassword());
     }
     
     @Transactional
