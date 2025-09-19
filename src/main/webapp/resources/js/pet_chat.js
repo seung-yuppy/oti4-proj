@@ -101,7 +101,7 @@ function renderRoomList(rooms){
 
 	    const name = document.createElement('div');
 	    name.className = 'chat-name';
-	    name.textContent = 'Room #' + r.chatRoomId;
+	    name.textContent = '';
 
 	    const time = document.createElement('span');
 	    time.className = 'chat-time';
@@ -162,9 +162,11 @@ async function loadMessages(roomId, cursor){
 
 // 1:1 생성
 async function openDirect(toPetId) {
-	const qs  = new URLSearchParams({ toPetId: String(toPetId) });
+	  const qs  = new URLSearchParams({ toPetId: String(toPetId) });
 	  const res = await fetch(`${BASE}/api/chat/rooms/direct?${qs}`, {
-	    method: 'POST', credentials: 'include', headers: { 'Accept': 'application/json' }
+	    method: 'POST',
+	    credentials: 'include',
+	    headers: { 'Accept': 'application/json' }
 	  });
 	  if (!res.ok) {
 	    const txt = await res.text().catch(()=> '');
@@ -174,10 +176,13 @@ async function openDirect(toPetId) {
 	  const data = await res.json();
 	  const roomId = data.roomId ?? data.chatRoomId;
 
-	  // ✅ 상대 프로필 선로딩 → 제목 즉시 반영
-	  await fetchPetImage(toPetId).catch(()=>{});
+	  // ✅ 캐시에 있으면 즉시 제목 반영 (리스트에서 이미 캐시됨)
 	  const nm = window.PET_NAME?.[toPetId];
 	  if (nm && chatRoomTitle) chatRoomTitle.textContent = nm;
+
+	  // ✅ roomId → toPetId 매핑 캐싱
+	  window.ROOM_PEER_MAP = window.ROOM_PEER_MAP || {};
+	  window.ROOM_PEER_MAP[roomId] = toPetId;
 
 	  await openRoom(roomId);
 
@@ -257,7 +262,6 @@ function ensureWs(){
 async function openRoom(roomId){
   currentRoomId = roomId;
   if (chatSendBtn) chatSendBtn.disabled = true;
-  if (chatRoomTitle) chatRoomTitle.textContent = 'Room #' + roomId;
 
   openDetail();
   await loadMessages(roomId);
@@ -356,20 +360,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // === [추가 1] 채팅방 아바타/타이틀 채우기 ===
 async function hydrateChatItemByRoomId(roomId, itemEl) {
-	try {
-	    const el = itemEl || chatListBody.querySelector(`[data-room-id="${roomId}"]`);
-	    const dsPeer = el?.dataset?.peerId ? Number(el.dataset.peerId) : null;
-	    const peerId = Number.isFinite(dsPeer) ? dsPeer : await fetchPeerPetId(roomId);
-	    if (!peerId) return;
+	 try {
+		    const el = itemEl || chatListBody.querySelector(`[data-room-id="${roomId}"]`);
 
-	    applyPeerMetaToItem(el || document, peerId);
+		    // ✅ 먼저 ROOM_PEER_MAP에서 찾기
+		    let peerId = window.ROOM_PEER_MAP?.[roomId] ?? null;
 
-	    // 헤더 제목도 갱신
-	    if (chatRoomTitle && currentRoomId === roomId) {
-	      const nm = window.PET_NAME?.[peerId];
-	      if (nm) chatRoomTitle.textContent = nm;
-	    }
-	  } catch(e) { /* noop */ }
+		    if (!peerId) {
+		      const dsPeer = el?.dataset?.peerId ? Number(el.dataset.peerId) : null;
+		      peerId = Number.isFinite(dsPeer) ? dsPeer : await fetchPeerPetId(roomId);
+		    }
+
+		    if (!peerId) return;
+
+		    applyPeerMetaToItem(el || document, peerId);
+
+		    // 헤더 제목도 갱신
+		    if (chatRoomTitle && currentRoomId === roomId) {
+		      const nm = window.PET_NAME?.[peerId];
+		      if (nm) chatRoomTitle.textContent = nm;
+		    }
+		  } catch(e) { /* noop */ }
 }
 
 async function fetchPeerPetId(roomId) {
@@ -387,8 +398,8 @@ async function fetchPeerPetId(roomId) {
 	  }
 }
 
-async function fetchPetImage(petId) {
-  // 개별 프로필 조회(백엔드에 있으면 사용, 없으면 자동 스킵)
+	async function fetchPetImage(petId) {
+	// 개별 프로필 조회(백엔드에 있으면 사용, 없으면 자동 스킵)
 	try {
 	    const r = await fetch(`${BASE}/pet/${petId}/profile`, {
 	      credentials: 'include', headers: { 'Accept': 'application/json' }
@@ -516,15 +527,7 @@ function applyPeerMetaToItem(itemEl, peerId) {
 	  if (cachedImg && imgEl)  imgEl.src = cachedImg;
 	  if (cachedName && nameEl) nameEl.textContent = cachedName;
 
-	  if (!cachedImg || !cachedName) {
-	    fetchPetImage(peerId).then(()=>{
-	      if (!itemEl.isConnected) return;
-	      const src = window.PET_IMG?.[peerId];
-	      const nm  = window.PET_NAME?.[peerId];
-	      if (imgEl && src) imgEl.src = src;
-	      if (nameEl && nm) nameEl.textContent = nm;
-	    }).catch(()=>{});
-	  }
+	 
 	}
 
 // 상대 나감 시 입력 막기 + 안내 메시지
