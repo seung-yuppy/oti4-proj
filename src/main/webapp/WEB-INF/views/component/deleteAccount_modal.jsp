@@ -46,7 +46,7 @@ input.form-control {
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-brown" data-bs-dismiss="modal">돌아가기</button>
-        <form action="/탈퇴처리경로" method="post" >
+        <form action="/user/delete" method="post" >
           <button type="submit" class="btn btn-secondary">진짜 회원탈퇴하기</button>
         </form>
       </div>

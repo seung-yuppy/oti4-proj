@@ -94,7 +94,6 @@ function renderRoomList(rooms){
 
 	    const img = document.createElement('img');
 	    img.className = 'chat-avatar';
-	    img.src = CTX + '/resources/image/petDummy1.jpg';
 
 	    const info = document.createElement('div');
 	    info.className = 'chat-info';
@@ -127,16 +126,22 @@ function renderRoomList(rooms){
 	    item.appendChild(leaveBtn);
 	    chatListBody.appendChild(item);
 
-	    // ✅ 상대 petId를 방 레코드에서 바로 계산
+	    // ✅ 상대 petId 계산
 	    const p1 = Number(r.petId1), p2 = Number(r.petId2), me = Number(MY_PET_ID);
 	    const peerId = (p1 === me) ? p2 : p1;
 	    if (Number.isFinite(peerId)) {
-	      item.dataset.peerId = String(peerId);   // 이후 참조용
-	      applyPeerMetaToItem(item, peerId);      // 즉시 이름/아바타 반영
-	    }
+	      item.dataset.peerId = String(peerId);
 
-	    // (보조) 메시지 기반 보정이 필요하면 그대로 둠
-	    // hydrateChatItemByRoomId(r.chatRoomId, item);
+	      // 1차: 캐시에 있으면 즉시 반영
+	      applyPeerMetaToItem(item, peerId);
+
+	      // 2차: 캐시에 없으면 서버에서 이미지/이름 불러와서 다시 반영
+	      if (!window.PET_IMG?.[peerId] || !window.PET_NAME?.[peerId]) {
+	        fetchPetImage(peerId).then(()=> {
+	          applyPeerMetaToItem(item, peerId);
+	        });
+	      }
+	    }
 	  });
 
 	  lockListLayout();
@@ -248,69 +253,110 @@ function ensureWs(){
   };
   ws.onerror = (e) => console.error('[WS] error', e);
   ws.onmessage = (evt) => {
-    try{
-      const data = JSON.parse(evt.data);
-      if (data.type === 'MESSAGE' && data.roomId === currentRoomId){
-    	appendMessage(normalizeMessage({ body: data.body, senderPetId: data.senderPetId }));
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }catch(e){ console.error(e); }
+	  try {
+		    const data = JSON.parse(evt.data);
+
+		    if (data.type === 'MESSAGE' && data.roomId === currentRoomId) {
+		      appendMessage(normalizeMessage({ body: data.body, senderPetId: data.senderPetId }));
+		      chatMessages.scrollTop = chatMessages.scrollHeight;
+		    }
+
+		    // ✅ 상대방 나감 이벤트 감지
+		    if (data.type === 'LEFT' && data.roomId === currentRoomId) {
+		      peerHasLeft = true;
+		      showSystem('상대가 채팅방을 나가셨습니다.');
+		      disableChatInput('상대가 나가서 채팅을 보낼 수 없습니다.');
+		    }
+		  } catch(e){ console.error(e); }
   };
 }
 
 // 방 열기: OPEN 대기 후 JOIN
+
+// 상대 나감 여부 전역 변수
+let peerHasLeft = false;
+
 async function openRoom(roomId){
-  currentRoomId = roomId;
-  if (chatSendBtn) chatSendBtn.disabled = true;
+	currentRoomId = roomId;
+	  peerHasLeft = false; // 방 열 때 초기화
+	  if (chatSendBtn) chatSendBtn.disabled = true;
 
-  openDetail();
-  await loadMessages(roomId);
-  
-  // 방 열 때 상태 확인해서 차단
-  try {
-	  const res = await fetch(`${BASE}/api/chat/rooms/${roomId}/status`, {
-	    credentials: 'include',
-	    headers: {'Accept':'application/json'}
-	  });
-	  if (res.ok) {
-	    const st = await res.json();
-	    const p1 = Number(st.pet_id1 ?? st.PET_ID1 ?? st.petId1);
-	    const p2 = Number(st.pet_id2 ?? st.PET_ID2 ?? st.petId2);
-	    const me = Number(MY_PET_ID);
-	    const peerId = (p1 === me) ? p2 : p1;
+	  openDetail();
+	  await loadMessages(roomId);
+	  
+	  try {
+	    const res = await fetch(`${BASE}/api/chat/rooms/${roomId}/status`, {
+	      credentials: 'include',
+	      headers: {'Accept':'application/json'}
+	    });
+	    if (res.ok) {
+	      const st = await res.json();
+	      const p1 = Number(st.pet_id1 ?? st.PET_ID1 ?? st.petId1);
+	      const p2 = Number(st.pet_id2 ?? st.PET_ID2 ?? st.petId2);
+	      const me = Number(MY_PET_ID);
+	      const peerId = (p1 === me) ? p2 : p1;
 
-	    const peerLeft = ( (p1===peerId) ? st.pet1_left_at ?? st.PET1_LEFT_AT
-	                                      : st.pet2_left_at ?? st.PET2_LEFT_AT );
-	    if (peerLeft) {
-	      showSystem('상대가 채팅방을 나가셨습니다.');
-	      disableChatInput('상대가 나가서 채팅을 보낼 수 없습니다.');
+	      const peerLeft = ( (p1===peerId) ? st.pet1_left_at ?? st.PET1_LEFT_AT
+	                                        : st.pet2_left_at ?? st.PET2_LEFT_AT );
+	      if (peerLeft) {
+	        peerHasLeft = true; // 상대방 나감 기록
+	        showSystem('상대가 채팅방을 나가셨습니다.');
+	        disableChatInput('상대가 나가서 채팅을 보낼 수 없습니다.');
+	      }
 	    }
-	  }
-	} catch (e) {/* noop */}
-  
-  // ✅ 추가: 상세 화면에서도 보정
-  const item = chatListBody && chatListBody.querySelector(`[data-room-id="${roomId}"]`);
-  await hydrateChatItemByRoomId(roomId, item || document); // item 없으면 document
-										 					// 범위로 타이틀만 보정
+	  } catch (e) {/* noop */}
+	  
+	  const item = chatListBody && chatListBody.querySelector(`[data-room-id="${roomId}"]`);
+	  await hydrateChatItemByRoomId(roomId, item || document);
 
-  ensureWs(); 
-  try{
-    await waitWsOpen();
-    ws.send(JSON.stringify({ type:'JOIN', roomId }));
-    joinedRoomId = roomId;
-    if (chatSendBtn) chatSendBtn.disabled = false;
-  }catch(err){
-    console.error('JOIN failed:', err);
-    alert('채팅 연결에 문제가 있습니다. 잠시 후 다시 시도해 주세요.');
-  }
+	  ensureWs(); 
+	  try{
+	    await waitWsOpen();
+	    ws.send(JSON.stringify({ type:'JOIN', roomId }));
+	    joinedRoomId = roomId;
+	    if (chatSendBtn && !peerHasLeft) chatSendBtn.disabled = false;
+	  }catch(err){
+	    console.error('JOIN failed:', err);
+	    alert('채팅 연결에 문제가 있습니다. 잠시 후 다시 시도해 주세요.');
+	  }
 }
 
-function send(){
-  const text = (chatInput.value || '').trim();
-  if (!text || !ws || ws.readyState !== WebSocket.OPEN || currentRoomId == null) return;
-  if (joinedRoomId !== currentRoomId) return; // 아직 JOIN 안 된 방이면 전송 금지
-  ws.send(JSON.stringify({ type:'SEND', roomId: currentRoomId, body: text }));
-  chatInput.value = '';
+// 메시지 전송
+async function send(){
+	const text = (chatInput.value || '').trim();
+	  if (!text) return;
+
+	  // 상대가 나갔는지 서버에서 확인
+	  if (!peerHasLeft) {
+	    try {
+	      const res = await fetch(`${BASE}/api/chat/rooms/${currentRoomId}/status`, {
+	        credentials: 'include',
+	        headers: {'Accept':'application/json'}
+	      });
+	      if (res.ok) {
+	        const st = await res.json();
+	        const p1 = Number(st.pet_id1 ?? st.PET_ID1 ?? st.petId1);
+	        const p2 = Number(st.pet_id2 ?? st.PET_ID2 ?? st.petId2);
+	        const me = Number(MY_PET_ID);
+	        const peerId = (p1 === me) ? p2 : p1;
+	        const peerLeft = ( (p1===peerId) ? st.pet1_left_at ?? st.PET1_LEFT_AT
+	                                          : st.pet2_left_at ?? st.PET2_LEFT_AT );
+	        if (peerLeft) {
+	          peerHasLeft = true;
+	          alert('상대가 채팅방을 나가셨습니다.');
+	          disableChatInput('상대가 나가서 채팅을 보낼 수 없습니다.');
+	          return;
+	        }
+	      }
+	    } catch(e) { console.error(e); }
+	  }
+
+	  // ✅ 여기 도달했을 때만 실제 전송
+	  if (!ws || ws.readyState !== WebSocket.OPEN || currentRoomId == null) return;
+	  if (joinedRoomId !== currentRoomId) return;
+
+	  ws.send(JSON.stringify({ type:'SEND', roomId: currentRoomId, body: text }));
+	  chatInput.value = '';
 }
 
 chatSendBtn && chatSendBtn.addEventListener('click', send);

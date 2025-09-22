@@ -23,7 +23,7 @@ public interface ChatDAO {
 
 	Integer findRoomIdByPair(@Param("a") int a, @Param("b") int b);
 
-	int insertRoom(@Param("a") int a, @Param("b") int b);
+	void insertRoom(@Param("a") int pet1, @Param("b") int pet2);
 
 	// ✅ 추가
 	int markLeft(@Param("roomId") int roomId, @Param("petId") int petId);

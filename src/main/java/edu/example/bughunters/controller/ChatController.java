@@ -24,6 +24,7 @@ import edu.example.bughunters.domain.ChatMessageDTO;
 import edu.example.bughunters.domain.ChatRoomDTO;
 import edu.example.bughunters.domain.PetVO;
 import edu.example.bughunters.service.PetService;
+import edu.example.bughunters.websocket.ChatWebSocketHandler;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -32,6 +33,8 @@ public class ChatController {
 	private ChatDAO chatDAO;
 	@Autowired
 	private PetService petService;
+	@Autowired
+	private ChatWebSocketHandler chatWebSocketHandler;
 
 	private int currentPetId(HttpSession session) {
 		Integer pet = (Integer) session.getAttribute("PET_ID");
@@ -83,7 +86,7 @@ public class ChatController {
 			roomId = chatDAO.findRoomIdByPair(myPetId, toPetId);
 			if (roomId == null)
 				throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "create failed");
-		}else {
+		} else {
 			chatDAO.unmarkLeft(roomId, myPetId); // 내가 재오픈하면 내 나감표시 제거
 		}
 		Map<String, Integer> resp = new HashMap<>();
@@ -96,29 +99,33 @@ public class ChatController {
 	@DeleteMapping("/rooms/{roomId}")
 	public ResponseEntity<Map<String, Object>> leave(@PathVariable("roomId") int roomId, HttpSession session) {
 		int petId = currentPetId(session);
-		if (chatDAO.countMember(roomId, petId) <= 0) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+		if (chatDAO.countMember(roomId, petId) <= 0)
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
 
-		  chatDAO.markLeft(roomId, petId);
+		chatDAO.markLeft(roomId, petId);
+		// ✅ 남아있는 세션에 "LEFT" 이벤트 전송
+	    chatWebSocketHandler.broadcastLeft(roomId, petId);
 
-		  ChatRoomDTO st = chatDAO.getRoomStatus(roomId);
-		  boolean p1Left = st.getPet1LeftAt() != null;
-		  boolean p2Left = st.getPet2LeftAt() != null;
-		  if (p1Left && p2Left) {
-		    chatDAO.deleteMessagesByRoomId(roomId);
-		    chatDAO.deleteRoomById(roomId);
-		  }
+		ChatRoomDTO st = chatDAO.getRoomStatus(roomId);
+		boolean p1Left = st.getPet1LeftAt() != null;
+		boolean p2Left = st.getPet2LeftAt() != null;
+		if (p1Left && p2Left) {
+			chatDAO.deleteMessagesByRoomId(roomId);
+			chatDAO.deleteRoomById(roomId);
+		}
 
-		  Map<String,Object> body = new HashMap<>();
-		  body.put("roomId", roomId);
-		  body.put("left", true);
-		  return ResponseEntity.ok(body);
+		Map<String, Object> body = new HashMap<>();
+		body.put("roomId", roomId);
+		body.put("left", true);
+		return ResponseEntity.ok(body);
 	}
 
 	// 방 상태 확인(클라이언트가 입장 시 사용)
 	@GetMapping("/rooms/{roomId}/status")
-	public ChatRoomDTO status(@PathVariable("roomId") int roomId, HttpSession session){
+	public ChatRoomDTO status(@PathVariable("roomId") int roomId, HttpSession session) {
 		int petId = currentPetId(session);
-		  if (chatDAO.countMember(roomId, petId) <= 0) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-		  return chatDAO.getRoomStatus(roomId);
+		if (chatDAO.countMember(roomId, petId) <= 0)
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+		return chatDAO.getRoomStatus(roomId);
 	}
 }

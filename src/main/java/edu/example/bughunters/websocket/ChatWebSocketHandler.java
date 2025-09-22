@@ -100,5 +100,21 @@ public class ChatWebSocketHandler extends TextWebSocketHandler{
             }
         }
     }
+    
+    public void broadcastLeft(int roomId, int leaverPetId) {
+        ObjectNode out = om.createObjectNode();
+        out.put("type", "LEFT");
+        out.put("roomId", roomId);
+        out.put("leaverPetId", leaverPetId);
+
+        Set<WebSocketSession> sessions = roomSessions.getOrDefault(roomId, Collections.emptySet());
+        for (WebSocketSession s : sessions) {
+            if (s.isOpen()) {
+                try {
+                    s.sendMessage(new TextMessage(out.toString()));
+                } catch (Exception ignore) {}
+            }
+        }
+    }
 	
 }
