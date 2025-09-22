@@ -338,11 +338,10 @@ body {
 		                </li>
 		            `).join('');
 		        } else {
-		            likePetBox.innerHTML = '<li><p>No liked pets found.</p></li>';
+		            likePetBox.innerHTML = '<p style="color: gray;">좋아하는 반려동물이 없습니다!</p>';
 		        }
 		    } catch (error) {
 		        console.error('Failed to fetch liked pets:', error);
-		        likePetBox.innerHTML = '<li><p>Error loading pets. Please try again later.</p></li>';
 		    }
 		});
 		

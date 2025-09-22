@@ -10,24 +10,4 @@ public class HomeController {
 	public String home() {
 		return "home";
 	}
-		
-	@GetMapping("/communityMain")
-	public String communityMain() {
-		return "community/communityMain";
-	}
-	
-	@GetMapping("/communityCreate")
-	public String communityCreate() {
-		return "community/communityCreate";
-	}
-	
-	@GetMapping("/communityDetail")
-	public String communityDetail() {
-		return "community/communityDetail";
-	}
-	
-	@GetMapping("/communityUpdate")
-	public String communityUpdate() {
-		return "community/communityUpdate";
-	}
 }

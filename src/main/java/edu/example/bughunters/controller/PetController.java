@@ -28,7 +28,11 @@ public class PetController {
 	PetService service;
 
 	@GetMapping("/pet")
-	public String p1() {
+	public String p1(HttpSession session, Model model) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		if (userId == null)
+			model.addAttribute("msg", "로그인이 필요한 서비스입니다.");
+
 		return "pet/petList";
 	}
 	
@@ -91,8 +95,6 @@ public class PetController {
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> p6(@RequestBody WalkingDTO dto) {
 		Map<String, Object> response = new HashMap<>();
-		System.out.println("산책 게시판 등록 : " + service.isWalking(dto.getPetId()));
-		System.out.println(dto.getPetId());
 		if(!service.isWalking(dto.getPetId()))
 				response.put("msg", "이미 등록된 반려동물입니다.");
 		else {
@@ -115,6 +117,7 @@ public class PetController {
 		return ResponseEntity.ok(response);
 	}
 	
+	// 펫 수정 페이지
 	@GetMapping("/pet/edit")
 	public String p8(HttpSession session, Model model) {
 		Integer userId = (Integer) session.getAttribute("userId");
@@ -125,6 +128,7 @@ public class PetController {
 		return "pet/petEdit";
 	}
 	
+	// 펫 수정을 위한 메서드
 	@PostMapping("/pet/update")
 	public String p9(
 			@ModelAttribute PetDTO dto, 
@@ -139,9 +143,6 @@ public class PetController {
 			dto.setUserId(userId);
 		
 		// 2. Service에서 반려동물 등록
-		PetVO pet = service.getPet(userId);
-		dto.setPetId(pet.getPetId());
-		
 		boolean result = service.updatePet(dto, file);
 		if (result)
 			return "redirect:/mypage";
