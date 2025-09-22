@@ -166,12 +166,15 @@
 	                method: "GET"
 	            });
 	            const data = await res.json();
+	            console.log(data);
 	
-	            if (data.isLike) {
+	            if (data.isLike === true) 
 	                button.innerHTML = `<img src="/bughunters/resources/image/ico_fullheart.png" class="heart card-icon">`;
-	            } else {
+	            else if (data.isLike === false) 
 	                button.innerHTML = `<img src="/bughunters/resources/image/ico_mbti.png" class="card-icon">`;
-	            }
+	            else if (data.msg === "로그인을 해주세요")
+	            	button.innerHTML = "";
+	            
 	        } catch (error) {
 	            console.error('Failed to fetch like status:', error);
 	        }
@@ -191,7 +194,7 @@
 	                    console.error('Failed to toggle like status.');
 	                }
 				});
-			});
+			}); 
 	    });
 	</script>
 </body>

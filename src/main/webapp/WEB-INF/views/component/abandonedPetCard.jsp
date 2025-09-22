@@ -11,7 +11,7 @@
 <body>
 	<div class="col-lg-3">
 		<div class="card pet-card shadow-sm">
-			<img src="${param.profileImage}" class="card-img-top card-image" alt="사진 없음">
+			<img src="${param.profileImage}" class="card-img-top card-image" alt="사진 없음" loading="lazy">
 			<div class="card-body">
 				<div class="d-flex-space">
 					<h5 class="card-title fw-bold text-medium">${param.kind}</h5>

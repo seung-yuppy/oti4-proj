@@ -66,7 +66,7 @@
     <div class="form-container">
         <h2 class="text-center mb-5 fw-bold text-brown">반려동물 수정</h2>
 		<form method="post" enctype="multipart/form-data" action="/bughunters/pet/update">
-		    <input type="hidden" name="id" value="${pet.petId}">
+		    <input type="hidden" name="petId" value="${pet.petId}">
             <div class="card shadow-sm mb-4"> 
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-3 text-brown">

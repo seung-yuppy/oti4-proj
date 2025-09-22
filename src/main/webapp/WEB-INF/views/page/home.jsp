@@ -142,7 +142,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 rounded-4 shadow-sm p-4 review-card scale-in">
                         <p class="card-text">"운명의 발바닥 덕분에 제 평생의 동반자인 '초코'를 만났습니다. 퀴즈가 제 성향을 정확히 파악해서 놀랐어요. 지금은 둘도 없는 가족입니다!"</p>
-                        <div class="mt-auto pt-3 border-top text-end">
+                        <div class="mt-auto pt-3 text-end">
                             <small class="text-muted">- 김민지님, 초코 보호자</small>
                         </div>
                     </div>
@@ -151,7 +151,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 rounded-4 shadow-sm p-4 review-card scale-in" style="transition-delay: 0.1s;">
                         <p class="card-text">"커뮤니티에서 많은 도움을 받았습니다. 강아지 훈련 팁부터 병원 정보까지, 다른 반려인들과 소통하며 혼자가 아니라는 것을 느꼈어요."</p>
-                        <div class="mt-auto pt-3 border-top text-end">
+                        <div class="mt-auto pt-3 text-end">
                             <small class="text-muted">- 박서준님, 뽀삐 보호자</small>
                         </div>
                     </div>
@@ -160,7 +160,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 rounded-4 shadow-sm p-4 review-card scale-in" style="transition-delay: 0.2s;">
                         <p class="card-text">"산책 메이트 기능을 통해 저희 강아지가 새로운 친구들을 사귈 수 있게 되었어요. 덕분에 산책이 더 즐거워졌습니다!"</p>
-                        <div class="mt-auto pt-3 border-top text-end">
+                        <div class="mt-auto pt-3 text-end">
                             <small class="text-muted">- 이지은님, 콩이 보호자</small>
                         </div>
                     </div>

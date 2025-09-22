@@ -46,7 +46,7 @@ public class AbandonedPetService {
 	
     // 페이징 처리된 목록을 가져오는 메서드
     public List<AbandonedPetDTO> getPagedList(int page) {
-        int pageSize = 20;
+        int pageSize = 12;
         int start = (page - 1) * pageSize + 1;
         int end = start + pageSize - 1;
         List<AbandonedPetDTO> list = dao.listAll(start, end);
@@ -55,7 +55,7 @@ public class AbandonedPetService {
 
     // 총 페이지 수를 계산하는 메서드
     public int getTotalPages() {
-        int pageSize = 20;
+        int pageSize = 12;
         int totalItems = dao.countAll();
         return (int) Math.ceil((double) totalItems / pageSize);
     }
@@ -98,14 +98,14 @@ public class AbandonedPetService {
     
     // 검색 결과의 총 페이지 수를 계산하는 메서드
     public int getTotalSearchPages(String location, String gender, String size, String age) {
-        int pageSize = 20;
+        int pageSize = 12;
         int totalItems = dao.countSearch(location, gender, size, age);
         return (int) Math.ceil((double) totalItems / pageSize);
     }
     
     // 페이징 처리된 검색 결과를 가져오는 메서드
     public List<AbandonedPetDTO> getPagedSearchList(String location, String gender, String size, String age, int page) {
-        int pageSize = 20;
+        int pageSize = 12;
         int start = (page - 1) * pageSize + 1;
         int end = start + pageSize - 1;
         List<AbandonedPetDTO> list = dao.listSearch(location, gender, size, age, start, end);

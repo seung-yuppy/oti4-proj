@@ -253,6 +253,7 @@ p {
 .like-pet-item {
 	list-style-type: none;
 	max-width: 350px;
+	background-color: #fff;
 }
 
 /* (선택) 네비게이션 버튼 색상을 갈색 테마에 맞춤 */

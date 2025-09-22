@@ -91,10 +91,14 @@ public class AbandonedPetController {
 	public ResponseEntity<Map<String, Object>> a6(
 			HttpSession session, 
 			@PathVariable("id") int abandonedPetId) {
-		int userId = (int) session.getAttribute("userId");
-		boolean isLiked = service.isLikePet(userId, abandonedPetId);
+		Integer userId = (Integer) session.getAttribute("userId");
 		Map<String, Object> response = new HashMap<>();
-		response.put("isLike", isLiked);
+		if (userId != null) {
+			boolean isLiked = service.isLikePet(userId, abandonedPetId);
+			response.put("isLike", isLiked);
+		} else {
+			response.put("msg", "로그인을 해주세요");
+		}
 		return ResponseEntity.ok(response);
 	}	
 	

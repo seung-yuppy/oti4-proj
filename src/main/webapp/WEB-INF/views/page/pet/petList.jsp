@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	// 내 펫 ID (좌/우 말풍선 구분용)
 	Integer __MY_PET_ID__ = (Integer) session.getAttribute("PET_ID");
@@ -20,46 +21,26 @@
 	href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <link href="/bughunters/resources/css/chatStyle.css" rel="stylesheet">
 <style>
-body {
-	background-color: #f8f9fa;
-}
+	body {
+		background-color: #f8f9fa;
+	}
+	
+	.search-card {
+		max-width: 1320px;
+		margin: 0 auto;
+		height: 410px;
+	}
+	
+	.rounded {
+		width: 100%;
+		height: 410px;
+	}
+	.petlist-alert {
+		color: crimson;
+		font-size: 28px;
+		text-align: center;
+	}
 
-.search-card {
-	max-width: 1320px;
-	margin: 0 auto;
-	height: 410px;
-}
-
-.rounded {
-	width: 100%;
-	height: 410px;
-}
-
-.swiper-button-next {
-	background: url(/bughunters/resources/image/ico_next.png) no-repeat;
-	background-size: 50% auto;
-	background-position: center;
-	&::
-	after
-	{
-	display
-	:
-	none;
-}
-
-}
-.swiper-button-prev {
-	background: url(/bughunters/resources/image/ico_prev.png) no-repeat;
-	background-size: 50% auto;
-	background-position: center;
-	&::
-	after
-	{
-	display
-	:
-	none;
-}
-}
 </style>
 </head>
 <body>
@@ -70,18 +51,21 @@ body {
 		<section class="search-card">
 			<div class="card p-4 shadow-sm card-border">
 				<h3 class="text-center mb-4 fw-bold">내 주변 펫 찾기 🗺️</h3>
-				<div class="d-flex">
-					<div id="map" class="rounded map"></div>
-					<div class="swiper swiper-container">
-						<div class="swiper-wrapper">
-							<div class="swiper-slide">
-								<jsp:include page="/WEB-INF/views/component/myPetCard.jsp"></jsp:include>
+					<c:if test="${empty msg}">
+						<div class="d-flex">
+							<div id="map" class="rounded map"></div>
+							<div class="swiper swiper-container">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide">
+										<jsp:include page="/WEB-INF/views/component/myPetCard.jsp"></jsp:include>
+									</div>
+								</div>
 							</div>
 						</div>
-						<!-- 						<div class="swiper-button-next"></div>
-						<div class="swiper-button-prev"></div> -->
-					</div>
-				</div>
+					</c:if>
+					<c:if test="${!empty msg}">
+						<p class="petlist-alert">${msg}</p>
+					</c:if>
 			</div>
 		</section>
 		<!-- 펫 리스트 영역 -->
@@ -125,8 +109,6 @@ body {
 	<!-- 헤더 영역 -->
 	<%@ include file="/WEB-INF/views/component/footer.jsp"%>
 	<!-- script 영역 -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 	<script src="/bughunters/resources/js/bootstrap.bundle.min.js"></script>
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c54be34b2a7cdb69fed5bbd7c59a90bb"></script>
@@ -139,17 +121,6 @@ body {
 	<%-- <script src="<%= request.getContextPath() %>/resources/js/pet_chat.js"></script> --%>
 	<script src="<%= ctx %>/resources/js/pet_chat.js?v=2025-09-18-01"></script>
 	<script>
-	/* 스와이퍼 */
-/* 	const swiper = new Swiper('.swiper-container', {
-	    // 옵션
-	    loop: true, // 무한 루프
-
-	    // 네비게이션 버튼
-	    navigation: {
-	        nextEl: '.swiper-button-next',
-	        prevEl: '.swiper-button-prev',
-	    },
-	}); */
 	
 	// mypet 정보 가져오기
 	const cardbox = document.querySelector("#mypet-card");
@@ -290,7 +261,7 @@ body {
 		if (Array.isArray(pets) && pets.length > 0) {
 			listBox.innerHTML = pets.map(function(pet) {
 				 return ''
-				  	+ '<li class="like-pet-item">'
+				  	+ '<li class="like-pet-item shadow-sm">'
 			        +   '<img src="data:image/jpeg;base64,' + (pet.base64ProfileImage || '') + '" class="card-img-top card-image" alt="반려 동물 사진">'
 			        +   '<div class="card-body">'
 			        +     '<h5 class="card-title fw-bold chat-name">' + (pet.name || '') + '</h5>'
@@ -325,7 +296,6 @@ body {
 		    });
 		}
 	});
-	console.log('MY_PET_ID=', MY_PET_ID);
 	</script>
 </body>
 </html>
