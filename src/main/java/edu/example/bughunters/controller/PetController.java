@@ -79,15 +79,16 @@ public class PetController {
 	
 	@GetMapping(value = "/pet/mypet", produces = "application/json; charset=utf-8")
 	@ResponseBody 
-	public PetVO p5(HttpSession session) {
-		PetVO vo = new PetVO();
+	public ResponseEntity<Map<String, Object>> p5(HttpSession session) {
+		Map<String, Object> response = new HashMap<>();
 		Integer userId = (Integer) session.getAttribute("userId");
 		if(userId == null) {
-			return vo;
+			response.put("mypet", "로그인을 해주세요.");
 		} else {
-			vo.setUserId(userId);
-			return service.getPet(userId);
+			response.put("mypet", service.getPet(userId));
 		}
+		
+		return ResponseEntity.ok(response);
 	}
 	
 	// 반려동물 산책 게시판에 등록하기
@@ -148,5 +149,25 @@ public class PetController {
 			return "redirect:/mypage";
 		else
 			return "redirect:/pet/update";
+	}
+	
+	// 펫 삭제를 위한 메서드
+	@PostMapping(value = "/pet/delete", produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> p10(HttpSession session) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		Map<String, Object> response = new HashMap<>();
+		
+		if (userId == null) 
+			response.put("result", "로그인을 해주세요");
+		else {
+			if (service.removePet(userId))
+				response.put("result", "삭제에 성공했습니다.");
+			else
+				response.put("result", "삭제에 실패했습니다.");
+		}
+		
+		return ResponseEntity.ok(response);
+			
 	}
 }

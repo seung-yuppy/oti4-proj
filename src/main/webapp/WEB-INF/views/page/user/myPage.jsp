@@ -255,45 +255,50 @@ body {
 				method: "GET",
 			});
 			const data = await res.json();
-			cardbox.innerHTML = `
-				<img 
-					src="data:image/jpeg;base64,\${data.base64ProfileImage}"
-					class="card-profile-img"
-					alt="반려동물 사진없음" 
-				>
-				<div class="">
-					<h5 class="card-title fw-bold margin-t">\${data.name}</h5>
-					<p class="card-text text-muted text-small">
-						\${data.intro}
-					</p>
-					<ul class="mypet-card-list">
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
-							<span>\${data.kind}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
-							<span>\${data.gender}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
-							<span>\${data.age}년생</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
-							<span>\${data.weight}kg</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_color.png" class="card-icon" />
-							<span>\${data.color}</span>
-						</li>	
-						<li class="card-item">
-							<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
-							<span>\${data.meetingTemperature}°C</span>
-						</li>	
-					</ul>
-				</div>		
-			`; 
+			console.log(data);
+			if(data.mypet !== null) {
+				cardbox.innerHTML = `
+					<img 
+						src="data:image/jpeg;base64,\${data.mypet.base64ProfileImage}"
+						class="card-profile-img"
+						alt="반려동물 사진없음" 
+					>
+					<div class="">
+						<h5 class="card-title fw-bold margin-t">\${data.mypet.name}</h5>
+						<p class="card-text text-muted text-small">
+							\${data.mypet.intro}
+						</p>
+						<ul class="mypet-card-list">
+							<li class="card-item">
+								<img src="/bughunters/resources/image/ico_individual.png" class="card-icon" />
+								<span>\${data.mypet.kind}</span>
+							</li>	
+							<li class="card-item">
+								<img src="/bughunters/resources/image/ico_gender.png" class="card-icon" />
+								<span>\${data.mypet.gender}</span>
+							</li>	
+							<li class="card-item">
+								<img src="/bughunters/resources/image/ico_age.png" class="card-icon" />
+								<span>\${data.mypet.age}년생</span>
+							</li>	
+							<li class="card-item">
+								<img src="/bughunters/resources/image/ico_size.png" class="card-icon" />
+								<span>\${data.mypet.weight}kg</span>
+							</li>	
+							<li class="card-item">
+								<img src="/bughunters/resources/image/ico_color.png" class="card-icon" />
+								<span>\${data.mypet.color}</span>
+							</li>	
+							<li class="card-item">
+								<img src="/bughunters/resources/image/ico_temperature.png" class="card-icon" />
+								<span>\${data.mypet.meetingTemperature}°C</span>
+							</li>	
+						</ul>
+					</div>		
+				`; 		
+			} else {
+				cardbox.innerHTML = `<p style="color: gray">반려동물을 등록해주세요!</p>`;
+			}
 		 });
 		
 		// 관심있는 유기동물 리스트 

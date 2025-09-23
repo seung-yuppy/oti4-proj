@@ -54,7 +54,7 @@
         <div class="container text-center">
             <div class="fade-in">
                 <h1 class="fw-bold mb-3 text-large">
-                    “유기동물 파양을 줄이고, <br />반려인과 강아지가 더 행복해지도록”
+                    “유기동물 파양을 줄이고, <br>반려인과 강아지가 더 행복해지도록”
                 </h1>
                 <p class="fw-light mb-4 text-medium">
 		                    입양 순간의 설렘과 달리, 현실에서 마주하는 다양한 갈등과 부담은 결국 반려동물의 버려짐으로 이어지고 있습니다.<br>

@@ -128,26 +128,26 @@
 	 document.addEventListener("DOMContentLoaded", async (event) => {
 		const res = await fetch(BASE + '/pet/mypet', {method: "GET", credentials: 'include', headers:{'Accept':'application/json'} });
 		const data = await res.json();
-		
+
 		if (!cardbox) return; // 엘리먼트 없으면 패스
 		
-		if (!data || data.petId === 0) {
+		if (!data || data.petId === 0 || data.mypet === null) {
 			cardbox.innerHTML = '<h2>반려동물을 등록해주세요.</h2>';
 		} else {
 			cardbox.innerHTML = 
-				'<img src="data:image/jpeg;base64,' + (data.base64ProfileImage || '') + '" class="card-img-top card-image" alt="반려동물 사진없음">' +
+				'<img src="data:image/jpeg;base64,' + (data.mypet.base64ProfileImage || '') + '" class="card-img-top card-image" alt="반려동물 사진없음">' +
 			      '<div class="card-body">' +
-			        '<h5 class="card-title fw-bold margin-t">' + (data.name || '') + '</h5>' +
-			        '<p class="card-text text-muted text-small">' + (data.intro || '') + '</p>' +
+			        '<h5 class="card-title fw-bold margin-t">' + (data.mypet.name || '') + '</h5>' +
+			        '<p class="card-text text-muted text-small">' + (data.mypet.intro || '') + '</p>' +
 			        '<ul class="mypet-card-list">' +
-			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_individual.png" class="card-icon"><span>' + (data.kind || '') + '</span></li>' +
-			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_gender.png" class="card-icon"><span>' + (data.gender || '') + '</span></li>' +
-			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_age.png" class="card-icon"><span>' + (data.age || '') + '년생</span></li>' +
-			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_size.png" class="card-icon"><span>' + (data.weight || '') + 'kg</span></li>' +
-			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_color.png" class="card-icon"><span>' + (data.color || '') + '</span></li>' +
-			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_temperature.png" class="card-icon"><span>' + (data.meetingTemperature || '') + '°C</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_individual.png" class="card-icon"><span>' + (data.mypet.kind || '') + '</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_gender.png" class="card-icon"><span>' + (data.mypet.gender || '') + '</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_age.png" class="card-icon"><span>' + (data.mypet.age || '') + '년생</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_size.png" class="card-icon"><span>' + (data.mypet.weight || '') + 'kg</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_color.png" class="card-icon"><span>' + (data.mypet.color || '') + '</span></li>' +
+			          '<li class="card-item"><img src="' + CTX + '/resources/image/ico_temperature.png" class="card-icon"><span>' + (data.mypet.meetingTemperature || '') + '°C</span></li>' +
 			        '</ul>' +
-			        '<button type="button" class="btn btn-gray d-block" id="walking-register-btn" data-pet-id="' + data.petId + '">산책 게시판 등록하기</button>' +
+			        '<button type="button" class="btn btn-gray d-block" id="walking-register-btn" data-pet-id="' + data.mypet.petId + '">산책 게시판 등록하기</button>' +
 			      '</div>';
 			
 			// mypetCard가 로드된 후에 버튼에 이벤트 리스너 추가

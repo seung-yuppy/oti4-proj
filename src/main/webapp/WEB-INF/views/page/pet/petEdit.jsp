@@ -58,6 +58,19 @@
         .file-upload-wrapper p {
             color: #8a7a6a;
         }
+        
+        .delete-box {
+        	display: flex;
+        	justify-content: center;
+        }
+        
+        .delete-btn {
+        	background-color: crimson;
+        	color: white;
+        	border: 1px solid crimson;
+        	padding: 5px 10px;
+        	border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -164,6 +177,9 @@
                 <button type="button" class="btn btn-secondary-brown me-2">취소</button>
                 <button type="submit" class="btn btn-brown">반려동물 수정하기</button>
             </div>
+            <div id="delete-box" class="delete-box">
+            
+            </div>
         </form>
     </div>
 
@@ -254,6 +270,29 @@
 			// 파일 읽기 시작
 			reader.readAsDataURL(file); 
 		}
+		
+		// 삭제 버튼 보여주기
+		const deleteBox = document.querySelector("#delete-box");
+		document.addEventListener("DOMContentLoaded", () => {
+			deleteBox.innerHTML = `
+				<button type="button" class="delete-btn">반려동물 삭제하기</button>
+			`;
+			
+			const deleteBtn = document.querySelector(".delete-btn");
+			deleteBtn.addEventListener("click", async () => {
+				const res = await fetch(`/bughunters/pet/delete`, {
+					method:"POST",
+				});
+				const data = await res.json();
+				if(data.result === '삭제에 성공했습니다.')
+					window.location.href = "/bughunters/mypage";
+				else
+					window.location.reload();
+			});
+		});
+		
+
+
     </script>
 </body>
 </html>

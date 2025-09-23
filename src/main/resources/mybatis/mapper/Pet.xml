@@ -73,9 +73,20 @@
 	</update>
 	
 	<select id="selectPetById">
-    SELECT
-        profile_image
-    FROM Pet
-    WHERE pet_id = #{petId}
-</select>
+	    SELECT
+	        profile_image
+	    FROM Pet
+	    WHERE pet_id = #{petId}
+	</select>
+	
+	<delete id="removeMyPet">
+		DELETE FROM Pet
+		WHERE user_id = #{userId}
+	</delete>
+	
+	<update id="updateUserPet">
+		UPDATE "User"
+		SET is_pet = 0
+		WHERE user_id = #{userId}
+	</update>
 </mapper>

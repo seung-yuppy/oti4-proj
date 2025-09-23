@@ -193,4 +193,14 @@ public class PetService {
 
 	    return result;
 	}
+	
+	// 내 반려동물 삭제
+	public boolean removePet(int userId) {
+		if (dao.removeMyPet(userId)) {
+			dao.updateUserPet(userId);
+			return true;
+		}
+		else
+			return false;
+	}
 }

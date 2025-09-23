@@ -36,4 +36,8 @@ public interface PetDAO {
 	public boolean updatingPet(@Param("pet") PetDTO dto, @Param("image") byte[] imageBytes);
 	
 	public PetVO selectPetById(@Param("petId") int petId);
+
+	public boolean removeMyPet(int userId);
+
+	public boolean updateUserPet(int userId);
 }
