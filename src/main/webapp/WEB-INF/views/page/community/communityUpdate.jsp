@@ -4,7 +4,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>글 수정하기</title>
+<link href="/bughunters/resources/css/common.css" rel="stylesheet">
 </head>
 <style>
 .nav-pills {
@@ -135,7 +136,7 @@
 					<div class="col-12 d-flex justify-content-end gap-2">
 						<a class="btn btn-outline-secondary"
 							href="<c:url value='/community'/>">취소</a>
-						<button type="submit" class="btn btn-primary">저장</button>
+						<button type="submit" class="btn btn-brown">저장</button>
 					</div>
 				</form>
 
