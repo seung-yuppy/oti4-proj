@@ -107,7 +107,8 @@ public class UserService {
         dto.setUserId(userId);
         if (StringUtils.hasText(newPassword)) {
             // 현재 평문저장:
-            dto.setPassword(newPassword);
+        	// dto.setPassword(newPassword);
+        	dto.setPassword(encoder.encode(newPassword));
             // 해시로 바꾸면: dto.setPassword(encoder.encode(newPassword));
         }
         dto.setNickName(nickName);
