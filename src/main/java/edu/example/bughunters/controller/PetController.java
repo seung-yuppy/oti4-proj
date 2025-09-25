@@ -166,8 +166,6 @@ public class PetController {
 			else
 				response.put("result", "삭제에 실패했습니다.");
 		}
-		
-		return ResponseEntity.ok(response);
-			
+		return ResponseEntity.ok(response);	
 	}
 }
