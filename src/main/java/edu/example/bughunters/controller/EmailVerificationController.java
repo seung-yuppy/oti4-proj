@@ -20,7 +20,15 @@ import lombok.RequiredArgsConstructor;
 public class EmailVerificationController {
 
 	private final EmailVerificationService mail;
-    private final Map<String, String> store = new ConcurrentHashMap<>();
+
+    // 코드 + 만료시간(5분)
+    private static class Token {
+        final String code;
+        final long expiresAt; // epoch millis
+        Token(String code, long expiresAt) { this.code = code; this.expiresAt = expiresAt; }
+    }
+
+    private final Map<String, Token> store = new ConcurrentHashMap<>();
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
     @PostMapping(value = "/send-code", produces = "application/json;charset=UTF-8")
@@ -31,10 +39,11 @@ public class EmailVerificationController {
         }
         try {
             String code = mail.generateCode();
-            store.put(e, code);
-            mail.sendCode(e, code);                       // ★ 실제 발송
-            session.removeAttribute("VERIFIED_EMAIL");     // 새 코드 발송 시 초기화
-            return "{\"ok\":true,\"msg\":\"인증코드를 발송했습니다.\"}";
+            long expires = System.currentTimeMillis() + (5 * 60 * 1000L); // 5분
+            store.put(e, new Token(code, expires));
+            mail.sendCode(e, code);
+            session.removeAttribute("VERIFIED_EMAIL");
+            return "{\"ok\":true,\"msg\":\"인증코드를 발송했습니다. (5분 이내 유효)\"}";
         } catch (Exception ex) {
             ex.printStackTrace();
             String msg = ex.getClass().getSimpleName() + ": " + String.valueOf(ex.getMessage()).replace("\"","'");
@@ -44,11 +53,17 @@ public class EmailVerificationController {
 
     @PostMapping(value = "/verify", produces = "application/json;charset=UTF-8")
     public String verify(@RequestParam String email, @RequestParam String code, HttpSession session) {
-        String saved = store.get(email == null ? "" : email.trim());
-        if (saved != null && saved.equals(code == null ? "" : code.trim())) {
-            session.setAttribute("VERIFIED_EMAIL", email.trim());
-            store.remove(email.trim());
-            return "{\"ok\":true,\"msg\":\"인증 완료\"}";
+        String key = email == null ? "" : email.trim();
+        Token t = store.get(key);
+        if (t != null && t.code.equals(code == null ? "" : code.trim())) {
+            if (System.currentTimeMillis() <= t.expiresAt) {
+                session.setAttribute("VERIFIED_EMAIL", key);
+                store.remove(key);
+                return "{\"ok\":true,\"msg\":\"인증 완료\"}";
+            } else {
+                store.remove(key);
+                return "{\"ok\":false,\"msg\":\"코드가 만료되었습니다. 다시 발송해 주세요.\"}";
+            }
         }
         return "{\"ok\":false,\"msg\":\"코드가 올바르지 않거나 만료되었습니다.\"}";
     }

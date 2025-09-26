@@ -62,7 +62,7 @@ async function loadRooms(){
     
     if (res.status === 401) {
       console.warn('401 from /api/chat/rooms (아직 인증으로 안보임)');
-      return; // 일단 리디렉트 금지
+      return; 
     }
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
@@ -126,7 +126,7 @@ function renderRoomList(rooms){
 	    item.appendChild(leaveBtn);
 	    chatListBody.appendChild(item);
 
-	    // ✅ 상대 petId 계산
+	    // 상대 petId 계산
 	    const p1 = Number(r.petId1), p2 = Number(r.petId2), me = Number(MY_PET_ID);
 	    const peerId = (p1 === me) ? p2 : p1;
 	    if (Number.isFinite(peerId)) {
@@ -150,7 +150,6 @@ window.addEventListener('resize', lockListLayout);
 
 // 메시지 로딩
 async function loadMessages(roomId, cursor){
-  // ▼ 여기만 let으로 (cursor 쓰는 순간 const 재할당 에러 방지)
   let url = BASE + '/api/chat/rooms/' + roomId + '/messages';
   if (cursor) url += '?cursor=' + encodeURIComponent(cursor);
 
@@ -181,11 +180,11 @@ async function openDirect(toPetId) {
 	  const data = await res.json();
 	  const roomId = data.roomId ?? data.chatRoomId;
 
-	  // ✅ 캐시에 있으면 즉시 제목 반영 (리스트에서 이미 캐시됨)
+	  // 캐시에 있으면 즉시 제목 반영 (리스트에서 이미 캐시됨)
 	  const nm = window.PET_NAME?.[toPetId];
 	  if (nm && chatRoomTitle) chatRoomTitle.textContent = nm;
 
-	  // ✅ roomId → toPetId 매핑 캐싱
+	  // roomId → toPetId 매핑 캐싱
 	  window.ROOM_PEER_MAP = window.ROOM_PEER_MAP || {};
 	  window.ROOM_PEER_MAP[roomId] = toPetId;
 
@@ -261,7 +260,7 @@ function ensureWs(){
 		      chatMessages.scrollTop = chatMessages.scrollHeight;
 		    }
 
-		    // ✅ 상대방 나감 이벤트 감지
+		    // 상대방 나감 이벤트 감지
 		    if (data.type === 'LEFT' && data.roomId === currentRoomId) {
 		      peerHasLeft = true;
 		      showSystem('상대가 채팅방을 나가셨습니다.');
@@ -351,7 +350,7 @@ async function send(){
 	    } catch(e) { console.error(e); }
 	  }
 
-	  // ✅ 여기 도달했을 때만 실제 전송
+	  // 도달했을 때만 실제 전송
 	  if (!ws || ws.readyState !== WebSocket.OPEN || currentRoomId == null) return;
 	  if (joinedRoomId !== currentRoomId) return;
 
@@ -378,7 +377,7 @@ document.addEventListener('click', async (e)=>{
   if (btn.dataset.chatWith){
     const toPetId = parseInt(btn.dataset.chatWith, 10);
     if (!isNaN(toPetId)) {
-    	 // ✅ 본인에게는 1:1 불가
+    	 // 본인에게는 1:1 불가
     	    if (Number(toPetId) === Number(MY_PET_ID)) {
     	       alert('나와의 채팅은 불가능합니다.');
     	       return;
@@ -414,7 +413,7 @@ async function hydrateChatItemByRoomId(roomId, itemEl) {
 	 try {
 		    const el = itemEl || chatListBody.querySelector(`[data-room-id="${roomId}"]`);
 
-		    // ✅ 먼저 ROOM_PEER_MAP에서 찾기
+		    // 먼저 ROOM_PEER_MAP에서 찾기
 		    let peerId = window.ROOM_PEER_MAP?.[roomId] ?? null;
 
 		    if (!peerId) {
@@ -470,19 +469,19 @@ async function fetchPeerPetId(roomId) {
 	  }
 }
 
-// ✅ 서버 응답 키 통합: 어떤 형태로 와도 { petId:number, chatMessage:string }로 맞춤
+// 서버 응답 키 통합: 어떤 형태로 와도 { petId:number, chatMessage:string }로 맞춤
 function normalizeMessage(m) {
   const petIdRaw =
     m.petId ??
-    m.senderPetId ??   // 흔한 이름 1
-    m.fromPetId ??     // 흔한 이름 2
-    m.authorPetId;     // 흔한 이름 3
+    m.senderPetId ??   
+    m.fromPetId ??    
+    m.authorPetId;     
 
   const chatMessage =
-    m.chatMessage ??   // 우리 기본
-    m.body ??          // WS payload 용어일 때
-    m.message ??       // 다른 구현
-    m.text ??          // 혹시 모를 변형
+    m.chatMessage ??  
+    m.body ??          
+    m.message ??      
+    m.text ??          
     '';
 
   return {
@@ -506,7 +505,7 @@ function lockListLayout() {
 
   // 헤더 높이를 빼고 body 영역만 스크롤 되게
   const headerEl = chatList.querySelector('.chat-list-header');
-  const headerH  = headerEl ? headerEl.offsetHeight : 56; // 대략값(헤더가 없으면 56)
+  const headerH  = headerEl ? headerEl.offsetHeight : 56;
   const bodyH    = Math.max(0, CHAT_LIST_H - headerH);
 
   if (chatListBody) {
@@ -550,14 +549,14 @@ async function leaveRoom(roomId) {
   lockListLayout();
 }
 
-// ▼ 목록 클릭 핸들러 내 '나가기' 분기에서 호출로 교체
+// 목록 클릭 핸들러 내 '나가기' 분기에서 호출로 교체
 chatListBody.addEventListener('click', async (e)=>{
   const leave = e.target.closest('.chat-leave');
   if (leave) {
     e.stopPropagation();
     e.preventDefault();
     const rid = Number(leave.dataset.roomId);
-    await leaveRoom(rid);   // ← 여기!
+    await leaveRoom(rid);  
     return;
   }
 
@@ -600,6 +599,3 @@ function disableChatInput(reasonText){
 	  chatMessages.appendChild(wrap);
 	  chatMessages.scrollTop = chatMessages.scrollHeight;
 	}
-
-console.log('origin=', window.location.origin, 'CTX=', CTX, 'BASE=', BASE, 'len(BASE)=', (BASE || '').length);
-console.log('MY_PET_ID=', MY_PET_ID);

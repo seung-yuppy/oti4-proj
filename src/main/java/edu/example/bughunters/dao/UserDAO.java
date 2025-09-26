@@ -10,26 +10,38 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserDAO {
 	private final SqlSessionTemplate session;
-    private static final String NS = "edu.example.bughunters.dao.UserDAO.";
+	private static final String NS = "edu.example.bughunters.dao.UserDAO.";
 
-    public UserDTO findByUserName(String userName) {
-        return session.selectOne(NS + "findByUserName", userName);
-    }
+	public UserDTO findByUserName(String userName) {
+		return session.selectOne(NS + "findByUserName", userName);
+	}
 
-    public boolean existsByUserName(String userName) {
-        Integer cnt = session.selectOne(NS + "existsByUserName", userName);
-        return cnt != null && cnt > 0;
-    }
+	public boolean existsByUserName(String userName) {
+		Integer cnt = session.selectOne(NS + "existsByUserName", userName);
+		return cnt != null && cnt > 0;
+	}
 
-    public int insertUser(UserDTO dto) {
-        return session.insert(NS + "insertUser", dto);
-    }
-    
-    public UserDTO findByUserId(int userId) {
-        return session.selectOne(NS + "findByUserId", userId);
-    }
-    
-    public int updateUserProfile(UserDTO dto) {
-        return session.update(NS + "updateUserProfile", dto);
-    }
+	public int insertUser(UserDTO dto) {
+		return session.insert(NS + "insertUser", dto);
+	}
+
+	public UserDTO findByUserId(int userId) {
+		return session.selectOne(NS + "findByUserId", userId);
+	}
+
+	public int updateUserProfile(UserDTO dto) {
+		return session.update(NS + "updateUserProfile", dto);
+	}
+
+	// UserDAO.java (추가)
+	public int updatePasswordByUserName(String userName, String encodedPassword) {
+		java.util.Map<String, Object> p = new java.util.HashMap<>();
+		p.put("userName", userName);
+		p.put("password", encodedPassword);
+		return session.update(NS + "updatePasswordByUserName", p);
+	}
+
+	public int deleteUserById(int userId) {
+		return session.delete(NS + "deleteUserById", userId);
+	}
 }

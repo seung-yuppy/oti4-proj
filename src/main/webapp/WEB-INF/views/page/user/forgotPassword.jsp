@@ -47,12 +47,70 @@
 	</div>
 	<h3></h3>
 	<%@ include file="/WEB-INF/views/component/footer.jsp" %>
+	<script>const CTX='${pageContext.request.contextPath}';</script>
 	<script type="text/javascript">
-		var popoverTriggerList = [].slice.call(document
-				.querySelectorAll('[data-bs-toggle="popover"]'))
-		var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
-			return new bootstrap.Popover(popoverTriggerEl)
-		})
+	
+	const $ = (sel) => document.querySelector(sel);
+
+	const emailInput = document.querySelector('input[name="username"]');
+	const codeInput  = document.querySelector('input[name="code"]');
+	const sendBtn    = document.getElementById('certificate_mail');
+	const verifyBtn  = document.getElementById('certificate');
+
+	// 1) 인증 메일 보내기
+	sendBtn.addEventListener('click', async () => {
+	  const email = (emailInput.value || '').trim();
+	  if (!email) { alert('이메일을 입력해 주세요.'); return; }
+
+	  const res = await fetch('/bughunters/auth/email/send-code', {
+	    method: 'POST',
+	    headers: {'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
+	    body: new URLSearchParams({email})
+	  });
+	  const data = await res.json().catch(()=>({ok:false,msg:'요청 실패'}));
+	  alert(data.msg || (data.ok ? '전송 성공' : '전송 실패'));
+	});
+
+	// 2) 인증 코드 검증
+	verifyBtn.addEventListener('click', async () => {
+	  const email = (emailInput.value || '').trim();
+	  const code  = (codeInput.value || '').trim();
+	  if (!email || !code) { alert('이메일과 코드를 입력해 주세요.'); return; }
+
+	  const res = await fetch('/bughunters/auth/email/verify', {
+	    method: 'POST',
+	    headers: {'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
+	    body: new URLSearchParams({email, code})
+	  });
+	  const data = await res.json().catch(()=>({ok:false,msg:'요청 실패'}));
+	  alert(data.msg || (data.ok ? '인증 성공' : '인증 실패'));
+	  if (data.ok) {
+	    // 인증 성공 시 비밀번호 변경 모달 버튼 활성화
+	    document.querySelector('[data-bs-target="#changePasswordModal"]').disabled = false;
+	  }
+	});
+
+	// 3) 모달 내부: 새 비밀번호 전송
+	document.addEventListener('click', async (e) => {
+	  if (e.target && e.target.id === 'btn-change-password') {
+	    const email = (emailInput.value || '').trim();
+	    const newPw = (document.querySelector('#newPassword')?.value || '').trim();
+	    const newPw2= (document.querySelector('#confirmPassword')?.value || '').trim();
+	    if (newPw !== newPw2) { alert('비밀번호가 일치하지 않습니다.'); return; }
+
+	    const res = await fetch('/bughunters/auth/password/reset', {
+	      method: 'POST',
+	      headers: {'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
+	      body: new URLSearchParams({email, newPassword:newPw})
+	    });
+	    const data = await res.json().catch(()=>({ok:false,msg:'요청 실패'}));
+	    alert(data.msg || (data.ok ? '변경 성공' : '변경 실패'));
+	    if (data.ok) {
+	    	const ctx = '${pageContext.request.contextPath}';
+	    	  window.location.href = ctx + '/home';
+	    }
+	  }
+	});
 	</script>
 </body>
 </html>

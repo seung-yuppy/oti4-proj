@@ -25,14 +25,7 @@ public class UserController {
 
 	@GetMapping("/auth/signup")
 	public String signUpForm() {
-		return "user/signUp"; // /WEB-INF/views/user/SignUp.jsp
-	}
-
-	private String rootMsg(Throwable t) {
-		Throwable c = t;
-		while (c.getCause() != null)
-			c = c.getCause();
-		return c.getClass().getSimpleName() + ": " + String.valueOf(c.getMessage());
+		return "user/signUp";
 	}
 
 	@PostMapping("/auth/signup")
@@ -40,14 +33,13 @@ public class UserController {
 			@RequestParam("password") String password,
 			@RequestParam(value = "nickname", required = false) String nickName,
 
-			// ▼ SignUp.jsp의 name들과 정확히 맞춰서 받습니다
 			@RequestParam(value = "address", required = false) String address,
 			@RequestParam(value = "detailAddress", required = false) String detailAddress,
 			@RequestParam(value = "extraAddress", required = false) String extraAddress,
 
 			@RequestParam(value = "hasPet", required = false, defaultValue = "no") String hasPet,
 			@RequestParam(value = "emailVerified", required = false, defaultValue = "N") String emailVerified,
-			Model model, RedirectAttributes rttr // ★ Flash Attribute
+			Model model, RedirectAttributes rttr 
 	) {
 		// 세션에 기록된 인증 이메일과 제출 이메일이 같아야 최종 통과
 		Object verified = session.getAttribute("VERIFIED_EMAIL");
@@ -78,88 +70,99 @@ public class UserController {
 	}
 
 	@PostMapping("/auth/login")
-	public String login(HttpSession session, 
-						@RequestParam("username") String email,
-						@RequestParam("password") String password, 
-						RedirectAttributes rttr) {
+	public String login(HttpSession session, @RequestParam("username") String email,
+			@RequestParam("password") String password, RedirectAttributes rttr) {
 		boolean ok = userService.login(email, password, session);
 		if (!ok) {
-	        rttr.addFlashAttribute("msg", "이메일 또는 비밀번호가 올바르지 않습니다.");
-	        rttr.addFlashAttribute("openLogin", true);
-	    } else {
-	        rttr.addFlashAttribute("msg", "로그인되었습니다.");
-	    }
-	    return "redirect:/home";
+			rttr.addFlashAttribute("msg", "이메일 또는 비밀번호가 올바르지 않습니다.");
+			rttr.addFlashAttribute("openLogin", true);
+		} else {
+			rttr.addFlashAttribute("msg", "로그인되었습니다.");
+		}
+		return "redirect:/home";
 	}
-	
+
 	@PostMapping("/auth/logout")
 	public String logout(HttpSession session, RedirectAttributes rttr) {
-	    session.invalidate();
-	    rttr.addFlashAttribute("msg", "로그아웃되었습니다.");
-	    return "redirect:/home";
+		session.invalidate();
+		rttr.addFlashAttribute("msg", "로그아웃되었습니다.");
+		return "redirect:/home";
 	}
-	
+
 	// 프로필 수정하기
 	@RequestMapping(value = "/user/me", produces = "application/json; charset=UTF-8")
-    @ResponseBody
-    public UserDTO me(HttpSession session) {
-        Integer userId = (Integer) session.getAttribute("userId");
-        if (userId == null) {
-            return new UserDTO(); // 비로그인 시 빈 객체
-        }
-        return userService.getProfileByUserId(userId);
-    }
-	
+	@ResponseBody
+	public UserDTO me(HttpSession session) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		if (userId == null) {
+			return new UserDTO(); // 비로그인 시 빈 객체
+		}
+		return userService.getProfileByUserId(userId);
+	}
+
 	// 프로필 수정 비밀번호 검증
 	@PostMapping(value = "/api/login-check", produces = "application/json; charset=UTF-8")
 	@ResponseBody
 	public Map<String, Object> loginCheck(@RequestParam("username") String email,
-	                                      @RequestParam("password") String password) {
-	    boolean ok = userService.verify(email, password);
-	    return Collections.singletonMap("ok", ok);
+			@RequestParam("password") String password) {
+		boolean ok = userService.verify(email, password);
+		return Collections.singletonMap("ok", ok);
 	}
-	
-	
+
 	// 화면 열기
 	@GetMapping("/user/editProfile")
 	public String editProfileForm(HttpSession session, Model model) {
 		Integer userId = (Integer) session.getAttribute("userId");
 		if (userId != null) {
-	        UserDTO me = userService.getProfileByUserId(userId);
-	        if (me != null) {
-	            model.addAttribute("address", me.getAddress()); // DB의 전체 주소 문자열
-	            model.addAttribute("hasPet", me.getIsPet());    // 1 or 0
-	        }
-	    }
-	    return "user/editProfile";
+			UserDTO me = userService.getProfileByUserId(userId);
+			if (me != null) {
+				model.addAttribute("address", me.getAddress()); // DB의 전체 주소 문자열
+				model.addAttribute("hasPet", me.getIsPet()); // 1 or 0
+			}
+		}
+		return "user/editProfile";
 	}
 
 	// 저장 처리
 	@PostMapping("/user/profile/update")
-	public String updateProfile(
-	        @RequestParam String password,
-	        @RequestParam String nickname,
-	        @RequestParam(required=false) String postcode,
-	        @RequestParam(required=false) String address,
-	        @RequestParam(required=false) String detailAddress,
-	        @RequestParam(required=false) String extraAddress,
-	        @RequestParam String hasPet,
-	        HttpSession session,
-	        RedirectAttributes rttr) {
+	public String updateProfile(@RequestParam String password, @RequestParam String nickname,
+			@RequestParam(required = false) String postcode, @RequestParam(required = false) String address,
+			@RequestParam(required = false) String detailAddress, @RequestParam(required = false) String extraAddress,
+			@RequestParam String hasPet, HttpSession session, RedirectAttributes rttr) {
 
-	    Integer userId = (Integer) session.getAttribute("userId");
-	    if (userId == null) {
-	        rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
-	        return "redirect:/home";
-	    }
+		Integer userId = (Integer) session.getAttribute("userId");
+		if (userId == null) {
+			rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+			return "redirect:/home";
+		}
 
-	    boolean ok = userService.updateProfile(
-	            userId, password, nickname,
-	            address, detailAddress, extraAddress,
-	            hasPet
-	    );
+		boolean ok = userService.updateProfile(userId, password, nickname, address, detailAddress, extraAddress,
+				hasPet);
 
-	    rttr.addFlashAttribute("msg", ok ? "회원정보가 수정되었습니다." : "수정에 실패했습니다.");
-	    return "redirect:/mypage";
+		rttr.addFlashAttribute("msg", ok ? "회원정보가 수정되었습니다." : "수정에 실패했습니다.");
+		return "redirect:/mypage";
+	}
+
+	@GetMapping("/forgotPassword")
+	public String forgotPasswordPage() {
+		return "user/forgotPassword";
+	}
+
+	@PostMapping("/user/delete")
+	public String deleteAccount(HttpSession session, RedirectAttributes rttr) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		if (userId == null) {
+			rttr.addFlashAttribute("msg", "로그인이 필요합니다.");
+			return "redirect:/home";
+		}
+
+		boolean ok = userService.deleteUser(userId);
+		if (ok) {
+			session.invalidate(); // 세션 초기화 (로그아웃 처리)
+			rttr.addFlashAttribute("msg", "회원 탈퇴가 완료되었습니다. 그동안 이용해 주셔서 감사합니다.");
+		} else {
+			rttr.addFlashAttribute("msg", "회원 탈퇴 처리 중 오류가 발생했습니다.");
+		}
+		return "redirect:/home";
 	}
 }

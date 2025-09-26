@@ -89,4 +89,17 @@
 		</set>
 		WHERE USER_ID = #{userId}
 	</update>
+
+	<update id="updatePasswordByUserName" parameterType="map">
+		UPDATE
+		"User"
+		SET PASSWORD = #{password}
+		WHERE USERNAME = #{userName}
+	</update>
+
+	<!-- 회원 탈퇴 -->
+	<delete id="deleteUserById" parameterType="int">
+		DELETE FROM "User"
+		WHERE USER_ID = #{value}
+	</delete>
 </mapper>
