@@ -29,7 +29,7 @@ public interface MatchingResultDAO {
  List<PetWeightDTO> selectAllPetWeights();
  int updateMatchedPetId(@Param("userId") Long userId, @Param("petId") Long petId);
  
- // TOP-4 갱신용
+ // 상위 4마리 강아지 갱신용
  int deleteTopMatchesByUserId(Long userId);
  int insertTopMatch(@Param("userId") Long userId,
                     @Param("rankNo") Integer rankNo,
@@ -38,10 +38,10 @@ public interface MatchingResultDAO {
  // 조회용(뷰에서 쓰기)
  List<Long> selectTopPetIdsByUserId(Long userId);
  
-//로그인/퀴즈 여부 체크(이미 구현했다면 생략)
+//퀴즈 여부 체크
  Integer selectIsQuizByUsername(@Param("username") String username);
 
- // 옵션 A: 조인 1방으로 카드들 받기
+ // 상위 4마리 강아지 카드들 받기
  List<AbandonedPetDTO> selectTop4PetsForCard(@Param("userId") Long userId);
 }
 

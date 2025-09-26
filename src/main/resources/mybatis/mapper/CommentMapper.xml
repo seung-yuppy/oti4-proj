@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="edu.example.bughunters.dao.CommunityDAO">
+<mapper namespace="edu.example.bughunters.dao.CommentDAO">
+
 	<!--비페이징 목록 -->
 	<select id="selectComments"
 		resultType="edu.example.bughunters.domain.CommentDTO">
 		SELECT
-		cmt.comment_id AS commentId,
+		cmt.comment_id,
 		cmt.content,
-		cmt.created_at AS createdAt,
-		cmt.user_id AS userId,
-		cmt.community_id AS
-		communityId,
+		cmt.created_at,
+		cmt.user_id,
+		cmt.community_id,
 		u.nickname
 		FROM "Comment" cmt
 		JOIN "User" u ON u.user_id =
@@ -25,12 +25,11 @@
 	<select id="selectCommentsPaged"
 		resultType="edu.example.bughunters.domain.CommentDTO">
 		SELECT
-		cmt.comment_id AS commentId,
+		cmt.comment_id,
 		cmt.content,
-		cmt.created_at AS createdAt,
-		cmt.user_id AS userId,
-		cmt.community_id AS
-		communityId,
+		cmt.created_at,
+		cmt.user_id,
+		cmt.community_id,
 		u.nickname
 		FROM "Comment" cmt
 		JOIN "User" u ON u.user_id =
@@ -41,7 +40,7 @@
 		OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
 	</select>
 
-	<!-- 서비스가 부르는 총 개수 id -->
+	<!-- 특정 게시글의 댓글 개수(게시글 상세보기) -->
 	<select id="countComments" parameterType="int" resultType="int">
 		SELECT COUNT(*) FROM "Comment"
 		WHERE community_id = #{communityId}
@@ -54,49 +53,12 @@
 		WHERE community_id = #{communityId}
 	</delete>
 
-
-
-	<!-- 특정 게시글의 댓글 목록 -->
-	<select id="selectByCommunityId" parameterType="long"
-		resultType="edu.example.bughunters.domain.CommentDTO">
-		SELECT cmt.*, u.nickname
-		FROM "Comment" cmt
-		JOIN "User" u ON
-		u.user_id = cmt.user_id
-		WHERE cmt.community_id = #{communityId}
-		ORDER BY
-		cmt.comment_id DESC
-	</select>
-
-	<!-- 페이징 버전 -->
-	<select id="selectByCommunityIdPaged" parameterType="map"
-		resultType="edu.example.bughunters.domain.CommentDTO">
-		SELECT cmt.*, u.nickname
-		FROM "Comment" cmt
-		JOIN "User" u ON
-		u.user_id = cmt.user_id
-		WHERE cmt.community_id = #{communityId}
-		ORDER BY
-		cmt.comment_id DESC
-		OFFSET #{offset} ROWS FETCH NEXT #{limit} ROWS ONLY
-	</select>
-
-	<!-- 댓글 개수 -->
-	<select id="countByCommunityId" parameterType="long"
-		resultType="int">
-		SELECT COUNT(*) FROM "Comment"
-		WHERE community_id =
-		#{communityId}
-	</select>
-
 	<!-- 등록 -->
 	<insert id="insertComment"
 		parameterType="edu.example.bughunters.domain.CommentDTO">
 		INSERT INTO "Comment" (content, created_at, user_id, community_id)
 		VALUES (#{content}, SYSDATE, #{userId}, #{communityId})
 	</insert>
-
-
 
 	<!-- 수정 -->
 	<update id="updateComment"
@@ -115,21 +77,21 @@
 		AND user_id = #{userId}
 	</delete>
 	
-	 <select id="countCommentsByUser" parameterType="int" resultType="int">
+	<select id="countCommentsByUser" parameterType="int" resultType="int">
     SELECT COUNT(*)
     FROM "Comment" cmt
     WHERE cmt.user_id = #{userId}
-  </select>
+    </select>
 
   <!-- 목록 -->
   <select id="selectCommentsByUser" resultType="edu.example.bughunters.domain.CommentDTO">
     SELECT
-      cmt.comment_id                   AS commentId,
-      cmt.community_id                 AS communityId,
+      cmt.comment_id,
+      cmt.community_id,
       cmt.content,
-      cmt.created_at                   AS createdAt,
+      cmt.created_at,
       c.title,
-      c.user_id                       AS userId
+      c.user_id
     FROM "Comment" cmt
     JOIN Community c ON c.community_id = cmt.community_id
     WHERE cmt.user_id = #{userId}

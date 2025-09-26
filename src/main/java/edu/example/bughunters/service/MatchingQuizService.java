@@ -39,15 +39,8 @@ public class MatchingQuizService {
                 quizIds.add(id);
             }
         }
-        /*List<Long> quizIds = quizzes.stream()
-                .map(MatchingQuizDTO::getMatchingQuizId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());*/
 
         List<MatchingAnswerDTO> answers = quizDAO.selectAnswersByQuizIds(quizIds);
-
-        /*Map<Long, List<MatchingAnswerDTO>> answersByQuizId =
-                answers.stream().collect(Collectors.groupingBy(MatchingAnswerDTO::getMatchingQuizId));*/
         
         Map<Long, List<MatchingAnswerDTO>> answersByQuizId = new HashMap<>();
         for (MatchingAnswerDTO ans : answers) {
@@ -89,7 +82,7 @@ public class MatchingQuizService {
     }
    
 
-    /** 이전 결과와 현재 결과를 평균으로 합산 */
+    /**매칭 누적 알고리즘( 이전 결과와 현재 결과를 평균으로 합산 )*/
     public MatchingResultDTO averageResults(MatchingResultDTO prev, MatchingResultDTO curr) {
         MatchingResultDTO r = new MatchingResultDTO();
         r.setUserId(curr.getUserId());
@@ -147,7 +140,7 @@ public class MatchingQuizService {
                 .map(ps -> ps.id)
                 .collect(Collectors.toList());
 
-        // 기존 TOP-4 삭제 후 새로 저장
+        // 기존 상위 4마리 삭제 후 새로 저장
         resultDao.deleteTopMatchesByUserId(userId);
         for (int i = 0; i < topIds.size(); i++) {
             resultDao.insertTopMatch(userId, i + 1, topIds.get(i));

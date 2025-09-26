@@ -5,7 +5,7 @@
 
 <mapper namespace="edu.example.bughunters.dao.MatchingResultDAO">
 
-	<!-- 유저 is_quiz -->
+	<!-- 유저가 퀴즈를 했는지 확인 -->
 	<select id="selectIsQuizByUserId" parameterType="long"
 		resultType="int">
 		SELECT is_quiz
@@ -17,18 +17,18 @@
 	<select id="selectResultByUserId" parameterType="long"
 		resultType="edu.example.bughunters.domain.MatchingResultDTO">
 		SELECT
-		user_id AS userId,
-		activity_score AS activityScore,
-		sociability_score AS sociabilityScore,
-		dependency_score AS dependencyScore,
-		trainability_score AS trainabilityScore,
-		aggression_score AS aggressionScore,
+		user_id,
+		activity_score,
+		sociability_score,
+		dependency_score,
+		trainability_score,
+		aggression_score,
 		quiz_count as countNum
 		FROM Matching_Abandoned_Pet_And_User
 		WHERE user_id = #{userId}
 	</select>
 
-	<!-- 첫 저장 (INSERT) -->
+	<!-- 첫 저장  -->
 	<insert id="insertResult"
 		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
 		INSERT INTO Matching_Abandoned_Pet_And_User (
@@ -45,7 +45,7 @@
 		)
 	</insert>
 
-	<!-- 평균 계산된 값으로 UPDATE -->
+	<!-- 퀴즈 2회차 이후 평균 계산된 값으로 업데이트 -->
 	<update id="updateResultByUserId"
 		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
 		UPDATE Matching_Abandoned_Pet_And_User
@@ -58,7 +58,7 @@
 		WHERE user_id = #{userId}
 	</update>
 
-	<!-- is_quiz = 1 -->
+	<!-- 퀴즈 후 is_quiz=1로 변경 -->
 	<update id="setIsQuizTrue" parameterType="long">
 		UPDATE "User"
 		SET is_quiz = 1
@@ -69,15 +69,15 @@
 	<select id="selectAllPetWeights"
 		resultType="edu.example.bughunters.domain.PetWeightDTO">
 		SELECT
-		apw.abandoned_pet_id AS abandonedPetId,
-		apw.activity_weight AS activityWeight,
-		apw.sociability_weight AS sociabilityWeight,
-		apw.dependency_weight AS dependencyWeight,
-		apw.trainability_weight AS trainabilityWeight,
-		apw.aggression_weight AS aggressionWeight,
-		apw.description AS description
-		FROM Abandoned_Pet_Weight apw
-		WHERE apw.abandoned_pet_id IS NOT NULL
+		abandoned_pet_id,
+		activity_weight,
+		sociability_weight,
+		dependency_weight,
+		trainability_weight,
+		aggression_weight,
+		description
+		FROM Abandoned_Pet_Weight
+		WHERE abandoned_pet_id IS NOT NULL
 	</select>
 
 	<!-- 유저별 TOP-4 초기화/삽입/조회 -->
@@ -103,14 +103,14 @@
 	<select id="selectTop4PetsForCard"
         parameterType="long" resultType="edu.example.bughunters.domain.AbandonedPetDTO">
   SELECT
-    ap.abandoned_pet_id AS abandonedPetId,
-    ap.kind             AS kind,
-    ap.age              AS age,
-    ap.weight           AS weight,
-    ap.address          AS address,
-    ap.description      AS description,
-    ap.profile_image    AS profileImage,
-    ap.gender           AS gender
+    ap.abandoned_pet_id,
+    ap.kind,
+    ap.age,
+    ap.weight,
+    ap.address,
+    ap.description,
+    ap.profile_image,
+    ap.gender
   FROM Matching_User_Top_Pets mup
   JOIN Abandoned_Pet ap
     ON ap.abandoned_pet_id = mup.abandoned_pet_id
@@ -126,42 +126,6 @@
 		FROM Member
 		WHERE username = #{username}
 	</select>
-	
-<!-- 		<select id="getMatchingResultByUserId"
-		resultType="edu.example.bughunters.domain.MatchingResultDTO">
-		SELECT * FROM Matching_Abandoned_Pet_And_User
-		WHERE user_id = #{userId}
-	</select>
-
-	<insert id="insertMatchingResult"
-		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
-		INSERT INTO Matching_Abandoned_Pet_And_User (
-		activity_score, sociability_score, dependency_score,
-		trainability_score, aggression_score, user_id
-		)
-		VALUES (
-		#{activityScore}, #{sociabilityScore}, #{dependencyScore},
-		#{trainabilityScore}, #{aggressionScore}, #{userId}
-		)
-	</insert>
-
-	<update id="updateMatchingResult"
-		parameterType="edu.example.bughunters.domain.MatchingResultDTO">
-		UPDATE Matching_Abandoned_Pet_And_User
-		SET
-		activity_score = #{activityScore},
-		sociability_score = #{sociabilityScore},
-		dependency_score = #{dependencyScore},
-		trainability_score = #{trainabilityScore},
-		aggression_score = #{aggressionScore}
-		WHERE user_id = #{userId}
-	</update>
-	
-		<update id="updateIsQuiz" parameterType="int">
-		UPDATE "User"
-		SET is_quiz = 1
-		WHERE user_id = #{userId}
-	</update> -->
 
 
 </mapper>

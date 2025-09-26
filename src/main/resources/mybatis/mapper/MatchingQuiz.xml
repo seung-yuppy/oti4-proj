@@ -9,9 +9,9 @@
 	<select id="selectRandomQuiz" parameterType="java.lang.String"
 		resultType="edu.example.bughunters.domain.MatchingQuizDTO">
 		SELECT
-		q.matching_quiz_id AS matchingQuizId,
-		q.quiz_question AS quizQuestion,
-		q.quiz_category AS quizCategory
+		q.matching_quiz_id,
+		q.quiz_question,
+		q.quiz_category
 		FROM (
 		SELECT *
 		FROM Matching_Quiz
@@ -25,17 +25,17 @@
 	<select id="selectAnswersByQuizIds" parameterType="list"
 		resultType="edu.example.bughunters.domain.MatchingAnswerDTO">
 		SELECT
-		a.matching_answer_id AS matchingAnswerId,
-		a.quiz_answer AS quizAnswer,
-		a.matching_quiz_id AS matchingQuizId,
-		TO_CHAR(a.answer_weight) AS answerWeight
-		FROM Matching_Answer a
-		WHERE a.matching_quiz_id IN
+		matching_answer_id,
+		quiz_answer,
+		matching_quiz_id,
+		TO_CHAR(answer_weight)
+		FROM Matching_Answer 
+		WHERE matching_quiz_id IN
 		<foreach collection="quizIds" item="id" open="(" separator=","
 			close=")">
 			#{id}
 		</foreach>
-		ORDER BY a.matching_quiz_id, a.matching_answer_id
+		ORDER BY matching_quiz_id, matching_answer_id
 	</select>
 
 </mapper>

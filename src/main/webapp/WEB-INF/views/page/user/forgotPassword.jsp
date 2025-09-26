@@ -28,7 +28,7 @@
 		<h2 class="mb-4">비밀번호 찾기</h2>
 		<div class="d-grid ">
 			<label class="form-label">사용자 이메일</label> <input type="email"
-				name="username" class="form-control mb-2"
+				name="username" class="form-control mb-2 user-email"
 				placeholder="사용자 이메일을 입력하세요" required>
 			<button type="button" class="btn btn-brown mb-2"
 				id="certificate_mail" data-bs-toggle="popover" title="인증메일 전송완료"
@@ -52,7 +52,7 @@
 	
 	const $ = (sel) => document.querySelector(sel);
 
-	const emailInput = document.querySelector('input[name="username"]');
+	const emailInput = document.querySelector('.user-email');
 	const codeInput  = document.querySelector('input[name="code"]');
 	const sendBtn    = document.getElementById('certificate_mail');
 	const verifyBtn  = document.getElementById('certificate');

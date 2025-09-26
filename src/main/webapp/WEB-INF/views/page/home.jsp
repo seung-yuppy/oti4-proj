@@ -24,7 +24,11 @@
 	color: white;
 	border-radius: 9999px;
 	padding: 0.75rem 2rem;
-	transition: all 0.3s ease; &: hover { background-color : #99611a;
+	transition: all 0.3s ease;
+}
+
+.btn-secondary-brown-custom:hover {
+	background-color: #99611a;
 	transform: translateY(-2px);
 	color: white;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -39,29 +43,12 @@
 keyframes bounce { 0%, 100% {
 	transform: translateY(0);
 }
-50%
-{
+50%{
 transform
+:translateY(-10
+px);
 
 
-
-
-:
-
-
- 
-
-
-translateY
-
-
-
-
-(-10
-px
-
-
-);
 }
 }
 </style>

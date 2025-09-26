@@ -1,6 +1,7 @@
 package edu.example.bughunters.service;
 
 import edu.example.bughunters.dao.CommunityDAO;
+import edu.example.bughunters.dao.CommentDAO;
 import edu.example.bughunters.domain.CommunityDTO;
 import edu.example.bughunters.domain.CommentDTO;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.*;
 public class CommunityService {
 
     private final CommunityDAO communityDAO;
+    private final CommentDAO commentDAO;
 
     // ===== Community =====
 
@@ -23,7 +25,7 @@ public class CommunityService {
         return communityDAO.selectById(communityId);
     }
 
-    /** 상세 진입: 조회수 +1 후 조회 */
+    /** 상세페이지 진입 */
     @Transactional
     public CommunityDTO getDetailAndIncreaseView(int communityId) {
         communityDAO.increaseViewcount(communityId);
@@ -63,7 +65,7 @@ public class CommunityService {
 
     @Transactional
     public boolean deletePost(int communityId, int userId) {
-        communityDAO.deleteCommentsByCommunity(communityId);
+        commentDAO.deleteCommentsByCommunity(communityId);
         return communityDAO.deleteCommunity(communityId, userId) > 0;
     }
 
@@ -74,31 +76,31 @@ public class CommunityService {
     	if (page != null && size != null) {
     	    int offset = Math.max(0, (page - 1) * size);
     	    int limit = Math.max(1, size);
-    	    return communityDAO.selectCommentsPaged(communityId, offset, limit);
+    	    return commentDAO.selectCommentsPaged(communityId, offset, limit);
     	}
 
-        return communityDAO.selectComments(communityId);
+        return commentDAO.selectComments(communityId);
     }
 
     @Transactional(readOnly = true)
     public int getCommentCount(int communityId) {
-        return communityDAO.countComments(communityId);
+        return commentDAO.countComments(communityId);
     }
 
     @Transactional
     public int addComment(CommentDTO dto) {
-        communityDAO.insertComment(dto);
+        commentDAO.insertComment(dto);
         return dto.getCommentId();
     }
 
     @Transactional
     public boolean updateComment(CommentDTO dto) {
-        return communityDAO.updateComment(dto) > 0;
+        return commentDAO.updateComment(dto) > 0;
     }
 
     @Transactional
     public boolean deleteComment(int commentId, int userId) {
-        return communityDAO.deleteComment(commentId, userId) > 0;
+        return commentDAO.deleteComment(commentId, userId) > 0;
     }
     
     @Transactional
@@ -119,12 +121,12 @@ public class CommunityService {
 
     @Transactional(readOnly = true)
     public int countCommentsByUser(int userId) {
-        return communityDAO.countCommentsByUser(userId);
+        return commentDAO.countCommentsByUser(userId);
     }
 
     @Transactional(readOnly = true)
     public List<CommentDTO> findCommentsByUser(int userId, int page, int size) {
         int offset = (page - 1) * size;
-        return communityDAO.selectCommentsByUser(userId, offset, size);
+        return commentDAO.selectCommentsByUser(userId, offset, size);
     }
 }

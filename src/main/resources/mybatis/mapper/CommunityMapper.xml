@@ -7,13 +7,13 @@
 	<!-- 하나만조회(상세보기) -->
 	<select id="selectById" resultType="edu.example.bughunters.domain.CommunityDTO">
     SELECT
-      c.community_id AS communityId,
+      c.community_id,
       c.title,
       c.content,
       c.image,
       c.category,
-      c.user_id      AS userId,
-      c.created_at   AS createdAt,
+      c.user_id,
+      c.created_at,
       c.viewcount,
       u.nickname
     FROM Community c
@@ -24,13 +24,13 @@
 	<!-- 리스트 조회 (페이징) -->
 	<select id="selectList" parameterType="map" resultType="edu.example.bughunters.domain.CommunityDTO">
     SELECT
-      c.community_id AS communityId,
+      c.community_id,
       c.title,
       c.content,
       c.image,
       c.category,
-      c.user_id      AS userId,
-      c.created_at   AS createdAt,
+      c.user_id,
+      c.created_at,
       c.viewcount,
       u.nickname,
       NVL( (SELECT COUNT(*) FROM "Comment" x WHERE x.community_id = c.community_id), 0) AS commentCount
@@ -69,24 +69,7 @@
       </if>
     </where>
   </select>
-
-	<!-- 검색 -->
-	<select id="searchCommunity" parameterType="map"
-		resultType="edu.example.bughunters.domain.CommunityDTO">
-		SELECT c.*, u.nickname
-		FROM Community c
-		JOIN "User" u ON c.user_id =
-		u.user_id
-		<where>
-			<if test="nickname != null and nickname != ''">
-				AND u.nickname = #{nickname}
-			</if>
-			<if test="title != null and title != ''">
-				AND c.title = #{title}
-			</if>
-		</where>
-	</select>
-
+  
 	<!-- 조회수 증가 -->
 	<update id="increaseViewcount">
 		UPDATE Community
@@ -137,12 +120,12 @@
 
   <select id="selectPostsByUser" resultType="edu.example.bughunters.domain.CommunityDTO">
     SELECT
-      c.community_id AS communityId,
+      c.community_id,
       c.title,
       c.content,
-      c.created_at AS createdAt,
+      c.created_at,
       c.viewcount,
-      c.user_id AS userId,
+      c.user_id,
       NVL( (SELECT COUNT(*) FROM "Comment" x WHERE x.community_id = c.community_id), 0) AS commentCount
     FROM Community c
     WHERE c.user_id = #{userId}
