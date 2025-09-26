@@ -166,7 +166,6 @@
 	                method: "GET"
 	            });
 	            const data = await res.json();
-	            console.log(data);
 	
 	            if (data.isLike === true) 
 	                button.innerHTML = `<img src="/bughunters/resources/image/ico_fullheart.png" class="heart card-icon">`;

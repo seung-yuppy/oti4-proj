@@ -53,8 +53,6 @@ public class CommunityController {
         List<CommunityDTO> items = communityService.getList(filters, page, size);
         int total = communityService.countList(filters);
         int totalPages = (int)Math.ceil((double) total / Math.max(1, size));
-        
-        System.out.println("categor는 " + category);
 
         model.addAttribute("userId", userId);
         model.addAttribute("list", items);
@@ -134,9 +132,7 @@ public class CommunityController {
     }
 
 
-    // 작성 저장
-
-    
+    // 작성 저장 
     @PostMapping
     public String create(@ModelAttribute("form") CommunityDTO form,
                          @RequestParam(required = false) MultipartFile imageFile,

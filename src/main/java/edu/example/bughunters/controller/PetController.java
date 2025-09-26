@@ -63,7 +63,6 @@ public class PetController {
 		Integer userId = (Integer) session.getAttribute("userId");
 		
 		if (userId == null) {
-			System.out.println("반려동물 등록이 불가합니다.");
 			return "redirect:/pet/signup";
 		} else {
 			dto.setUserId(userId);

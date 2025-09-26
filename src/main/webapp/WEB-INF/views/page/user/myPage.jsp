@@ -179,7 +179,6 @@ body {
 			
 				    // 비로그인/빈객체 처리
 				    if (!u || (!u.userName && !u.userId)) {
-				      console.warn('로그인 필요 또는 사용자 없음');
 				      return;
 				    }
 			
@@ -255,7 +254,6 @@ body {
 				method: "GET",
 			});
 			const data = await res.json();
-			console.log(data);
 			if(data.mypet !== null) {
 				cardbox.innerHTML = `
 					<img 

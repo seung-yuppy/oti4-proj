@@ -105,7 +105,6 @@ public class UserController {
     public UserDTO me(HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
-            System.out.println("로그인이 필요합니다.");
             return new UserDTO(); // 비로그인 시 빈 객체
         }
         return userService.getProfileByUserId(userId);
