@@ -89,28 +89,6 @@
 	    document.querySelector('[data-bs-target="#changePasswordModal"]').disabled = false;
 	  }
 	});
-
-	// 3) 모달 내부: 새 비밀번호 전송
-	document.addEventListener('click', async (e) => {
-	  if (e.target && e.target.id === 'btn-change-password') {
-	    const email = (emailInput.value || '').trim();
-	    const newPw = (document.querySelector('#newPassword')?.value || '').trim();
-	    const newPw2= (document.querySelector('#confirmPassword')?.value || '').trim();
-	    if (newPw !== newPw2) { alert('비밀번호가 일치하지 않습니다.'); return; }
-
-	    const res = await fetch('/bughunters/auth/password/reset', {
-	      method: 'POST',
-	      headers: {'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
-	      body: new URLSearchParams({email, newPassword:newPw})
-	    });
-	    const data = await res.json().catch(()=>({ok:false,msg:'요청 실패'}));
-	    alert(data.msg || (data.ok ? '변경 성공' : '변경 실패'));
-	    if (data.ok) {
-	    	const ctx = '${pageContext.request.contextPath}';
-	    	  window.location.href = ctx + '/home';
-	    }
-	  }
-	});
 	</script>
 </body>
 </html>

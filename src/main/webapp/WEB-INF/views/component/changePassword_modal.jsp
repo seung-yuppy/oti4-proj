@@ -103,9 +103,10 @@ document.getElementById('changePwForm').addEventListener('submit', async (e) => 
     const data = await res.json().catch(()=>({ok:false,msg:'요청 실패'}));
 
     if (data.ok) {
+    		alert("비밀번호가 변경되었습니다. 로그인해 주세요.");
     		window.location.href = CTX + '/home';
     	} else {
-    		window.location.href = CTX + '/home?fail=true';
+    		alert("비밀번호 변경에 실패했습니다.");
     	}
   } catch (err) {
     console.error(err);
