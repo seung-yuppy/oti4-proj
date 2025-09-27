@@ -46,8 +46,7 @@
 </head>
 <body>
 	<!-- The Modal -->
-	<form id="changePwForm" method="post"
-		onsubmit="return validatePasswords()">
+	<form id="changePwForm" method="post">
 		<div class="modal fade" id="changePasswordModal" tabindex="-1">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -88,11 +87,11 @@ document.getElementById('changePwForm').addEventListener('submit', async (e) => 
   if (!validatePasswords()) return;
 
   // 이메일 입력창은 forgotPassword 페이지 쪽에 name="username"으로 있다고 가정
-  const emailInput = document.querySelector('input[name="username"]');
+  const emailInput = document.querySelector('#user-email');
   const email = (emailInput?.value || '').trim();
   const newPassword = document.getElementById('newPassword').value.trim();
 
-  if (!email) { alert('사용자 이메일을 먼저 입력/인증해 주세요.'); return; }
+  if (!email) { alert('사용자 이메일을 먼저 입력/인증해 주세요.'); return; } 
 
   try {
     const res = await fetch(CTX + '/auth/password/reset', {
@@ -101,7 +100,6 @@ document.getElementById('changePwForm').addEventListener('submit', async (e) => 
       body: new URLSearchParams({ email, newPassword })
     });
     const data = await res.json().catch(()=>({ok:false,msg:'요청 실패'}));
-
     if (data.ok) {
     		alert("비밀번호가 변경되었습니다. 로그인해 주세요.");
     		window.location.href = CTX + '/home';
