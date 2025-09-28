@@ -88,11 +88,11 @@ public class MatchingQuizService {
         r.setUserId(curr.getUserId());
         int n = prev.getCountNum();
         
-        double pA = nz(prev.getActivityScore()),     cA = nz(curr.getActivityScore());
-        double pS = nz(prev.getSociabilityScore()),  cS = nz(curr.getSociabilityScore());
-        double pD = nz(prev.getDependencyScore()),   cD = nz(curr.getDependencyScore());
-        double pT = nz(prev.getTrainabilityScore()), cT = nz(curr.getTrainabilityScore());
-        double pG = nz(prev.getAggressionScore()),   cG = nz(curr.getAggressionScore());
+        double pA = prev.getActivityScore(),     cA = curr.getActivityScore();
+        double pS = prev.getSociabilityScore(),  cS = curr.getSociabilityScore();
+        double pD = prev.getDependencyScore(),   cD = curr.getDependencyScore();
+        double pT = prev.getTrainabilityScore(), cT = curr.getTrainabilityScore();
+        double pG = prev.getAggressionScore(),   cG = curr.getAggressionScore();
 
         r.setActivityScore(     ((pA*n)+cA)/(n+1));
         r.setSociabilityScore(  ((pS*n)+cS)/(n+1));
@@ -108,39 +108,50 @@ public class MatchingQuizService {
     /*매칭결과계산(+상위4마리저장)*/
     @Transactional
     public List<Long> matchAndSaveTop4(Long userId) {
-        MatchingResultDTO u = resultDao.selectResultByUserId(userId);
-        if (u == null) throw new IllegalStateException("유저 결과가 없습니다.");
+        final MatchingResultDTO u = resultDao.selectResultByUserId(userId);
+        if (u == null) throw new IllegalStateException("유저 결과가 없습니다: " + userId);
 
-        List<PetWeightDTO> rows = resultDao.selectAllPetWeights();
+        final List<PetWeightDTO> rows =
+                Optional.ofNullable(resultDao.selectAllPetWeights()).orElse(Collections.emptyList());
 
-        class PS { Long id; double s; PS(Long i,double sc){id=i;s=sc;} }
-        List<PS> scores = new ArrayList<>(rows.size());
+        class PS { Long id; double s; PS(Long i,double sc){ id=i; s=sc; } }
+        List<PS> scores = new ArrayList<>();
 
         for (PetWeightDTO p : rows) {
-            double dAct = nz(p.getActivityWeight())    - nz(u.getActivityScore());
-            double dSoc = nz(p.getSociabilityWeight()) - nz(u.getSociabilityScore());
-            double dDep = nz(p.getDependencyWeight())  - nz(u.getDependencyScore());
-            double dTrn = nz(p.getTrainabilityWeight())- nz(u.getTrainabilityScore());
-            double dAgg = nz(p.getAggressionWeight())  - nz(u.getAggressionScore());
+            if (p == null) continue;
+            if (p.getAbandonedPetId()   == null ||
+                p.getActivityWeight()   == null ||
+                p.getSociabilityWeight()== null ||
+                p.getDependencyWeight() == null ||
+                p.getTrainabilityWeight()== null ||
+                p.getAggressionWeight() == null) {
+                continue;
+            }
 
-            double base = Math.sqrt(
-                dAct*dAct + dSoc*dSoc + dDep*dDep
-            );
+            double dAct = p.getActivityWeight()    - u.getActivityScore();
+            double dSoc = p.getSociabilityWeight() - u.getSociabilityScore();
+            double dDep = p.getDependencyWeight()  - u.getDependencyScore();
+            double dTrn = p.getTrainabilityWeight()- u.getTrainabilityScore();
+            double dAgg = p.getAggressionWeight()  - u.getAggressionScore();
+
+            double base   = Math.sqrt(dAct*dAct + dSoc*dSoc + dDep*dDep);
             double penTrn = Math.pow(Math.max(0.0, -dTrn), 2);
             double penAgg = Math.pow(Math.max(0.0,  dAgg), 2);
 
             scores.add(new PS(p.getAbandonedPetId(), base + penTrn + penAgg));
         }
 
-        // 점수 오름차순, 동점이면 ID 오름차순
-        scores.sort(Comparator.<PS>comparingDouble(ps -> ps.s).thenComparingLong(ps -> ps.id));
+        if (scores.isEmpty()) return Collections.emptyList();
+
+        scores.sort(Comparator.comparingDouble((PS ps) -> ps.s)
+                              .thenComparingLong(ps -> ps.id)); // ps.id는 위에서 null 제외됨
 
         List<Long> topIds = scores.stream()
-                .limit(4)
-                .map(ps -> ps.id)
-                .collect(Collectors.toList());
+                                  .map(ps -> ps.id)
+                                  .distinct()
+                                  .limit(4)
+                                  .collect(Collectors.toList());
 
-        // 기존 상위 4마리 삭제 후 새로 저장
         resultDao.deleteTopMatchesByUserId(userId);
         for (int i = 0; i < topIds.size(); i++) {
             resultDao.insertTopMatch(userId, i + 1, topIds.get(i));
@@ -160,27 +171,7 @@ public class MatchingQuizService {
     public List<AbandonedPetDTO> loadTop4Cards(Long userId) {
         List<AbandonedPetDTO> list = resultDao.selectTop4PetsForCard(userId);
         if (list == null) return Collections.emptyList();
-        list.forEach(this::processAbandonedPetData);
         return list;
     }
-    
-    public void processAbandonedPetData(AbandonedPetDTO dto) {
-        // 견종
-        if (dto.getKind() != null && dto.getKind().contains("빠삐용")) {
-            dto.setKind("빠삐용");
-        }
-        // 성별
-        if (dto.getGender() != null) {
-            if ("M".equals(dto.getGender())) dto.setGender("수컷");
-            else if ("F".equals(dto.getGender())) dto.setGender("암컷");
-            else dto.setGender("미상");
-        }
-        // 위치
-        if (dto.getAddress() != null && dto.getAddress().contains("전북")) {
-            dto.setAddress("전라북도");
-        }
-    }
 
-    /** null이면 0.0 */
-    private static double nz(Double v){ return v==null?0.0:v.doubleValue(); }
 }

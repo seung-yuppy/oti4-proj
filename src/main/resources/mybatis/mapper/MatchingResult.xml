@@ -65,7 +65,7 @@
 		WHERE user_id = #{userId}
 	</update>
 
-	<!-- 후보(보호견) 가중치 전부 가져오기 -->
+	<!-- 강아지 가중치 전부 가져오기 -->
 	<select id="selectAllPetWeights"
 		resultType="edu.example.bughunters.domain.PetWeightDTO">
 		SELECT
@@ -80,7 +80,7 @@
 		WHERE abandoned_pet_id IS NOT NULL
 	</select>
 
-	<!-- 유저별 TOP-4 초기화/삽입/조회 -->
+	<!-- 상위4마리 강아지 초기화/삽입/조회 -->
 	<delete id="deleteTopMatchesByUserId" parameterType="long">
 		DELETE FROM Matching_User_Top_Pets
 		WHERE user_id = #{userId}
@@ -102,22 +102,22 @@
 	<!-- 결과 카드에 필요한 컬럼만 뽑기 -->
 	<select id="selectTop4PetsForCard"
         parameterType="long" resultType="edu.example.bughunters.domain.AbandonedPetDTO">
-  SELECT
-    ap.abandoned_pet_id,
-    ap.kind,
-    ap.age,
-    ap.weight,
-    ap.address,
-    ap.description,
-    ap.profile_image,
-    ap.gender
-  FROM Matching_User_Top_Pets mup
-  JOIN Abandoned_Pet ap
-    ON ap.abandoned_pet_id = mup.abandoned_pet_id
-  WHERE mup.user_id = #{userId}
-  ORDER BY mup.rank_no
-  FETCH FIRST 4 ROWS ONLY
-</select>
+	  SELECT
+	    ap.abandoned_pet_id,
+	    ap.kind,
+	    ap.age,
+	    ap.weight,
+	    ap.address,
+	    ap.description,
+	    ap.profile_image,
+	    ap.gender
+	  FROM Matching_User_Top_Pets mup
+	  JOIN Abandoned_Pet ap
+	    ON ap.abandoned_pet_id = mup.abandoned_pet_id
+	  WHERE mup.user_id = #{userId}
+	  ORDER BY mup.rank_no
+	  FETCH FIRST 4 ROWS ONLY
+	</select>
 
 	<!-- 로그인한 사용자 이름으로 is_quiz 조회 -->
 	<select id="selectIsQuizByUsername" parameterType="string"

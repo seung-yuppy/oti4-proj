@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MatchingResultDTO {
-    private double activityScore;
-    private double sociabilityScore;
-    private double dependencyScore;
-    private double trainabilityScore;
-    private double aggressionScore;
+    private Double activityScore;
+    private Double sociabilityScore;
+    private Double dependencyScore;
+    private Double trainabilityScore;
+    private Double aggressionScore;
     private int countNum;
     private Long   userId;
 

@@ -25,7 +25,6 @@ public class MatchingQuizController {
 
     @GetMapping
     public String getRandomQuizzes(Model model, HttpSession session, RedirectAttributes rttr) throws Exception {
-        // 로그인 가드 (세션 키: "userId")
         if (toLong(session.getAttribute("userId")) == null) {
             rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
             rttr.addFlashAttribute("openLogin", true);
@@ -64,7 +63,6 @@ public class MatchingQuizController {
                                 HttpSession session,
                                 RedirectAttributes rttr) throws Exception {
 
-        // 로그인 가드 (세션 키: "userId")
         Long userId = toLong(session.getAttribute("userId"));
         if (userId == null) {
             rttr.addFlashAttribute("msg", "로그인 후 이용해주세요.");
@@ -79,13 +77,13 @@ public class MatchingQuizController {
                 mapper.getTypeFactory().constructCollectionType(List.class, AnswerItem.class)
         );
         
-        //DTO 구성
+        //DTO
         MatchingResultDTO dto = new MatchingResultDTO();
         dto.setUserId(userId);
 
         for (AnswerItem it : items) {
             if (it == null || it.type == null) continue;
-            double v = (it.value == null ? 0.0 : it.value); // 기본값
+            double v = (it.value == null ? 0.0 : it.value);
 
             switch (it.type) {
                 case "ACT": dto.setActivityScore(v);     break;
@@ -96,11 +94,10 @@ public class MatchingQuizController {
             }
         }
 
-        // 저장 + TOP-4 매칭 저장 
+        // 저장 + 상위4마리 매칭 저장 
         quizService.saveQuizResult(dto);
         quizService.matchAndSaveTop4(userId);
 
-        // 뷰 
         List<AbandonedPetDTO> topPets = quizService.loadTop4Cards(userId);
         model.addAttribute("result", dto);
         model.addAttribute("topPets", topPets);
@@ -127,14 +124,12 @@ public class MatchingQuizController {
         }
         return "matching/matchingResult_after";
     }
-
-    // ----- helpers -----
+    
     public static class AnswerItem {
         public String type;   
         public Double value;  
     }
 
-    /** 세션 값 타입 안전 변환 (Integer/Long/BigDecimal/String 모두 대응) */
     private static Long toLong(Object v) {
         if (v == null) return null;
         if (v instanceof Long) return (Long) v;

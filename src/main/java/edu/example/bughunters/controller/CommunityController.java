@@ -115,8 +115,6 @@ public class CommunityController {
         if ((b[0] & 0xFF) == 0xFF && (b[1] & 0xFF) == 0xD8) return MediaType.IMAGE_JPEG;
         // PNG
         if (b[0]==(byte)0x89 && b[1]==0x50 && b[2]==0x4E && b[3]==0x47) return MediaType.IMAGE_PNG;
-        // GIF
-        if (b[0]==0x47 && b[1]==0x49 && b[2]==0x46) return MediaType.IMAGE_GIF;
         return MediaType.APPLICATION_OCTET_STREAM;
     }
 
@@ -209,9 +207,7 @@ public class CommunityController {
         if ("replace".equals(imgAction) && imageFile != null && !imageFile.isEmpty()) {
             form.setImage(imageFile.getBytes());
         }
-        // keep이면 form.image 건드리지 않음
 
-        // PRIDE 강제 검증(유지/교체 후에도 이미지가 없으면 막기)
         boolean willHaveImage = !"delete".equals(imgAction) && (
                 (form.getImage() != null && form.getImage().length > 0) || hasExisting
         );
@@ -229,7 +225,6 @@ public class CommunityController {
             return "community/communityUpdate";
         }
 
-        // 삭제 선택 시 실제로 NULL 처리
         if ("delete".equals(imgAction)) {
             communityService.clearPostImage(id, loginUserId);
         }
@@ -246,7 +241,6 @@ public class CommunityController {
         return "redirect:/community";
     }
 
-    // ---- helpers ----
     private Integer toInt(Object o) {
         if (o == null) return null;
         if (o instanceof Integer) return (Integer) o;
@@ -297,7 +291,6 @@ public class CommunityController {
         if (!ok) {
             rttr.addFlashAttribute("msg", "삭제 권한이 없거나 이미 삭제되었습니다.");
         }
-        // 댓글 목록 페이지 유지
         return "redirect:/community/" + communityId + "?cpage=" + cpage + "&csize=" + csize;
     }
     
@@ -308,7 +301,6 @@ public class CommunityController {
                                        HttpSession session) {
         Integer uid = toInt(session.getAttribute("userId"));
         if (uid == null) {
-            // 401을 내려주고 싶으면 ResponseEntity로 바꿔도 됨
             Map<String,Object> err = new LinkedHashMap<>();
             err.put("error", "UNAUTHORIZED");
             return err;
